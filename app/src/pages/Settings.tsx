@@ -2,6 +2,7 @@ import { DownloadSimpleIcon, UploadSimpleIcon } from '@phosphor-icons/react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AiSettingsCard } from '../components/AiSettings';
+import { CurrencySetting } from '../components/CurrencySetting';
 import ui from '../components/ui.module.css';
 import { deleteEverything, exportAll, importFile } from '../db/trips';
 import { LANGUAGES, setLanguage, type Language } from '../i18n';
@@ -61,6 +62,8 @@ export function Settings() {
           ))}
         </div>
       </div>
+      <h2 className={ui.sectionTitle}>{t('fx.title')}</h2>
+      <CurrencySetting />
       <h2 className={ui.sectionTitle}>{t('settings.appearance')}</h2>
       <div className={ui.card}>
         <div className={ui.segCtl} role="group" aria-label={t('settings.appearance')}>

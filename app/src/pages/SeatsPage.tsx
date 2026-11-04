@@ -1,6 +1,7 @@
 import { ArrowSquareOutIcon, CheckIcon, FireIcon, MoonIcon } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FxHint } from '../components/FxHint';
 import { useTripContext } from '../components/TripContext';
 import ui from '../components/ui.module.css';
 import { UnverifiedNote } from '../components/UnverifiedNote';
@@ -172,6 +173,7 @@ export function SeatsPage() {
         <span className={ui.stack} style={{ gap: 2 }}>
           <span className={s.title}>
             {t('seats.summary', { count: needs.length, total: eur(feeTotal) })}
+            <FxHint eur={feeTotal} />
           </span>
           <span className={ui.muted} style={{ fontSize: 14 }}>
             {unknownFees ? t('seats.notIncludedVaries') : t('seats.notIncluded')}

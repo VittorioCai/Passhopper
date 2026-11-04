@@ -3,6 +3,7 @@ import { MemoryRouter } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { protectKeys, saveAiSettings } from './ai/settings';
 import { forget } from './ai/vault';
+import { setCurrency } from './fx';
 import { App } from './App';
 import { makeSampleTrip } from './data/sampleTrip';
 import { db } from './db/db';
@@ -76,6 +77,20 @@ describe('trip pages', () => {
     fireEvent.click(munich);
     expect(Element.prototype.scrollIntoView).toHaveBeenCalled();
     expect(within(cal).getByRole('button', { name: '2027-07-14: Ticket' })).toBeInTheDocument();
+  });
+
+  it('shows totals in a home currency too', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response(JSON.stringify({ date: '2026-11-04', rates: { USD: 1.1 } })));
+    vi.stubGlobal('fetch', fetchMock);
+    setCurrency('USD');
+    const trip = makeSampleTrip('en');
+    await saveTrip(trip);
+    at(`/trip/${trip.id}/days`);
+    expect(await screen.findByText(/^≈ \$\d+/)).toBeInTheDocument();
+    expect(fetchMock.mock.calls[0]![0]).toContain('api.frankfurter.dev/v1/latest?base=EUR');
+    setCurrency(null);
   });
 
   it('adds a note to a city', async () => {

@@ -6,6 +6,7 @@ import {
   WarningIcon,
 } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
+import { FxHint } from '../components/FxHint';
 import { PassBar } from '../components/PassBar';
 import { TripCalendar } from '../components/TripCalendar';
 import { passName, passValidity } from '../components/passText';
@@ -198,7 +199,10 @@ export function DaysPage() {
         <div className={d.total} aria-live="polite">
           <div>
             <div className={d.tl}>{t('days.total')}</div>
-            <div className={d.tv}>{eur(plan.total)}</div>
+            <div className={d.tv}>
+              {eur(plan.total)}
+              <FxHint eur={plan.total} />
+            </div>
           </div>
           {Object.keys(trip.pass?.overrides ?? {}).length ? (
             <button type="button" className={d.reset} onClick={reset}>

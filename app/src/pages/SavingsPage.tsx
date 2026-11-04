@@ -1,6 +1,7 @@
 import { CaretRightIcon, InfoIcon, LightbulbIcon } from '@phosphor-icons/react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FxHint } from '../components/FxHint';
 import { passName, passValidity } from '../components/passText';
 import { useTripContext } from '../components/TripContext';
 import ui from '../components/ui.module.css';
@@ -101,6 +102,7 @@ export function SavingsPage() {
         </div>
         <div className={v.big} aria-live="polite">
           <small>{saving >= 0 ? t('pass.save') : t('pass.costsMore')}</small>€{shown}
+          <FxHint eur={Math.abs(saving)} />
         </div>
         <div className={v.subline}>
           {ticketsWin
@@ -278,7 +280,10 @@ export function SavingsPage() {
         </details>
         <div className={`${v.bdRow} ${v.total}`}>
           <span>{t('savings.total')}</span>
-          <b>{eur(plan.total)}</b>
+          <b>
+            {eur(plan.total)}
+            <FxHint eur={plan.total} />
+          </b>
         </div>
       </div>
       <UnverifiedNote />

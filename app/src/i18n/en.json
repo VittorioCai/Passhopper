@@ -449,5 +449,13 @@
     "mismatch": "The passwords don't match.",
     "save": "Encrypt keys",
     "lockedHint": "Your AI keys are locked."
+  },
+  "fx": {
+    "title": "Currency",
+    "label": "Also show prices in",
+    "off": "Euro only",
+    "note": "Prices are in euros. Pick your currency to see a rough conversion next to totals.",
+    "rateFrom": "European Central Bank rate from {{date}}. Totals are rounded, for reference only.",
+    "noRate": "Fetching today's rate… If you're offline, conversions appear once you're back online."
   }
 }
