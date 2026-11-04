@@ -2,6 +2,7 @@ import {
   CopyIcon,
   DotsThreeIcon,
   PlusIcon,
+  ShareNetworkIcon,
   TrashIcon,
   TrainSimpleIcon,
 } from '@phosphor-icons/react';
@@ -13,6 +14,7 @@ import ui from '../components/ui.module.css';
 import { copyTrip, deleteTrip, useTrips } from '../db/trips';
 import { daysBetween, formatDate, todayLocal } from '../model/dates';
 import type { Trip } from '../model/schema';
+import { encodeTrip, shareUrl } from '../model/share';
 import { destinationCount, segmentCount, sortTrips, tripRange } from '../model/trip';
 import { lineStyle, placeName, useLang } from '../lib';
 import h from './Home.module.css';
@@ -79,6 +81,7 @@ export function Home() {
   const navigate = useNavigate();
   const [menu, setMenu] = useState<Trip | null>(null);
   const [confirm, setConfirm] = useState(false);
+  const [shared, setShared] = useState('');
   const sorted = trips && sortTrips(trips, todayLocal());
   const next = trips
     ?.map((x) => x.startDate)
@@ -87,6 +90,7 @@ export function Home() {
   const close = () => {
     setMenu(null);
     setConfirm(false);
+    setShared('');
   };
   return (
     <>
@@ -153,6 +157,36 @@ export function Home() {
               <CopyIcon size={18} weight="bold" />
               {t('home.duplicate')}
             </button>
+            <button
+              type="button"
+              className={ui.btn}
+              onClick={async () => {
+                const url = shareUrl(await encodeTrip(menu));
+                try {
+                  if (navigator.share) {
+                    await navigator.share({ title: menu.name, text: t('share.shareText'), url });
+                    return;
+                  }
+                  await navigator.clipboard.writeText(url);
+                  setShared(t('share.copied'));
+                } catch {
+                  // Cancelled, or no clipboard: show the link to copy by hand.
+                  setShared(url);
+                }
+              }}
+            >
+              <ShareNetworkIcon size={18} weight="bold" />
+              {t('share.action')}
+            </button>
+            {shared && (
+              <p
+                className={`${ui.status} ${ui.ok}`}
+                role="status"
+                style={{ overflowWrap: 'anywhere' }}
+              >
+                {shared}
+              </p>
+            )}
             {confirm ? (
               <div className={ui.danger}>
                 <span>{t('home.deleteConfirm', { name: menu.name })}</span>

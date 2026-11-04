@@ -8,6 +8,7 @@ import { App } from './App';
 import { makeSampleTrip } from './data/sampleTrip';
 import { db } from './db/db';
 import { saveTrip } from './db/trips';
+import { encodeTrip } from './model/share';
 import i18n from './i18n';
 
 const at = (path: string) =>
@@ -313,6 +314,23 @@ describe('savings', () => {
     await waitFor(async () => {
       expect((await db.trips.get(trip.id))!.pass?.productId).toBe('flexi-10-2m');
     });
+  });
+});
+
+describe('shared trips', () => {
+  it('opens a shared link and saves a copy', async () => {
+    const data = await encodeTrip(makeSampleTrip('en'));
+    at(`/share#${data}`);
+    expect(await screen.findByText('Someone shared this trip with you')).toBeInTheDocument();
+    expect(screen.getByText('NJ 294')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Save a copy to my trips' }));
+    expect(await screen.findByRole('heading', { name: 'Prague' })).toBeInTheDocument();
+    expect(await db.trips.count()).toBe(1);
+  });
+
+  it('explains a broken link', async () => {
+    at('/share#garbage');
+    expect(await screen.findByText("This link doesn't open a trip")).toBeInTheDocument();
   });
 });
 

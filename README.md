@@ -31,14 +31,14 @@ Most trip planners treat a rail pass like any other ticket. The questions that d
 
 |                                |                                                                                                                                                                                                                                         |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 🗺️ **Route**                   | Metro-map timeline and a map of your trip. Nights per city, easy reordering, night trains.                                                                                                                                              |
+| 🗺️ **Route**                   | Metro-map timeline and a map of your trip. Nights per city, drag to reorder, night trains, notes for each city.                                                                                                                         |
 | 🚆 **Real timetables**         | Search actual trains between your cities with [Transitous](https://transitous.org), an open-data journey planner. Covers high-speed, international and night trains.                                                                    |
-| 📅 **Travel days**             | Best days for your pass, worked out by the rules engine, with a switch on every day.                                                                                                                                                    |
+| 📅 **Travel days**             | A calendar of your trip and the best days for your pass, worked out by the rules engine, with a switch on every day.                                                                                                                    |
 | 💺 **Seat reservations**       | What needs a reservation and what it costs, a to-do list, and a place to note your booking and seat.                                                                                                                                    |
-| 💶 **Savings**                 | Every pass compared with buying tickets, including the worst case and the most price-sensitive train.                                                                                                                                   |
+| 💶 **Savings**                 | Every pass compared with buying tickets, including the worst case and the most price-sensitive train. Totals can also show in your own currency.                                                                                        |
 | ⚠️ **Checks**                  | Warnings for overlapping trains, tight changes, missed connections and very long days.                                                                                                                                                  |
 | ✨ **AI assistant (optional)** | Describe a trip in one sentence and get a first route, or ask for changes ("slow down in Italy"). Every change is previewed with its cost before you apply it, and you can undo it. Searches the web for strikes and engineering works. |
-| 📱 **Works like an app**       | Install it to your home screen, use it offline, light and dark themes. English and 简体中文.                                                                                                                                            |
+| 📱 **Works like an app**       | Install it to your home screen, use it offline, light and dark themes. English and 简体中文. Share a trip as a link; the trip travels inside the link, not through a server.                                                            |
 
 <table>
   <tr>
@@ -57,8 +57,8 @@ Most trip planners treat a rail pass like any other ticket. The questions that d
 
 - **Your trips stay on your device**, in your browser's storage. Export them to a file to back up or move to another device.
 - **There is no Passhopper server.** The app is static files on GitHub Pages.
-- **The AI assistant uses your own key** (DeepSeek, Claude, or any OpenAI-compatible provider). The key is stored only in your browser and sent only to the provider you pick, straight from your device. The assistant sees cities, dates, trains, your age group and class, and nothing else.
-- Timetable searches go to Transitous, and map tiles come from OpenFreeMap.
+- **The AI assistant uses your own key** (DeepSeek, Claude, or any OpenAI-compatible provider). The key is stored only in your browser, optionally encrypted with a password, and sent only to the provider you pick, straight from your device. The assistant sees cities, dates, trains, your age group and class, and nothing else.
+- Timetable searches go to Transitous, map tiles come from OpenFreeMap, and exchange rates (if you turn them on) come from the European Central Bank via Frankfurter.
 
 ## How accurate is it?
 
@@ -102,9 +102,10 @@ docs/         product, rules and UI design docs (Chinese)
 - [x] Official reservation fees, home-country and night train rules
 - [x] AI assistant with your own key
 - [x] Real timetables, route map, conflict checks
+- [x] City notes, train check links, one-tap AI prices, trip calendar, drag to reorder
+- [x] Currency hints, password-protected AI keys, share links
 - [ ] Verified pass prices
-- [ ] Currency hints (USD, GBP, CNY)
-- [ ] Optional password protection for saved AI keys
+- [ ] Reservation reminders
 - [ ] More languages
 
 ## Contributing

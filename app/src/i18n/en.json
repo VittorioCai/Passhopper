@@ -457,5 +457,16 @@
     "note": "Prices are in euros. Pick your currency to see a rough conversion next to totals.",
     "rateFrom": "European Central Bank rate from {{date}}. Totals are rounded, for reference only.",
     "noRate": "Fetching today's rate… If you're offline, conversions appear once you're back online."
+  },
+  "share": {
+    "title": "Shared trip",
+    "shared": "Someone shared this trip with you",
+    "broken": "This link doesn't open a trip",
+    "brokenBody": "It may be cut short, or made with a newer version of Passhopper. Ask for the link again.",
+    "save": "Save a copy to my trips",
+    "saveNote": "The copy is yours: change it as you like. It's saved only on this device.",
+    "action": "Share link",
+    "copied": "Link copied. It contains the whole trip, but no booking references or seats.",
+    "shareText": "My Interrail trip on Passhopper"
   }
 }
