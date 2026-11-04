@@ -111,7 +111,8 @@
     "addPrice": "填票价",
     "daysCount_other": "{{count}}天",
     "citiesCount_other": "{{count}}城",
-    "trainsCount_other": "{{count}}段火车"
+    "trainsCount_other": "{{count}}段火车",
+    "drag": "拖动调整{{name}}的顺序（也可用方向键）"
   },
   "source": {
     "user": "你填写",

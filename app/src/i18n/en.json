@@ -120,7 +120,8 @@
     "citiesCount_one": "{{count}} city",
     "citiesCount_other": "{{count}} cities",
     "trainsCount_one": "{{count}} train",
-    "trainsCount_other": "{{count}} trains"
+    "trainsCount_other": "{{count}} trains",
+    "drag": "Drag to move {{name}} (or use the arrow keys)"
   },
   "source": {
     "user": "Yours",

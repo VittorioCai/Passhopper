@@ -138,6 +138,17 @@ export function moveStop(trip: Trip, stopId: string, dir: -1 | 1): Trip {
   return touch(syncJourneys({ ...trip, stops }));
 }
 
+/** Moves a stop to position `to`. The starting place never moves and nothing goes before it. */
+export function moveStopTo(trip: Trip, stopId: string, to: number): Trip {
+  const idx = trip.stops.findIndex((s) => s.id === stopId);
+  const target = Math.max(1, Math.min(to, trip.stops.length - 1));
+  if (idx <= 0 || target === idx) return trip;
+  const stops = [...trip.stops];
+  const [stop] = stops.splice(idx, 1);
+  stops.splice(target, 0, stop!);
+  return touch(syncJourneys({ ...trip, stops }));
+}
+
 export const canMove = (trip: Trip, stopId: string, dir: -1 | 1) => {
   const idx = trip.stops.findIndex((s) => s.id === stopId);
   const to = idx + dir;

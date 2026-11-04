@@ -10,6 +10,7 @@ import {
   duplicateTrip,
   journeyFrom,
   moveStop,
+  moveStopTo,
   sortTrips,
   newId,
   removeSegment,
@@ -206,5 +207,23 @@ describe('sortTrips', () => {
     const r = sortTrips(trips, '2026-11-04');
     expect(r.upcoming.map((t) => t.name)).toEqual(['a', 'b']);
     expect(r.past.map((t) => t.name)).toEqual(['last', 'old']);
+  });
+});
+
+describe('moveStopTo', () => {
+  it('moves a stop and keeps trains between pairs that stay neighbours', () => {
+    const t = makeSampleTrip('en');
+    const vienna = t.stops[7]!;
+    const moved = moveStopTo(t, vienna.id, 2);
+    expect(moved.stops.map((s) => s.place.id).slice(0, 4)).toEqual([
+      'berlin',
+      'munich',
+      'vienna',
+      'zurich',
+    ]);
+    // Berlin → Munich is untouched and keeps its train.
+    expect(moved.journeys[0]!.segments[0]!.trainNumber).toBe('ICE 1005');
+    expect(moveStopTo(t, t.stops[0]!.id, 3)).toBe(t);
+    expect(moveStopTo(t, vienna.id, 0).stops[1]!.id).toBe(vienna.id);
   });
 });

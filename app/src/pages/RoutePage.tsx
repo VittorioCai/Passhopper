@@ -2,6 +2,7 @@ import {
   ArrowDownIcon,
   ArrowUpIcon,
   CheckIcon,
+  DotsSixVerticalIcon,
   MoonIcon,
   PencilSimpleIcon,
   NotePencilIcon,
@@ -21,6 +22,7 @@ import { Stepper } from '../components/Stepper';
 import { useTripContext } from '../components/TripContext';
 import ui from '../components/ui.module.css';
 import { findConflicts, type Conflict } from '../engine/conflicts';
+import { useDragSort } from '../hooks/useDragSort';
 import type { DayItem } from '../engine/days';
 import type { DayChoice } from '../engine/optimizer';
 import { formatDate, formatDuration } from '../model/dates';
@@ -32,6 +34,7 @@ import {
   isNightTrain,
   journeyFrom,
   moveStop,
+  moveStopTo,
   removeStop,
   renameTrip,
   schedule,
@@ -163,6 +166,11 @@ export function RoutePage() {
   const returnsHome = trip.stops.length > 2 && last.place.id === origin.place.id;
   const insertAt = returnsHome ? trip.stops.length - 1 : trip.stops.length;
   const conflicts = findConflicts(trip);
+  const {
+    bindList,
+    handle: dragHandle,
+    itemStyle,
+  } = useDragSort((from, to) => update((x: Trip) => moveStopTo(x, x.stops[from]!.id, to)), 1);
   const conflictText = (c: Conflict) => {
     switch (c.type) {
       case 'overlap':
@@ -240,7 +248,7 @@ export function RoutePage() {
         </button>
       </h2>
 
-      <ol className={r.timeline}>
+      <ol className={r.timeline} ref={bindList}>
         {trip.stops.map((stop, i) => {
           const isFirst = i === 0;
           const isLast = i === trip.stops.length - 1;
@@ -252,6 +260,8 @@ export function RoutePage() {
             <li
               key={stop.id}
               className={`${r.stop} ${isFirst ? r.first : ''} ${isLast ? r.last : ''}`}
+              data-drag-item
+              style={edit ? itemStyle(i) : undefined}
             >
               <span
                 className={r.rail}
@@ -319,6 +329,15 @@ export function RoutePage() {
                       format={(n) => t('route.nights', { count: n })}
                     />
                     <span className={ui.row} style={{ gap: 6 }}>
+                      <button
+                        type="button"
+                        className={ui.iconBtn}
+                        aria-label={t('route.drag', { name })}
+                        title={t('route.drag', { name })}
+                        {...dragHandle(i, trip.stops.length)}
+                      >
+                        <DotsSixVerticalIcon size={18} weight="bold" />
+                      </button>
                       <button
                         type="button"
                         className={ui.iconBtn}

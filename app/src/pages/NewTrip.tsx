@@ -1,4 +1,10 @@
-import { ArrowDownIcon, ArrowUpIcon, InfoIcon, XIcon } from '@phosphor-icons/react';
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  DotsSixVerticalIcon,
+  InfoIcon,
+  XIcon,
+} from '@phosphor-icons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
@@ -8,6 +14,7 @@ import { Stepper } from '../components/Stepper';
 import ui from '../components/ui.module.css';
 import { COUNTRY_CODES, type CountryCode } from '../data/countries';
 import { saveTrip } from '../db/trips';
+import { useDragSort } from '../hooks/useDragSort';
 import { addDays, todayLocal } from '../model/dates';
 import type { Place, Traveller } from '../model/schema';
 import { createTrip } from '../model/trip';
@@ -37,6 +44,18 @@ export function NewTrip() {
       ? `${placeName(origin, lang)} → ${placeName(stops[stops.length - 1]!.place, lang)}`
       : '';
   const canNext = step === 1 || (step === 2 && !!origin && stops.length > 0) || step === 3;
+  const {
+    bindList,
+    handle: dragHandle,
+    itemStyle,
+  } = useDragSort((from, to) =>
+    setStops((list) => {
+      const n = [...list];
+      const [x] = n.splice(from, 1);
+      n.splice(to, 0, x!);
+      return n;
+    }),
+  );
   const move = (i: number, d: -1 | 1) =>
     setStops((s) => {
       const n = [...s];
@@ -192,9 +211,22 @@ export function NewTrip() {
             <div className={ui.stack}>
               <span className={ui.label}>{t('wizard.stops')}</span>
               {stops.length > 0 && (
-                <ol className={w.list}>
+                <ol className={w.list} ref={bindList}>
                   {stops.map((s, i) => (
-                    <li key={`${s.place.id}-${i}`} className={w.place}>
+                    <li
+                      key={`${s.place.id}-${i}`}
+                      className={w.place}
+                      data-drag-item
+                      style={itemStyle(i)}
+                    >
+                      <button
+                        type="button"
+                        className={ui.iconBtn}
+                        aria-label={t('route.drag', { name: placeName(s.place, lang) })}
+                        {...dragHandle(i, stops.length)}
+                      >
+                        <DotsSixVerticalIcon size={18} weight="bold" />
+                      </button>
                       <span className={w.num}>{i + 1}</span>
                       <span className={ui.cc} data-line style={lineStyle(s.place.country)}>
                         {s.place.country}
