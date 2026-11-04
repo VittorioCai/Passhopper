@@ -1,0 +1,144 @@
+<title>Passhopper 标志方案</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+/* 布局：标题 → 4 个方案卡片（手机单列、宽屏两列）→ 推荐。每张卡片：三种背景大图、小尺寸、字标组合、使用场景。 */
+:root {
+  --bg: #F3F5F8; --surface: #FFFFFF; --surface-2: #EEF1F5; --line: #E3E7ED;
+  --ink: #0F1524; --ink-2: #5A6478; --ink-3: #8C95A7;
+  --mint: #00A37A; --mint-soft: #D9F7EC; --lemon: #FFD43B; --night: #0B0E14;
+  --shadow: 0 1px 2px rgba(16, 24, 40, .04), 0 6px 22px rgba(16, 24, 40, .06);
+  --f-body: "DM Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --f-display: "Bricolage Grotesque", "Noto Sans SC", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #0B0E14; --surface: #151A23; --surface-2: #1C2230; --line: #252C3A; --ink: #F1F3F8; --ink-2: #A3ACBD; --ink-3: #6E7789; --mint-soft: #0F2E25; --shadow: 0 6px 22px rgba(0, 0, 0, .35); color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #0B0E14; --surface: #151A23; --surface-2: #1C2230; --line: #252C3A; --ink: #F1F3F8; --ink-2: #A3ACBD; --ink-3: #6E7789; --mint-soft: #0F2E25; --shadow: 0 6px 22px rgba(0, 0, 0, .35); color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); line-height: 1.55; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 28px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 20px; }
+h1 { font-family: var(--f-display); font-size: clamp(28px, 6vw, 40px); font-weight: 800; letter-spacing: -.02em; line-height: 1.15; margin: 0; text-wrap: balance; }
+.lead { color: var(--ink-2); max-width: 62ch; margin: 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 14px; border-radius: 50%; display: inline-block; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+.grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media (min-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } }
+.card { background: var(--surface); border-radius: 24px; box-shadow: var(--shadow); padding: 18px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.num { font-family: var(--f-display); font-weight: 800; font-size: 14px; color: #fff; background: var(--mint); border-radius: 999px; padding: 2px 10px; }
+.head h2 { font-family: var(--f-display); font-size: 24px; font-weight: 800; letter-spacing: -.01em; margin: 0; }
+.idea { color: var(--ink-2); font-size: 15px; margin: 0; }
+.tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.tile { aspect-ratio: 1; max-width: 100%; border-radius: 18px; display: grid; place-items: center; position: relative; }
+.tile svg { width: 64%; height: 64%; }
+.tile.white { background: #FFFFFF; box-shadow: inset 0 0 0 1px #E3E7ED; }
+.tile.dark { background: var(--night); }
+.tile.icon { background: transparent; }
+.tile.icon svg { width: 82%; height: 82%; filter: drop-shadow(0 8px 16px rgba(0, 163, 122, .3)); }
+.tile .cap { position: absolute; bottom: 6px; left: 0; right: 0; text-align: center; font-size: 11px; font-weight: 700; color: #8C95A7; }
+.tile.dark .cap { color: #6E7789; }
+.tile.icon .cap { bottom: -2px; }
+.sizes { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; padding: 12px 14px; background: var(--surface-2); border-radius: 16px; }
+.sizes figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; color: var(--ink-3); font-weight: 700; }
+.sizes .tab { display: inline-flex; align-items: center; gap: 8px; background: var(--surface); border-radius: 10px 10px 0 0; padding: 8px 14px 8px 10px; font-size: 13px; color: var(--ink); font-weight: 500; box-shadow: var(--shadow); }
+.lockups { display: flex; flex-direction: column; gap: 10px; }
+.lock { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 16px; min-width: 0; }
+.lock.on-white { background: #FFFFFF; box-shadow: inset 0 0 0 1px #E3E7ED; color: #0F1524; }
+.lock.on-dark { background: var(--night); color: #F1F3F8; }
+.lock svg { flex: none; }
+.wm { display: flex; flex-direction: column; line-height: 1.05; min-width: 0; }
+.wm b { font-family: var(--f-display); font-weight: 800; font-size: 26px; letter-spacing: -.03em; }
+.wm span { font-size: 12px; font-weight: 700; letter-spacing: .28em; opacity: .7; margin-top: 3px; }
+.pc { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px; }
+.pc div { background: var(--surface-2); border-radius: 14px; padding: 10px 12px; }
+.pc b { display: block; font-size: 12px; color: var(--ink-3); margin-bottom: 2px; }
+.rec { background: var(--mint-soft); border-radius: 24px; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px; }
+.rec h2 { font-family: var(--f-display); font-size: 22px; font-weight: 800; margin: 0; }
+.rec p { margin: 0; max-width: 70ch; }
+.rec ul { margin: 0; padding-left: 20px; }
+.badge-rec { font-size: 12px; font-weight: 800; color: #04261C; background: var(--lemon); border-radius: 999px; padding: 3px 10px; }
+@media (max-width: 420px) { .pc { grid-template-columns: 1fr; } .wm b { font-size: 22px; } }
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:10px">
+    <h1>Passhopper 标志方案</h1>
+    <p class="lead">方向是"线路图 P + 跳跃"：字母 P 画成一段线路，再加一个跳起来的柠檬黄圆点。下面 4 个变体都放在三种背景上，还有浏览器标签和手机桌面的实际尺寸。</p>
+    <div class="legend"><span><i style="background:#00A37A"></i>薄荷绿 #00A37A</span><span><i style="background:#FFD43B"></i>柠檬黄 #FFD43B</span><span><i style="background:#0F1524"></i>墨色 #0F1524</span></div>
+  </header>
+  <div class="grid" id="grid"></div>
+  <section class="rec" id="rec"></section>
+</div>
+
+<script>
+(() => {
+'use strict';
+/* 每个方案是一个函数：接收颜色 {t: 线路色, d: 圆点色, bg: 背后底色}，返回 64×64 画布里的 SVG 内容。 */
+const C = {
+  p1: ({ t, d, bg }) => `
+    <path d="M20 54V14h12a12 12 0 0 1 0 24H20" fill="none" stroke="${t}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="20" cy="38" r="5" fill="${bg}" stroke="${t}" stroke-width="3.5"/>
+    <circle cx="38.5" cy="8.8" r="1.6" fill="${d}" opacity=".55"/>
+    <circle cx="44.2" cy="7" r="2.3" fill="${d}" opacity=".8"/>
+    <circle cx="51.5" cy="10" r="6" fill="${d}"/>`,
+  p2: ({ t, d }) => `
+    <path d="M18 56V12" fill="none" stroke="${t}" stroke-width="8" stroke-linecap="round"/>
+    <path d="M18 12C50 8 52 40 18 40" fill="none" stroke="${t}" stroke-width="6" stroke-linecap="round" stroke-dasharray="0 9.4"/>
+    <circle cx="43" cy="24.5" r="7.5" fill="${d}"/>`,
+  p3: ({ t, d, bg }) => `
+    <rect x="12" y="9" width="15" height="47" rx="7.5" fill="${t}"/>
+    <circle cx="32" cy="26" r="17" fill="${t}"/>
+    <rect x="19" y="9" width="13" height="34" fill="${t}"/>
+    <circle cx="32" cy="26" r="8.5" fill="${bg}"/>
+    <circle cx="35" cy="22.5" r="5.6" fill="${d}"/>`,
+  p4: ({ t, d, bg }) => `
+    <path d="M20 52V14h10a12 12 0 0 1 0 24h-3" fill="none" stroke="${t}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="20" cy="53" r="5" fill="${bg}" stroke="${t}" stroke-width="3.5"/>
+    <circle cx="25" cy="38" r="7" fill="${d}"/>`
+};
+const CONCEPTS = [
+  ['p1', '站点 P', 'P 的弯角处是一个车站，柠檬黄圆点带着两个小残影从 P 的右上角跳出去。', '有线路图的车站元素，"跳"的动作最明显', '细节多一点，16px 时残影会糊成一团'],
+  ['p2', '弧线 P', 'P 的圆弧画成一串虚线点，就是一次跳跃的轨迹，柠檬黄圆点在最高处。', '最直接表达 hop，轻快', '虚线在小尺寸上不够清楚，竖线和圆弧容易看成两个东西'],
+  ['p3', '实心 P', '粗壮的实心 P，P 的"眼睛"里放一颗柠檬黄圆点，稍微往上偏，像正要跳起来。', '最结实，16px 也一眼认出；做 App 图标最好看', '跳跃感比较含蓄，线路图元素弱'],
+  ['p4', '终点站 P', '一笔画出的线路：从底部的起点站出发，向上绕一圈，停在柠檬黄的终点站。', '讲了一段旅程的故事，和产品里的线路图最一致', '没有明显的"跳"，更像导航类产品']
+];
+const svg = (k, col, size, extra = '') => `<svg viewBox="0 0 64 64" width="${size || ''}" height="${size || ''}" aria-hidden="true" ${extra}>${C[k](col)}</svg>`;
+const appIcon = (k, size) => `<svg viewBox="0 0 64 64" width="${size || ''}" height="${size || ''}" aria-hidden="true"><rect width="64" height="64" rx="15" fill="#00A37A"/><g transform="translate(6.4 6.4) scale(.8)">${C[k]({ t: '#FFFFFF', d: '#FFD43B', bg: '#00A37A' })}</g></svg>`;
+const ON_WHITE = { t: '#0F1524', d: '#00A37A', bg: '#FFFFFF' };
+const ON_DARK = { t: '#FFFFFF', d: '#FFD43B', bg: '#0B0E14' };
+
+document.getElementById('grid').innerHTML = CONCEPTS.map(([k, name, idea, pro, con], i) => `
+  <article class="card" aria-labelledby="h-${k}">
+    <div class="head"><span class="num">${i + 1}</span><h2 id="h-${k}">${name}</h2>${k === 'p3' ? '<span class="badge-rec">我的推荐</span>' : ''}</div>
+    <p class="idea">${idea}</p>
+    <div class="tiles">
+      <div class="tile white">${svg(k, ON_WHITE)}<span class="cap">白底</span></div>
+      <div class="tile icon">${appIcon(k)}<span class="cap">App 图标</span></div>
+      <div class="tile dark">${svg(k, ON_DARK)}<span class="cap">深色底</span></div>
+    </div>
+    <div class="sizes" aria-label="实际尺寸">
+      <figure>${appIcon(k, 60)}<figcaption>手机桌面 60px</figcaption></figure>
+      <figure>${appIcon(k, 32)}<figcaption>32px</figcaption></figure>
+      <figure>${appIcon(k, 16)}<figcaption>16px</figcaption></figure>
+      <figure><span class="tab">${appIcon(k, 16)}Passhopper</span><figcaption>浏览器标签</figcaption></figure>
+    </div>
+    <div class="lockups">
+      <div class="lock on-white">${appIcon(k, 46)}<div class="wm"><b>passhopper</b><span>通票漫游</span></div></div>
+      <div class="lock on-dark">${svg(k, ON_DARK, 46)}<div class="wm"><b>passhopper</b><span>通票漫游</span></div></div>
+    </div>
+    <div class="pc"><div><b>好在</b>${pro}</div><div><b>要注意</b>${con}</div></div>
+  </article>`).join('');
+
+document.getElementById('rec').innerHTML = `
+  <h2>我的推荐：3 实心 P</h2>
+  <p>Logo 最常出现的地方是手机桌面和浏览器标签，尺寸只有 16 到 60px。实心 P 在这些尺寸下最清楚，薄荷绿方块配柠檬黄圆点也最有记忆点。</p>
+  <ul>
+    <li>如果想要更明显的"跳"，可以把 1 的残影小点加到 3 上，只在大尺寸（README 头图、海报）里出现。</li>
+    <li>柠檬黄在白底上看不清，所以白底版本的圆点改用薄荷绿。</li>
+  </ul>`;
+})();
+</script>
