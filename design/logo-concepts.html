@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Noto+Sans+SC:wght@400;500;700&display=swap">
 <style>
-/* 布局：标题 → 4 个方案卡片（手机单列、宽屏两列）→ 推荐。每张卡片：三种背景大图、小尺寸、字标组合、使用场景。 */
+/* 布局：标题 → 3 个细化方案（手机单列、宽屏三列）→ 完整版与简化版对比 → 实际场景（App 顶栏、README 头图）→ 推荐。 */
 :root {
   --bg: #F3F5F8; --surface: #FFFFFF; --surface-2: #EEF1F5; --line: #E3E7ED;
   --ink: #0F1524; --ink-2: #5A6478; --ink-3: #8C95A7;
@@ -19,126 +19,150 @@
 :root[data-theme="dark"] { --bg: #0B0E14; --surface: #151A23; --surface-2: #1C2230; --line: #252C3A; --ink: #F1F3F8; --ink-2: #A3ACBD; --ink-3: #6E7789; --mint-soft: #0F2E25; --shadow: 0 6px 22px rgba(0, 0, 0, .35); color-scheme: dark; }
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--ink); font-family: var(--f-body); line-height: 1.55; -webkit-font-smoothing: antialiased; }
-.wrap { max-width: 1120px; margin: 0 auto; padding-block: 28px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 20px; }
+.wrap { max-width: 1160px; margin: 0 auto; padding-block: 28px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 20px; }
 h1 { font-family: var(--f-display); font-size: clamp(28px, 6vw, 40px); font-weight: 800; letter-spacing: -.02em; line-height: 1.15; margin: 0; text-wrap: balance; }
-.lead { color: var(--ink-2); max-width: 62ch; margin: 0; }
-.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--ink-2); }
-.legend span { display: inline-flex; align-items: center; gap: 6px; }
-.legend i { width: 14px; height: 14px; border-radius: 50%; display: inline-block; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+h2.sec { font-family: var(--f-display); font-size: 22px; font-weight: 800; letter-spacing: -.01em; margin: 10px 0 0; }
+.lead { color: var(--ink-2); max-width: 66ch; margin: 0; }
 .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
-@media (min-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } }
-.card { background: var(--surface); border-radius: 24px; box-shadow: var(--shadow); padding: 18px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
-.head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+@media (min-width: 760px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.card { background: var(--surface); border-radius: 24px; box-shadow: var(--shadow); padding: 18px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .num { font-family: var(--f-display); font-weight: 800; font-size: 14px; color: #fff; background: var(--mint); border-radius: 999px; padding: 2px 10px; }
-.head h2 { font-family: var(--f-display); font-size: 24px; font-weight: 800; letter-spacing: -.01em; margin: 0; }
-.idea { color: var(--ink-2); font-size: 15px; margin: 0; }
-.tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-.tile { aspect-ratio: 1; max-width: 100%; border-radius: 18px; display: grid; place-items: center; position: relative; }
-.tile svg { width: 64%; height: 64%; }
-.tile.white { background: #FFFFFF; box-shadow: inset 0 0 0 1px #E3E7ED; }
-.tile.dark { background: var(--night); }
-.tile.icon { background: transparent; }
-.tile.icon svg { width: 82%; height: 82%; filter: drop-shadow(0 8px 16px rgba(0, 163, 122, .3)); }
-.tile .cap { position: absolute; bottom: 6px; left: 0; right: 0; text-align: center; font-size: 11px; font-weight: 700; color: #8C95A7; }
-.tile.dark .cap { color: #6E7789; }
-.tile.icon .cap { bottom: -2px; }
-.sizes { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; padding: 12px 14px; background: var(--surface-2); border-radius: 16px; }
-.sizes figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; color: var(--ink-3); font-weight: 700; }
-.sizes .tab { display: inline-flex; align-items: center; gap: 8px; background: var(--surface); border-radius: 10px 10px 0 0; padding: 8px 14px 8px 10px; font-size: 13px; color: var(--ink); font-weight: 500; box-shadow: var(--shadow); }
-.lockups { display: flex; flex-direction: column; gap: 10px; }
-.lock { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 16px; min-width: 0; }
-.lock.on-white { background: #FFFFFF; box-shadow: inset 0 0 0 1px #E3E7ED; color: #0F1524; }
-.lock.on-dark { background: var(--night); color: #F1F3F8; }
-.lock svg { flex: none; }
-.wm { display: flex; flex-direction: column; line-height: 1.05; min-width: 0; }
-.wm b { font-family: var(--f-display); font-weight: 800; font-size: 26px; letter-spacing: -.03em; }
-.wm span { font-size: 12px; font-weight: 700; letter-spacing: .28em; opacity: .7; margin-top: 3px; }
-.pc { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px; }
-.pc div { background: var(--surface-2); border-radius: 14px; padding: 10px 12px; }
-.pc b { display: block; font-size: 12px; color: var(--ink-3); margin-bottom: 2px; }
+.head h3 { font-family: var(--f-display); font-size: 22px; font-weight: 800; letter-spacing: -.01em; margin: 0; }
+.badge-rec { font-size: 12px; font-weight: 800; color: #2A2100; background: var(--lemon); border-radius: 999px; padding: 3px 10px; }
+.idea { color: var(--ink-2); font-size: 14px; margin: 0; }
+.hero { aspect-ratio: 1; border-radius: 22px; display: grid; place-items: center; }
+.hero svg { width: 78%; height: 78%; filter: drop-shadow(0 10px 22px rgba(0, 163, 122, .3)); }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.mini { aspect-ratio: 1; border-radius: 16px; display: grid; place-items: center; position: relative; }
+.mini svg { width: 62%; height: 62%; }
+.mini.white { background: #FFFFFF; box-shadow: inset 0 0 0 1px #E3E7ED; }
+.mini.dark { background: var(--night); }
+.mini .cap { position: absolute; bottom: 5px; left: 0; right: 0; text-align: center; font-size: 11px; font-weight: 700; color: #8C95A7; }
+.sizes { display: grid; grid-template-columns: auto 1fr; gap: 10px 14px; align-items: center; padding: 12px 14px; background: var(--surface-2); border-radius: 16px; font-size: 12px; color: var(--ink-3); font-weight: 700; }
+.sizes .row { display: flex; align-items: center; gap: 14px; }
+.sizes .ok { color: var(--mint); }
+.scenes { display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media (min-width: 900px) { .scenes { grid-template-columns: 1fr 1.4fr; } }
+.scene { background: var(--surface); border-radius: 24px; box-shadow: var(--shadow); padding: 18px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.scene h3 { margin: 0; font-size: 15px; color: var(--ink-2); }
+.phone { background: #F3F5F8; border-radius: 22px; padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+.p-top { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,.85); border-radius: 14px; padding: 8px 12px; color: #0F1524; }
+.p-top b { font-family: var(--f-display); font-weight: 800; font-size: 19px; letter-spacing: -.02em; }
+.p-top small { font-size: 11px; color: #5A6478; }
+.p-home { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 14px 10px; background: linear-gradient(160deg, #1d3b5a, #2c6a74); border-radius: 18px; }
+.p-home figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #fff; font-size: 11px; }
+.p-home .fake { width: 52px; height: 52px; border-radius: 12px; background: rgba(255,255,255,.25); }
+.banner { border-radius: 20px; overflow: hidden; aspect-ratio: 1280 / 480; max-width: 100%; }
+.banner svg { width: 100%; height: 100%; display: block; }
 .rec { background: var(--mint-soft); border-radius: 24px; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px; }
 .rec h2 { font-family: var(--f-display); font-size: 22px; font-weight: 800; margin: 0; }
-.rec p { margin: 0; max-width: 70ch; }
+.rec p { margin: 0; max-width: 72ch; }
 .rec ul { margin: 0; padding-left: 20px; }
-.badge-rec { font-size: 12px; font-weight: 800; color: #04261C; background: var(--lemon); border-radius: 999px; padding: 3px 10px; }
-@media (max-width: 420px) { .pc { grid-template-columns: 1fr; } .wm b { font-size: 22px; } }
 </style>
 
 <div class="wrap">
   <header style="display:flex;flex-direction:column;gap:10px">
-    <h1>Passhopper 标志方案</h1>
-    <p class="lead">方向是"线路图 P + 跳跃"：字母 P 画成一段线路，再加一个跳起来的柠檬黄圆点。下面 4 个变体都放在三种背景上，还有浏览器标签和手机桌面的实际尺寸。</p>
-    <div class="legend"><span><i style="background:#00A37A"></i>薄荷绿 #00A37A</span><span><i style="background:#FFD43B"></i>柠檬黄 #FFD43B</span><span><i style="background:#0F1524"></i>墨色 #0F1524</span></div>
+    <h1>Passhopper 标志方案 · 第二轮</h1>
+    <p class="lead">选定方向：方案 1"站点 P"。P 的弯角处是车站，柠檬黄圆点带着残影跳出去。下面是 3 个细化版。每个都配一个简化版：32px 以下去掉残影、圆点加大，解决小尺寸发糊的问题。</p>
   </header>
   <div class="grid" id="grid"></div>
+  <h2 class="sec">放到实际场景里</h2>
+  <div class="scenes" id="scenes"></div>
   <section class="rec" id="rec"></section>
 </div>
 
 <script>
 (() => {
 'use strict';
-/* 每个方案是一个函数：接收颜色 {t: 线路色, d: 圆点色, bg: 背后底色}，返回 64×64 画布里的 SVG 内容。 */
-const C = {
-  p1: ({ t, d, bg }) => `
-    <path d="M20 54V14h12a12 12 0 0 1 0 24H20" fill="none" stroke="${t}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="20" cy="38" r="5" fill="${bg}" stroke="${t}" stroke-width="3.5"/>
-    <circle cx="38.5" cy="8.8" r="1.6" fill="${d}" opacity=".55"/>
-    <circle cx="44.2" cy="7" r="2.3" fill="${d}" opacity=".8"/>
-    <circle cx="51.5" cy="10" r="6" fill="${d}"/>`,
-  p2: ({ t, d }) => `
-    <path d="M18 56V12" fill="none" stroke="${t}" stroke-width="8" stroke-linecap="round"/>
-    <path d="M18 12C50 8 52 40 18 40" fill="none" stroke="${t}" stroke-width="6" stroke-linecap="round" stroke-dasharray="0 9.4"/>
-    <circle cx="43" cy="24.5" r="7.5" fill="${d}"/>`,
-  p3: ({ t, d, bg }) => `
-    <rect x="12" y="9" width="15" height="47" rx="7.5" fill="${t}"/>
-    <circle cx="32" cy="26" r="17" fill="${t}"/>
-    <rect x="19" y="9" width="13" height="34" fill="${t}"/>
-    <circle cx="32" cy="26" r="8.5" fill="${bg}"/>
-    <circle cx="35" cy="22.5" r="5.6" fill="${d}"/>`,
-  p4: ({ t, d, bg }) => `
-    <path d="M20 52V14h10a12 12 0 0 1 0 24h-3" fill="none" stroke="${t}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="20" cy="53" r="5" fill="${bg}" stroke="${t}" stroke-width="3.5"/>
-    <circle cx="25" cy="38" r="7" fill="${d}"/>`
+/* 每个方案：full = 完整版（带残影），small = 32px 以下用的简化版。颜色 {t: 线路, d: 圆点, bg: 底色}。画布 64×64。 */
+const V = {
+  a: {
+    name: '精修版', idea: '保留原来的结构。线条加粗，圆点放大，两个残影沿着跳跃的弧线排开，看起来是从 P 的右上角跳出去的。',
+    full: ({ t, d, bg }) => `
+      <path d="M19 54V15h12.5a11.5 11.5 0 0 1 0 23H19" fill="none" stroke="${t}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="19" cy="38" r="5.5" fill="${bg}" stroke="${t}" stroke-width="3.6"/>
+      <circle cx="35.8" cy="9.6" r="1.9" fill="${d}" opacity=".45"/>
+      <circle cx="42" cy="7.2" r="2.8" fill="${d}" opacity=".75"/>
+      <circle cx="50.5" cy="10.5" r="7" fill="${d}"/>`,
+    small: ({ t, d, bg }) => `
+      <path d="M19 54V15h12.5a11.5 11.5 0 0 1 0 23H19" fill="none" stroke="${t}" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="19" cy="38" r="5.5" fill="${bg}" stroke="${t}" stroke-width="4"/>
+      <circle cx="50" cy="11.5" r="8.5" fill="${d}"/>`
+  },
+  b: {
+    name: '弧线残影', idea: '残影换成一小段虚线弧，画出跳跃的路径，动作更连贯。虚线只出现在大尺寸上。',
+    full: ({ t, d, bg }) => `
+      <path d="M19 54V15h12.5a11.5 11.5 0 0 1 0 23H19" fill="none" stroke="${t}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="19" cy="38" r="5.5" fill="${bg}" stroke="${t}" stroke-width="3.6"/>
+      <path d="M33.5 12.5Q40 1.5 47 6" fill="none" stroke="${d}" stroke-width="2.8" stroke-linecap="round" stroke-dasharray="0 5.2" opacity=".8"/>
+      <circle cx="51" cy="10.5" r="6.8" fill="${d}"/>`,
+    small: ({ t, d, bg }) => `
+      <path d="M19 54V15h12.5a11.5 11.5 0 0 1 0 23H19" fill="none" stroke="${t}" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="19" cy="38" r="5.5" fill="${bg}" stroke="${t}" stroke-width="4"/>
+      <circle cx="50" cy="11.5" r="8.5" fill="${d}"/>`
+  },
+  c: {
+    name: '粗体单残影', idea: '线条更粗、P 更圆胖，只留一个残影。整体更有分量，也更"可爱"一点。',
+    full: ({ t, d, bg }) => `
+      <path d="M18 55V14h13.5a12.5 12.5 0 0 1 0 25H18" fill="none" stroke="${t}" stroke-width="11.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="18" cy="39" r="5.6" fill="${bg}" stroke="${t}" stroke-width="4"/>
+      <circle cx="43" cy="5" r="3" fill="${d}" opacity=".6"/>
+      <circle cx="53" cy="8.2" r="7" fill="${d}"/>`,
+    small: ({ t, d, bg }) => `
+      <path d="M18 55V14h13.5a12.5 12.5 0 0 1 0 25H18" fill="none" stroke="${t}" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="18" cy="39" r="5.6" fill="${bg}" stroke="${t}" stroke-width="4.2"/>
+      <circle cx="52" cy="9" r="8.2" fill="${d}"/>`
+  }
 };
-const CONCEPTS = [
-  ['p1', '站点 P', 'P 的弯角处是一个车站，柠檬黄圆点带着两个小残影从 P 的右上角跳出去。', '有线路图的车站元素，"跳"的动作最明显', '细节多一点，16px 时残影会糊成一团'],
-  ['p2', '弧线 P', 'P 的圆弧画成一串虚线点，就是一次跳跃的轨迹，柠檬黄圆点在最高处。', '最直接表达 hop，轻快', '虚线在小尺寸上不够清楚，竖线和圆弧容易看成两个东西'],
-  ['p3', '实心 P', '粗壮的实心 P，P 的"眼睛"里放一颗柠檬黄圆点，稍微往上偏，像正要跳起来。', '最结实，16px 也一眼认出；做 App 图标最好看', '跳跃感比较含蓄，线路图元素弱'],
-  ['p4', '终点站 P', '一笔画出的线路：从底部的起点站出发，向上绕一圈，停在柠檬黄的终点站。', '讲了一段旅程的故事，和产品里的线路图最一致', '没有明显的"跳"，更像导航类产品']
-];
-const svg = (k, col, size, extra = '') => `<svg viewBox="0 0 64 64" width="${size || ''}" height="${size || ''}" aria-hidden="true" ${extra}>${C[k](col)}</svg>`;
-const appIcon = (k, size) => `<svg viewBox="0 0 64 64" width="${size || ''}" height="${size || ''}" aria-hidden="true"><rect width="64" height="64" rx="15" fill="#00A37A"/><g transform="translate(6.4 6.4) scale(.8)">${C[k]({ t: '#FFFFFF', d: '#FFD43B', bg: '#00A37A' })}</g></svg>`;
-const ON_WHITE = { t: '#0F1524', d: '#00A37A', bg: '#FFFFFF' };
-const ON_DARK = { t: '#FFFFFF', d: '#FFD43B', bg: '#0B0E14' };
+const MINT = '#00A37A', LEMON = '#FFD43B';
+const ON_WHITE = { t: '#0F1524', d: MINT, bg: '#FFFFFF' };
+const ON_DARK = { t: '#FFFFFF', d: LEMON, bg: '#0B0E14' };
+const ON_MINT = { t: '#FFFFFF', d: LEMON, bg: MINT };
+const mark = (k, col, size, small) => `<svg viewBox="0 0 64 64" ${size ? `width="${size}" height="${size}"` : ''} aria-hidden="true">${V[k][small ? 'small' : 'full'](col)}</svg>`;
+const icon = (k, size, small) => `<svg viewBox="0 0 64 64" ${size ? `width="${size}" height="${size}"` : ''} aria-hidden="true"><rect width="64" height="64" rx="15" fill="${MINT}"/><g transform="translate(6.4 6.4) scale(.8)">${V[k][small ? 'small' : 'full'](ON_MINT)}</g></svg>`;
 
-document.getElementById('grid').innerHTML = CONCEPTS.map(([k, name, idea, pro, con], i) => `
+document.getElementById('grid').innerHTML = Object.entries(V).map(([k, v], i) => `
   <article class="card" aria-labelledby="h-${k}">
-    <div class="head"><span class="num">${i + 1}</span><h2 id="h-${k}">${name}</h2>${k === 'p3' ? '<span class="badge-rec">我的推荐</span>' : ''}</div>
-    <p class="idea">${idea}</p>
-    <div class="tiles">
-      <div class="tile white">${svg(k, ON_WHITE)}<span class="cap">白底</span></div>
-      <div class="tile icon">${appIcon(k)}<span class="cap">App 图标</span></div>
-      <div class="tile dark">${svg(k, ON_DARK)}<span class="cap">深色底</span></div>
+    <div class="head"><span class="num">1${'abc'[i]}</span><h3 id="h-${k}">${v.name}</h3>${k === 'a' ? '<span class="badge-rec">我的推荐</span>' : ''}</div>
+    <p class="idea">${v.idea}</p>
+    <div class="hero" style="background:var(--surface-2)">${icon(k)}</div>
+    <div class="pair">
+      <div class="mini white">${mark(k, ON_WHITE)}<span class="cap">白底</span></div>
+      <div class="mini dark">${mark(k, ON_DARK)}<span class="cap">深色底</span></div>
     </div>
-    <div class="sizes" aria-label="实际尺寸">
-      <figure>${appIcon(k, 60)}<figcaption>手机桌面 60px</figcaption></figure>
-      <figure>${appIcon(k, 32)}<figcaption>32px</figcaption></figure>
-      <figure>${appIcon(k, 16)}<figcaption>16px</figcaption></figure>
-      <figure><span class="tab">${appIcon(k, 16)}Passhopper</span><figcaption>浏览器标签</figcaption></figure>
+    <div class="sizes">
+      <span>完整版</span><span class="row">${icon(k, 48)}${icon(k, 32)}${icon(k, 16)}</span>
+      <span class="ok">简化版</span><span class="row">${icon(k, 48, true)}${icon(k, 32, true)}${icon(k, 16, true)}</span>
     </div>
-    <div class="lockups">
-      <div class="lock on-white">${appIcon(k, 46)}<div class="wm"><b>passhopper</b><span>通票漫游</span></div></div>
-      <div class="lock on-dark">${svg(k, ON_DARK, 46)}<div class="wm"><b>passhopper</b><span>通票漫游</span></div></div>
-    </div>
-    <div class="pc"><div><b>好在</b>${pro}</div><div><b>要注意</b>${con}</div></div>
   </article>`).join('');
 
+const k = 'a';
+document.getElementById('scenes').innerHTML = `
+  <div class="scene"><h3>App 顶栏和手机桌面（以 1a 为例）</h3>
+    <div class="phone">
+      <div class="p-top">${icon(k, 30, true)}<b>Passhopper</b><small>通票漫游</small></div>
+      <div class="p-home">${['', '', ''].map(() => '<figure><span class="fake"></span><span>&nbsp;</span></figure>').join('')}<figure>${icon(k, 52, true)}<span>通票漫游</span></figure></div>
+    </div>
+  </div>
+  <div class="scene"><h3>GitHub README 头图（以 1a 为例）</h3>
+    <div class="banner"><svg viewBox="0 0 1280 480" aria-label="Passhopper 头图示例">
+      <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C9F7E3"/><stop offset=".55" stop-color="#7FE6C0"/><stop offset="1" stop-color="#2FD0A0"/></linearGradient></defs>
+      <rect width="1280" height="480" fill="url(#bg)"/>
+      <path d="M-40 400 C 260 330, 420 470, 720 390 S 1180 300, 1320 360" fill="none" stroke="#04261C" stroke-opacity=".1" stroke-width="22" stroke-linecap="round"/>
+      <g transform="translate(110 120) scale(3.75)">${V[k].full({ t: '#04261C', d: '#FFD43B', bg: '#9BEBCB' })}</g>
+      <text x="400" y="248" font-family="Bricolage Grotesque, DM Sans, sans-serif" font-weight="800" font-size="118" letter-spacing="-4" fill="#04261C">passhopper</text>
+      <text x="406" y="312" font-family="Noto Sans SC, sans-serif" font-weight="700" font-size="34" letter-spacing="3" fill="#04261C" fill-opacity=".72">通票漫游 · Interrail 通票规划助手</text>
+    </svg></div>
+  </div>`;
+
 document.getElementById('rec').innerHTML = `
-  <h2>我的推荐：3 实心 P</h2>
-  <p>Logo 最常出现的地方是手机桌面和浏览器标签，尺寸只有 16 到 60px。实心 P 在这些尺寸下最清楚，薄荷绿方块配柠檬黄圆点也最有记忆点。</p>
+  <h2>我的推荐：1a 精修版</h2>
+  <p>两个残影最像"跳"的动作，也最接近你选中的原方案。配合简化版，32px 以下自动去掉残影，在浏览器标签里也清楚。</p>
   <ul>
-    <li>如果想要更明显的"跳"，可以把 1 的残影小点加到 3 上，只在大尺寸（README 头图、海报）里出现。</li>
-    <li>柠檬黄在白底上看不清，所以白底版本的圆点改用薄荷绿。</li>
+    <li>1b 的虚线弧更有动感，但虚线到小尺寸会完全消失，完整版和简化版看起来差别最大。</li>
+    <li>1c 更胖更可爱，如果你想要更年轻活泼的感觉可以选它。</li>
+    <li>白底版本的圆点用薄荷绿，因为柠檬黄在白底上看不清。</li>
   </ul>`;
 })();
 </script>
