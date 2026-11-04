@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { saveAiSettings } from './ai/settings';
 import { App } from './App';
 import { makeSampleTrip } from './data/sampleTrip';
 import { db } from './db/db';
@@ -16,6 +17,7 @@ const at = (path: string) =>
 
 beforeEach(async () => {
   await db.trips.clear();
+  await db.meta.clear();
   await i18n.changeLanguage('en');
 });
 
@@ -160,5 +162,73 @@ describe('new trip wizard', () => {
       residence: { type: 'europe', country: 'DE' },
       ageGroup: 'youth',
     });
+  });
+});
+
+describe('AI assistant', () => {
+  afterEach(() => vi.unstubAllGlobals());
+  const sse = (chunks: unknown[]) =>
+    new Response(chunks.map((c) => `data: ${JSON.stringify(c)}\n\n`).join('') + 'data: [DONE]\n\n');
+
+  it('asks for a key first', async () => {
+    const trip = makeSampleTrip('en');
+    await saveTrip(trip);
+    at(`/trip/${trip.id}/route`);
+    fireEvent.click(await screen.findByRole('button', { name: 'Open the AI assistant' }));
+    expect(await screen.findByText('Bring your own AI key')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Set up in Settings' })).toHaveAttribute(
+      'href',
+      '/settings#ai',
+    );
+  });
+
+  it('proposes a change, applies it and undoes it', async () => {
+    const trip = makeSampleTrip('en');
+    await saveTrip(trip);
+    await saveAiSettings({ provider: 'deepseek', keys: { deepseek: 'sk-test' }, models: {} });
+    const args = JSON.stringify({
+      summary: 'Stay longer in Rome',
+      ops: [{ op: 'set_nights', stop: 's7', nights: 4 }],
+    });
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn()
+        .mockResolvedValueOnce(
+          sse([
+            {
+              choices: [
+                {
+                  delta: {
+                    tool_calls: [
+                      { index: 0, id: 'c1', function: { name: 'propose_patch', arguments: args } },
+                    ],
+                  },
+                },
+              ],
+            },
+          ]),
+        )
+        .mockResolvedValueOnce(
+          sse([{ choices: [{ delta: { content: 'Here is a **slower** plan.' } }] }]),
+        ),
+    );
+    at(`/trip/${trip.id}/route`);
+    fireEvent.click(await screen.findByRole('button', { name: 'Open the AI assistant' }));
+    expect(await screen.findByText('How should we change your trip?')).toBeInTheDocument();
+    fireEvent.change(screen.getByRole('textbox', { name: 'Ask about your trip…' }), {
+      target: { value: 'More time in Rome' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+    expect(await screen.findByText('Stay longer in Rome')).toBeInTheDocument();
+    expect(screen.getByText('Rome: 3 → 4 nights')).toBeInTheDocument();
+    expect(await screen.findByText('slower')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Apply changes' }));
+    const rome = async () =>
+      (await db.trips.get(trip.id))!.stops.find((s) => s.place.id === 'rome')!.nights;
+    await waitFor(async () => expect(await rome()).toBe(4));
+    expect(screen.getByText('Applied')).toBeInTheDocument();
+    fireEvent.click(await screen.findByRole('button', { name: 'Undo' }));
+    await waitFor(async () => expect(await rome()).toBe(3));
   });
 });

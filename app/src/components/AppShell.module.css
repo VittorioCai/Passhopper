@@ -236,3 +236,21 @@
     gap: 14px;
   }
 }
+.aiBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 36px;
+  padding: 0 14px 0 11px;
+  margin-left: 4px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--primary);
+  color: var(--primary-ink);
+  font-weight: 800;
+  font-size: 14px;
+  flex: none;
+}
+.aiBtn:hover {
+  filter: brightness(1.05);
+}

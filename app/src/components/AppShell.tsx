@@ -6,9 +6,10 @@ import {
   PathIcon,
   PiggyBankIcon,
   SlidersHorizontalIcon,
+  SparkleIcon,
   type Icon,
 } from '@phosphor-icons/react';
-import { useMemo, type ReactNode } from 'react';
+import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, NavLink, Outlet, useLocation, useParams } from 'react-router';
 import { saveTrip, useTrip } from '../db/trips';
@@ -19,6 +20,8 @@ import type { TripContext } from './TripContext';
 import ui from './ui.module.css';
 import s from './AppShell.module.css';
 import { Logo } from './Logo';
+import { AiPanel, emptyChat, UndoToast, type AiChat, type ChatSession } from './AiPanel';
+import type { History } from '../ai/agent';
 
 export const TRIP_TABS: { path: string; label: string; long: string; icon: Icon }[] = [
   { path: 'route', label: 'nav.route', long: 'nav.route', icon: PathIcon },
@@ -189,6 +192,25 @@ export function TripLayout() {
   const { tripId = '' } = useParams();
   const { t } = useTranslation();
   const trip = useTrip(tripId);
+  const [aiOpen, setAiOpen] = useState(false);
+  const [chat, setChat] = useState<AiChat>(emptyChat);
+  const history = useRef<{ key: string; h: History } | null>(null);
+  const session = useMemo<ChatSession>(
+    () => ({
+      get: (key) => (history.current?.key === key ? history.current.h : undefined),
+      set: (key, h) => {
+        history.current = { key, h };
+        return h;
+      },
+      reset: () => {
+        history.current = null;
+      },
+    }),
+    [],
+  );
+  const [undo, setUndo] = useState<Trip | null>(null);
+  const closeAi = useCallback(() => setAiOpen(false), []);
+  const clearUndo = useCallback(() => setUndo(null), []);
   const computed = useMemo(() => {
     if (!trip) return null;
     const analysis = analyze(trip);
@@ -218,10 +240,44 @@ export function TripLayout() {
   };
   return (
     <Shell tripId={tripId} tripName={trip.name}>
-      <TopBar back="/" title={trip.name} />
+      <TopBar
+        back="/"
+        title={trip.name}
+        right={
+          <button
+            type="button"
+            className={s.aiBtn}
+            aria-label={t('ai.open')}
+            aria-expanded={aiOpen}
+            onClick={() => setAiOpen(true)}
+          >
+            <SparkleIcon size={18} weight="fill" />
+            <span>AI</span>
+          </button>
+        }
+      />
       <main className={`${s.view} ${s.withTabs}`}>
         <Outlet context={ctx} />
       </main>
+      {aiOpen && (
+        <AiPanel
+          trip={trip}
+          chat={chat}
+          setChat={setChat}
+          session={session}
+          onClose={closeAi}
+          onApply={(next) => {
+            setUndo(trip);
+            void saveTrip(next);
+          }}
+        />
+      )}
+      {undo && (
+        <UndoToast
+          onUndo={() => void saveTrip({ ...undo, updatedAt: new Date().toISOString() })}
+          onDone={clearUndo}
+        />
+      )}
     </Shell>
   );
 }

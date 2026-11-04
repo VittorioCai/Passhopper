@@ -1,6 +1,7 @@
 import { DownloadSimpleIcon, UploadSimpleIcon } from '@phosphor-icons/react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { AiSettingsCard } from '../components/AiSettings';
 import ui from '../components/ui.module.css';
 import { deleteEverything, exportAll, importFile } from '../db/trips';
 import { LANGUAGES, setLanguage, type Language } from '../i18n';
@@ -78,6 +79,8 @@ export function Settings() {
           ))}
         </div>
       </div>
+      <h2 className={ui.sectionTitle}>{t('ai.settingsTitle')}</h2>
+      <AiSettingsCard />
       <h2 className={ui.sectionTitle}>{t('settings.data')}</h2>
       <div className={`${ui.card} ${ui.stack}`}>
         <p className={ui.muted}>{t('settings.dataNote')}</p>

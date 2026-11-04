@@ -147,6 +147,8 @@
 - **来源**：[Transitous API 使用政策](https://transitous.org/api/)、[MOTIS 项目](https://github.com/motis-project/motis)
 
 ### E2 DeepSeek Search 与 Fetch API　🟡
+- **请求格式**：Search 接口 `POST /v1/tools/search`，请求体 `{query, count}`，返回 `results[]`（title、url、snippet、summary、date）。来自第三方文档，官方文档页面在开发环境里打不开，待核实；代码按字段缺失容错处理。
+- **模型名**：`deepseek-chat` 已于 2026-07-24 停用，第一版默认 `deepseek-v4-flash`（第三方来源，用户可在设置里改）。
 - **已验证（2026-11-04）**：`/chat/completions` 和 `/v1/tools/search` 都允许浏览器直接跨域调用（返回请求来源作为 CORS 允许来源），所以不需要中转服务器，用户的 key 只从他自己的浏览器发出。
 - 2026 年 10 月 17 日上线。Search（`POST /v1/tools/search`）返回网页搜索结果；Fetch（`POST /v1/tools/fetch`）把一个网页转换为 Markdown 返回。
 - 价格：TechNode 报道为每 1000 次成功请求 5 元人民币；另有来源写 0.75 美元。失败、无结果和超时不计费。
