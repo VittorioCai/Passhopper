@@ -407,5 +407,23 @@
     "ticket": "买票",
     "stay": "无火车",
     "valid_other": "通票有效期（{{count}} 天）"
+  },
+  "vault": {
+    "locked": "你的 AI key 已用密码保护。",
+    "password": "密码",
+    "wrong": "密码不对。",
+    "unlock": "解锁",
+    "unlocking": "解锁中…",
+    "on": "key 已用你的密码加密。关闭这个标签页之前保持解锁。",
+    "lockNow": "立即锁定",
+    "turnOff": "取消密码",
+    "protect": "用密码保护 key",
+    "explain": "key 会在这个浏览器里加密保存，每次打开网站时输入一次密码。忘记密码的话，清除 key 后重新填写即可。",
+    "newPassword": "新密码",
+    "repeat": "再输一次",
+    "tooShort": "至少 8 个字符。",
+    "mismatch": "两次输入的密码不一致。",
+    "save": "加密 key",
+    "lockedHint": "AI key 已锁定。"
   }
 }

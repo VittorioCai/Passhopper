@@ -1,7 +1,8 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { saveAiSettings } from './ai/settings';
+import { protectKeys, saveAiSettings } from './ai/settings';
+import { forget } from './ai/vault';
 import { App } from './App';
 import { makeSampleTrip } from './data/sampleTrip';
 import { db } from './db/db';
@@ -378,6 +379,25 @@ describe('AI assistant', () => {
   afterEach(() => vi.unstubAllGlobals());
   const sse = (chunks: unknown[]) =>
     new Response(chunks.map((c) => `data: ${JSON.stringify(c)}\n\n`).join('') + 'data: [DONE]\n\n');
+
+  it('asks for the password when keys are protected', async () => {
+    await saveAiSettings({ provider: 'deepseek', keys: { deepseek: 'sk-test' }, models: {} });
+    await protectKeys('en', 'password1');
+    forget();
+    const trip = makeSampleTrip('en');
+    await saveTrip(trip);
+    at(`/trip/${trip.id}/route`);
+    fireEvent.click(await screen.findByRole('button', { name: 'Open the AI assistant' }));
+    fireEvent.change(await screen.findByLabelText('Password'), { target: { value: 'nope' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Unlock' }));
+    expect(await screen.findByText("That password didn't work.")).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'password1' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Unlock' }));
+    expect(
+      await screen.findByText('How should we change your trip?', {}, { timeout: 5000 }),
+    ).toBeInTheDocument();
+    forget();
+  }, 20000);
 
   it('asks for a key first', async () => {
     const trip = makeSampleTrip('en');

@@ -16,7 +16,15 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { classifyError, newHistory, runTurn, type AiErrorKind, type History } from '../ai/agent';
 import { applyPatch, type Comparison, type StopChange } from '../ai/patch';
-import { activeProvider, PROVIDERS, useAiSettings, type ActiveProvider } from '../ai/settings';
+import {
+  activeProvider,
+  isLocked,
+  PROVIDERS,
+  useAiSettings,
+  type ActiveProvider,
+} from '../ai/settings';
+import { useVault } from '../ai/vault';
+import { UnlockForm } from './UnlockForm';
 import type { Activity, Proposal, Source } from '../ai/tools';
 import { passById } from '../data/passes';
 import { formatDate } from '../model/dates';
@@ -78,6 +86,7 @@ export function AiPanel({
   const lang = useLang();
   const settings = useAiSettings(lang);
   const provider = activeProvider(settings);
+  const locked = isLocked(settings, useVault());
   const [text, setText] = useState('');
   const [busy, setBusy] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
@@ -257,7 +266,11 @@ export function AiPanel({
         </header>
 
         <div className={s.list} ref={listRef} aria-live="polite">
-          {!provider ? (
+          {!provider && locked ? (
+            <div className={s.empty}>
+              <UnlockForm />
+            </div>
+          ) : !provider ? (
             <div className={s.empty}>
               <h3>{t('ai.setupTitle')}</h3>
               <p>{t('ai.setupBody')}</p>

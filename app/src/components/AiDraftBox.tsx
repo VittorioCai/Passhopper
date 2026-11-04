@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { classifyError } from '../ai/agent';
 import { draftRoute, type Draft } from '../ai/draft';
-import { activeProvider, useAiSettings } from '../ai/settings';
+import { activeProvider, isLocked, useAiSettings } from '../ai/settings';
+import { useVault } from '../ai/vault';
 import { todayLocal } from '../model/dates';
 import { useLang } from '../lib';
 import s from './AiDraftBox.module.css';
@@ -13,7 +14,9 @@ import s from './AiDraftBox.module.css';
 export function AiDraftBox({ onDraft }: { onDraft: (d: Draft) => void }) {
   const { t } = useTranslation();
   const lang = useLang();
-  const provider = activeProvider(useAiSettings(lang));
+  const settings = useAiSettings(lang);
+  const provider = activeProvider(settings);
+  const locked = isLocked(settings, useVault());
   const [text, setText] = useState('');
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
@@ -24,7 +27,8 @@ export function AiDraftBox({ onDraft }: { onDraft: (d: Draft) => void }) {
       <p className={s.hint}>
         <SparkleIcon size={16} weight="fill" />
         <span>
-          {t('draft.noKey')} <Link to="/settings#ai">{t('ai.openSettings')}</Link>
+          {t(locked ? 'vault.lockedHint' : 'draft.noKey')}{' '}
+          <Link to="/settings#ai">{t('ai.openSettings')}</Link>
         </span>
       </p>
     );

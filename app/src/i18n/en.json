@@ -431,5 +431,23 @@
     "stay": "No train",
     "valid_one": "Pass valid ({{count}} day)",
     "valid_other": "Pass valid ({{count}} days)"
+  },
+  "vault": {
+    "locked": "Your AI keys are protected with a password.",
+    "password": "Password",
+    "wrong": "That password didn't work.",
+    "unlock": "Unlock",
+    "unlocking": "Unlocking…",
+    "on": "Your keys are encrypted with your password. They stay unlocked until you close this tab.",
+    "lockNow": "Lock now",
+    "turnOff": "Remove password",
+    "protect": "Protect keys with a password",
+    "explain": "Your keys will be encrypted in this browser. You'll enter the password once per visit. If you forget it, remove the keys and add them again.",
+    "newPassword": "New password",
+    "repeat": "Repeat password",
+    "tooShort": "Use at least 8 characters.",
+    "mismatch": "The passwords don't match.",
+    "save": "Encrypt keys",
+    "lockedHint": "Your AI keys are locked."
   }
 }
