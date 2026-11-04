@@ -492,7 +492,7 @@ interface ReservationRule {
 - **商标**："Interrail" 和 "Eurail" 是 Eurail B.V. 的注册商标。产品名、域名、图标都不使用这两个词或官方标志，只在说明文字中描述性提及（例如"适用于 Interrail 通票"）。
 - **免责声明**：页脚注明"本工具与 Interrail / Eurail B.V. 无关联。规则和价格仅供参考，以官方为准"。
 - **数据来源署名**：Transitous、OpenStreetMap / OpenFreeMap 按各自要求署名。
-- **开源许可证**：建议 MIT，方便他人使用和贡献。如果希望他人修改后部署的网站也必须开源，可以改用 AGPL-3.0。
+- **开源许可证**：MIT（已确定，见仓库根目录 LICENSE）。
 - **隐私说明页**：说明不收集任何个人数据，key 只存在用户本地。
 
 ---

@@ -1,0 +1,1182 @@
+<title>Passhopper 原型</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+/* 布局：手机为顶栏 + 内容 + 底部标签；≥1024px 为左侧导航 + 内容 + 右侧 AI 面板。
+   视觉：欧洲站台信息屏（石板底 + 站牌黄）× 纸质通票（票根齿孔、My Trip 表格）。 */
+:root {
+  --bg: #F3F5F4; --surface: #FFFFFF; --surface-2: #E8ECEA; --line: #D2D9D6;
+  --ink: #16202A; --ink-2: #4C5864;
+  --board: #24303B; --board-ink: #F3F5F4; --board-ink-2: #B9C3CC;
+  --signal: #F5B700; --signal-ink: #1A1400;
+  --primary: #0B6E4F; --primary-ink: #FFFFFF;
+  --ok: #1E7B45; --warn: #A35F00; --danger: #B3261E; --info: #1F5FA8;
+  --ok-bg: #E4F2E9; --warn-bg: #FBF0DC; --danger-bg: #FBE9E7; --info-bg: #E6EEF8;
+  --scrim: rgba(14, 20, 26, .45);
+  --f-body: "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --f-num: "Barlow Condensed", "Arial Narrow", "Noto Sans SC", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --fs-xs: 12px; --fs-sm: 14px; --fs-md: 16px; --fs-lg: 20px; --fs-xl: 24px; --fs-num: 34px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1418; --surface: #171E24; --surface-2: #1F2830; --line: #2C3740;
+    --ink: #E6EBEE; --ink-2: #9AA6B0;
+    --board: #0A0F13; --board-ink: #E6EBEE; --board-ink-2: #8E9AA5;
+    --signal: #FFC72C; --signal-ink: #1A1400;
+    --primary: #3FBF8F; --primary-ink: #06241A;
+    --ok: #5CCB8A; --warn: #F0A84A; --danger: #FF8A80; --info: #7FB2F0;
+    --ok-bg: #12281C; --warn-bg: #30240E; --danger-bg: #391B19; --info-bg: #13223A;
+    --scrim: rgba(0, 0, 0, .6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1418; --surface: #171E24; --surface-2: #1F2830; --line: #2C3740;
+  --ink: #E6EBEE; --ink-2: #9AA6B0;
+  --board: #0A0F13; --board-ink: #E6EBEE; --board-ink-2: #8E9AA5;
+  --signal: #FFC72C; --signal-ink: #1A1400;
+  --primary: #3FBF8F; --primary-ink: #06241A;
+  --ok: #5CCB8A; --warn: #F0A84A; --danger: #FF8A80; --info: #7FB2F0;
+  --ok-bg: #12281C; --warn-bg: #30240E; --danger-bg: #391B19; --info-bg: #13223A;
+  --scrim: rgba(0, 0, 0, .6);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: var(--fs-md); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--surface); }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: var(--primary); }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+.num { font-family: var(--f-num); font-variant-numeric: tabular-nums; letter-spacing: .01em; }
+.muted { color: var(--ink-2); }
+.small { font-size: var(--fs-sm); }
+.xs { font-size: var(--fs-xs); }
+.ico { width: 20px; height: 20px; flex: none; }
+.ico-sm { width: 16px; height: 16px; flex: none; vertical-align: -3px; }
+
+/* ---------- 外框 ---------- */
+.app { min-height: 100%; }
+.sidenav { display: none; }
+.main-col { min-width: 0; }
+.topbar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  display: flex; align-items: center; gap: 8px; min-height: 56px;
+  padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px));
+  background: var(--surface); border-bottom: 1px solid var(--line);
+}
+.topbar .title { flex: 1; min-width: 0; font-weight: 600; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand { font-family: var(--f-num); font-weight: 700; font-size: 24px; letter-spacing: .02em; }
+.brand small { font-family: var(--f-body); font-weight: 500; font-size: 13px; color: var(--ink-2); margin-left: 6px; letter-spacing: 0; }
+.proto-chip { font-size: 11px; font-weight: 600; letter-spacing: .06em; padding: 2px 6px; border: 1px dashed var(--ink-2); color: var(--ink-2); border-radius: 4px; white-space: nowrap; }
+.icon-btn { display: inline-grid; place-items: center; width: 44px; height: 44px; border: 0; background: transparent; border-radius: 8px; color: var(--ink); }
+.icon-btn:hover { background: var(--surface-2); }
+.ai-btn { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-weight: 600; font-size: var(--fs-sm); }
+.ai-btn[aria-pressed="true"] { background: var(--signal); color: var(--signal-ink); border-color: var(--signal); }
+
+.view {
+  max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px;
+  padding-block: 16px 104px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.tabbar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  background: var(--surface); border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: max(0px, env(safe-area-inset-left, 0px)); padding-right: max(0px, env(safe-area-inset-right, 0px));
+}
+.tabbar a { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px 10px; font-size: 12px; color: var(--ink-2); text-decoration: none; position: relative; }
+.tabbar a[aria-current="page"] { color: var(--ink); font-weight: 600; }
+.tabbar a[aria-current="page"]::before { content: ""; position: absolute; top: 0; left: 30%; right: 30%; height: 3px; background: var(--signal); border-radius: 0 0 3px 3px; }
+
+@media (min-width: 1024px) {
+  .app { display: grid; grid-template-columns: 232px minmax(0, 1fr) auto; }
+  .sidenav { display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; height: 100vh; padding: 20px 12px; border-right: 1px solid var(--line); background: var(--surface); }
+  .sidenav .brand { padding: 0 8px 4px; }
+  .sidenav .tripname { padding: 16px 8px 6px; font-size: var(--fs-xs); color: var(--ink-2); letter-spacing: .04em; }
+  .sidenav a { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 15px; }
+  .sidenav a:hover { background: var(--surface-2); }
+  .sidenav a[aria-current="page"] { background: var(--surface-2); font-weight: 600; box-shadow: inset 3px 0 0 var(--signal); }
+  .sidenav .spacer { flex: 1; }
+  .tabbar { display: none; }
+  .view { padding-block: 24px 48px; }
+  .topbar .back { display: none; }
+}
+
+/* ---------- 通用组件 ---------- */
+.board { background: var(--board); color: var(--board-ink); border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; position: relative; overflow: hidden; }
+.board::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--signal); }
+.board .label { font-size: var(--fs-xs); letter-spacing: .08em; color: var(--board-ink-2); }
+.board .big { font-family: var(--f-num); font-size: var(--fs-num); line-height: 1.05; font-weight: 700; color: var(--signal); font-variant-numeric: tabular-nums; }
+.board .line { font-size: var(--fs-md); font-weight: 500; }
+.board .sub { font-size: var(--fs-sm); color: var(--board-ink-2); }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+.section-title { font-size: var(--fs-sm); font-weight: 600; color: var(--ink-2); letter-spacing: .04em; margin-top: 4px; }
+.row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.spread { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.stack { display: flex; flex-direction: column; gap: 8px; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); font-weight: 600; font-size: 15px; text-decoration: none; color: var(--ink); }
+.btn:hover { background: var(--surface-2); }
+.btn-primary { background: var(--primary); color: var(--primary-ink); border-color: var(--primary); }
+.btn-primary:hover { background: var(--primary); filter: brightness(1.08); }
+.btn-danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+.btn-ghost { border-color: transparent; background: transparent; color: var(--primary); }
+.btn-sm { min-height: 36px; padding: 0 12px; font-size: var(--fs-sm); }
+.btn-block { width: 100%; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+
+.badge { display: inline-flex; align-items: center; gap: 4px; font-size: var(--fs-xs); font-weight: 500; line-height: 1; padding: 4px 6px; border-radius: 4px; border: 1px solid currentColor; white-space: nowrap; background: transparent; }
+button.badge { cursor: pointer; }
+.src-official { color: var(--ok); }
+.src-live { color: var(--info); }
+.src-user { color: var(--ink); }
+.src-ai_estimate { color: var(--ink-2); border-style: dashed; }
+.src-ai_search { color: var(--info); border-style: dashed; }
+.src-stale { color: var(--warn); }
+
+.chip { display: inline-flex; align-items: center; gap: 4px; font-size: var(--fs-xs); font-weight: 600; padding: 4px 8px; border-radius: 999px; white-space: nowrap; }
+.chip-must { background: var(--danger-bg); color: var(--danger); }
+.chip-rec { background: var(--warn-bg); color: var(--warn); }
+.chip-none { background: var(--surface-2); color: var(--ink-2); }
+.chip-pass { background: var(--signal); color: var(--signal-ink); }
+.chip-ticket { border: 1px solid var(--line); color: var(--ink); }
+.chip-ok { background: var(--ok-bg); color: var(--ok); }
+
+.issue { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 8px; font-size: var(--fs-sm); }
+.issue .ico { margin-top: 1px; }
+.issue-warn { background: var(--warn-bg); color: var(--ink); }
+.issue-warn .ico { color: var(--warn); }
+.issue-danger { background: var(--danger-bg); color: var(--ink); }
+.issue-danger .ico { color: var(--danger); }
+.issue-info { background: var(--info-bg); color: var(--ink); }
+.issue-info .ico { color: var(--info); }
+
+.foot-note { font-size: var(--fs-xs); color: var(--ink-2); text-align: center; padding-top: 8px; }
+
+/* ---------- 首页 ---------- */
+.trip-card { display: flex; flex-direction: column; gap: 6px; text-align: left; width: 100%; cursor: pointer; }
+.trip-card:hover { border-color: var(--ink-2); }
+.trip-card h3 { font-size: var(--fs-lg); }
+.trip-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: var(--fs-sm); color: var(--ink-2); }
+.progress { height: 4px; background: var(--surface-2); border-radius: 2px; overflow: hidden; }
+.progress > i { display: block; height: 100%; background: var(--ok); }
+
+/* ---------- 路线 ---------- */
+.summary-line { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: var(--fs-sm); color: var(--ink-2); }
+.summary-line b { color: var(--ink); font-family: var(--f-num); font-size: 18px; font-weight: 600; margin-right: 2px; }
+.timeline { display: flex; flex-direction: column; }
+.stop { display: grid; grid-template-columns: 24px minmax(0, 1fr); column-gap: 12px; }
+.stop .rail { position: relative; }
+.stop .rail::before { content: ""; position: absolute; left: 11px; top: 0; bottom: 0; width: 2px; background: repeating-linear-gradient(to bottom, var(--line) 0 6px, transparent 6px 10px); }
+.stop.first .rail::before { top: 14px; }
+.stop.last .rail::before { bottom: calc(100% - 14px); }
+.stop .dot { position: absolute; left: 4px; top: 7px; width: 16px; height: 16px; border-radius: 50%; background: var(--surface); border: 3px solid var(--ink); }
+.stop.home .dot { background: var(--signal); border-color: var(--board); }
+.stop-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; padding: 4px 0; }
+.stop-head .city { font-size: var(--fs-lg); font-weight: 700; }
+.stop-head .local { font-size: var(--fs-sm); color: var(--ink-2); }
+.stop-head .when { flex-basis: 100%; order: 3; font-size: var(--fs-sm); color: var(--ink-2); margin-top: -4px; }
+.stop-head .stop-tools { margin-left: auto; }
+.stop-tools { display: inline-flex; gap: 2px; }
+.stop-tools button { width: 32px; height: 32px; border: 0; background: transparent; border-radius: 6px; color: var(--ink-2); display: inline-grid; place-items: center; }
+.stop-tools button:hover { background: var(--surface-2); color: var(--ink); }
+.stop-body { padding: 4px 0 16px; display: flex; flex-direction: column; gap: 8px; }
+.stop-note { font-size: var(--fs-sm); color: var(--ink-2); }
+
+.ticket { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; text-align: left; width: 100%; padding: 0; cursor: pointer; display: block; }
+.ticket:hover { border-color: var(--ink-2); }
+.ticket.problem { border-color: var(--warn); }
+.ticket-main { padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 4px; }
+.ticket-top { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.train { font-family: var(--f-num); font-weight: 700; font-size: 18px; letter-spacing: .03em; display: inline-flex; align-items: center; gap: 4px; }
+.times { font-family: var(--f-num); font-weight: 600; font-size: 22px; font-variant-numeric: tabular-nums; margin-left: auto; white-space: nowrap; }
+.times sup { font-size: 12px; color: var(--ink-2); margin-left: 1px; }
+.stations { font-size: var(--fs-sm); color: var(--ink-2); }
+.perf { position: relative; border-top: 1.5px dashed var(--line); margin: 0; }
+.perf::before, .perf::after { content: ""; position: absolute; top: -9px; width: 16px; height: 16px; border-radius: 50%; background: var(--bg); border: 1px solid var(--line); }
+.perf::before { left: -9px; clip-path: inset(0 0 0 50%); }
+.perf::after { right: -9px; clip-path: inset(0 50% 0 0); }
+.ticket-foot { padding: 10px 14px 12px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: var(--fs-sm); }
+.ticket-foot .price { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; }
+.ticket-foot .price .num { font-size: 17px; font-weight: 600; }
+
+/* ---------- 旅行日 ---------- */
+.mytrip { border: 1.5px solid var(--ink); border-radius: 6px; overflow: hidden; background: var(--surface); }
+.mytrip-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px; background: var(--ink); color: var(--bg); }
+.mytrip-head .t { font-family: var(--f-num); font-weight: 700; letter-spacing: .14em; font-size: 18px; }
+.mytrip-head .s { font-size: var(--fs-xs); opacity: .8; }
+.mt-cols, .mt-row { display: grid; grid-template-columns: 60px minmax(0, 1fr) 80px; }
+.mt-cols { font-size: 11px; letter-spacing: .08em; color: var(--ink-2); border-bottom: 1.5px solid var(--ink); }
+.mt-cols > div { padding: 6px 10px; }
+.mt-cols > div + div, .mt-row > div + div { border-left: 1px solid var(--line); }
+.mt-row { border-bottom: 1px solid var(--line); }
+.mt-row:last-child { border-bottom: 0; }
+.mt-row > div { padding: 10px; min-width: 0; }
+.mt-date { font-family: var(--f-num); font-variant-numeric: tabular-nums; line-height: 1.15; }
+.mt-date b { font-size: 20px; font-weight: 700; display: block; }
+.mt-date span { font-size: 13px; color: var(--ink-2); }
+.mt-route { font-size: 15px; font-weight: 500; }
+.mt-why { font-size: 13px; color: var(--ink-2); margin-top: 2px; }
+.mt-row.err { background: var(--danger-bg); }
+.mt-row.err .mt-why { color: var(--danger); }
+.day-toggle { width: 100%; min-height: 40px; padding: 0 4px; border-radius: 6px; font-weight: 700; font-size: 15px; border: 1.5px solid var(--line); background: var(--surface); white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; gap: 3px; }
+.day-toggle.is-pass { background: var(--signal); color: var(--signal-ink); border-color: var(--signal); }
+.day-toggle.is-ticket { border-color: var(--ink-2); }
+.day-toggle.is-locked { border-style: dashed; color: var(--ink-2); cursor: help; font-weight: 500; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: var(--fs-xs); color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+
+/* ---------- 订座 ---------- */
+.res-item { display: flex; flex-direction: column; gap: 8px; }
+.res-item .top { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.res-item .top .num { font-weight: 700; font-size: 18px; }
+.res-item.urgent { border-color: var(--warn); }
+.res-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; padding-top: 4px; }
+.field { display: flex; flex-direction: column; gap: 4px; font-size: var(--fs-sm); color: var(--ink-2); }
+.field input, .field select, .field textarea { min-height: 44px; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); width: 100%; }
+.field textarea { min-height: 88px; resize: vertical; }
+.mono { font-family: var(--f-mono); }
+.done-line { display: flex; gap: 8px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: var(--fs-sm); flex-wrap: wrap; }
+.done-line:last-child { border-bottom: 0; }
+
+/* ---------- 回本 ---------- */
+.table-wrap { overflow-x: auto; }
+table.plans { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+table.plans th { white-space: nowrap; text-align: left; font-weight: 600; color: var(--ink-2); font-size: var(--fs-xs); letter-spacing: .04em; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+table.plans td { padding: 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+table.plans tr:last-child td { border-bottom: 0; }
+table.plans td.r, table.plans th.r { text-align: right; }
+table.plans td .num { font-size: 18px; font-weight: 600; }
+table.plans td.range { white-space: nowrap; font-family: var(--f-num); font-size: 15px; }
+table.plans .btn { white-space: nowrap; }
+table.plans td { white-space: nowrap; }
+table.plans td:first-child { white-space: normal; min-width: 92px; }
+table.plans tr.rec td:first-child { box-shadow: inset 4px 0 0 var(--signal); font-weight: 600; }
+table.plans tr.sel { background: var(--surface-2); }
+.breakdown { display: flex; flex-direction: column; }
+.bd-row { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.bd-row:last-child { border-bottom: 0; font-weight: 700; }
+.bd-row .num { font-size: 18px; }
+details.bd summary { cursor: pointer; font-size: var(--fs-sm); color: var(--primary); padding: 6px 0; }
+.bd-sub { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--ink-2); padding: 3px 0 3px 12px; }
+
+/* ---------- 向导、设置 ---------- */
+.steps { display: flex; gap: 6px; }
+.steps i { flex: 1; height: 4px; border-radius: 2px; background: var(--surface-2); }
+.steps i.on { background: var(--ink); }
+.seg-ctl { display: flex; flex-wrap: wrap; gap: 8px; }
+.seg-ctl button { min-height: 44px; padding: 0 14px; border-radius: 8px; border: 1.5px solid var(--line); background: var(--surface); font-size: 15px; }
+.seg-ctl button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--bg); font-weight: 600; }
+.stepper { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.stepper button { width: 44px; height: 44px; border: 0; background: var(--surface-2); font-size: 20px; }
+.stepper span { width: 48px; text-align: center; font-family: var(--f-num); font-size: 20px; font-weight: 600; }
+.or { display: flex; align-items: center; gap: 12px; color: var(--ink-2); font-size: var(--fs-sm); }
+.or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.pill-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: var(--fs-sm); }
+.radio-row { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border: 1.5px solid var(--line); border-radius: 8px; cursor: pointer; }
+.radio-row:has(input:checked) { border-color: var(--ink); }
+.radio-row input { width: 18px; height: 18px; accent-color: var(--primary); }
+.check-row { display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 15px; }
+.check-row input { width: 18px; height: 18px; accent-color: var(--primary); }
+.status-ok { color: var(--ok); font-weight: 600; font-size: var(--fs-sm); }
+.status-err { color: var(--danger); font-weight: 600; font-size: var(--fs-sm); }
+.danger-zone { border: 1px solid var(--danger); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+
+/* ---------- 底部面板、AI ---------- */
+.sheet-backdrop { position: fixed; inset: 0; z-index: 50; background: var(--scrim); display: flex; align-items: flex-end; justify-content: center; }
+.sheet { width: 100%; max-height: 90%; overflow-y: auto; background: var(--surface); border-radius: 14px 14px 0 0; display: flex; flex-direction: column; gap: 14px;
+  padding-top: 8px; padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  animation: rise .2s ease-out; }
+.grabber { width: 40px; height: 4px; border-radius: 2px; background: var(--line); margin: 0 auto 4px; }
+@media (min-width: 720px) { .sheet-backdrop { align-items: center; } .sheet { max-width: 560px; border-radius: 12px; max-height: 86%; } .grabber { display: none; } }
+@keyframes rise { from { transform: translateY(24px); opacity: .6; } to { transform: none; opacity: 1; } }
+.cand { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; padding: 12px; border: 1.5px solid var(--line); border-radius: 8px; background: var(--surface); text-align: left; width: 100%; }
+.cand[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 4px 0 0 var(--signal); }
+.cand .times { margin: 0; font-size: 20px; }
+.tabs2 { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.tabs2 button { min-height: 40px; padding: 0 14px; border: 0; background: var(--surface); font-size: var(--fs-sm); }
+.tabs2 button[aria-pressed="true"] { background: var(--ink); color: var(--bg); font-weight: 600; }
+.price-input { display: flex; align-items: center; gap: 8px; }
+.price-input input { width: 120px; min-height: 44px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-2); font-family: var(--f-num); font-size: 20px; }
+
+.ai-panel { display: flex; flex-direction: column; background: var(--surface); }
+.ai-panel[hidden] { display: none !important; }
+@media (max-width: 1023px) {
+  .ai-panel { position: fixed; inset: 0; z-index: 40; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); animation: rise .2s ease-out; }
+}
+@media (min-width: 1024px) {
+  .ai-panel { width: 380px; position: sticky; top: 0; height: 100vh; border-left: 1px solid var(--line); }
+}
+.ai-head { display: flex; align-items: center; gap: 8px; padding: 8px 8px 8px 16px; border-bottom: 1px solid var(--line); min-height: 56px; }
+.ai-head .t { flex: 1; font-weight: 600; }
+.ai-msgs { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding: 16px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.msg { max-width: 92%; font-size: 15px; line-height: 1.6; }
+.msg.me { align-self: flex-end; background: var(--surface-2); padding: 8px 12px; border-radius: 12px 12px 4px 12px; }
+.msg.ai { align-self: flex-start; display: flex; flex-direction: column; gap: 8px; }
+.msg .who { font-size: var(--fs-xs); color: var(--ink-2); font-weight: 600; letter-spacing: .04em; }
+.thinking { color: var(--ink-2); font-size: var(--fs-sm); display: flex; align-items: center; gap: 10px; }
+.diff { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.diff-head { padding: 8px 12px; background: var(--surface-2); font-size: var(--fs-xs); font-weight: 600; letter-spacing: .04em; color: var(--ink-2); }
+.diff-row { display: flex; gap: 10px; padding: 7px 12px; font-size: var(--fs-sm); border-top: 1px solid var(--line); }
+.diff-row .op { font-family: var(--f-mono); width: 14px; flex: none; font-weight: 600; }
+.diff-row.del .op { color: var(--danger); }
+.diff-row.del .txt { text-decoration: line-through; color: var(--ink-2); }
+.diff-row.mod .op { color: var(--warn); }
+.diff-row.add .op { color: var(--ok); }
+.diff-cost { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px 12px; padding: 10px 12px; border-top: 1px solid var(--line); background: var(--ok-bg); font-size: var(--fs-sm); font-weight: 600; }
+.diff-cost .num { font-size: 18px; }
+.diff-actions { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--line); }
+.sources { display: flex; flex-direction: column; gap: 4px; font-size: var(--fs-sm); border-top: 1px solid var(--line); padding-top: 8px; }
+.ai-quick { display: flex; gap: 8px; overflow-x: auto; padding: 10px 16px 0; padding-left: max(16px, env(safe-area-inset-left, 0px)); }
+.ai-quick button { flex: none; min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: var(--fs-sm); white-space: nowrap; }
+.ai-input { display: flex; gap: 8px; padding: 10px 16px 14px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.ai-input input { flex: 1; min-width: 0; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2); }
+.ai-input button { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--primary); color: var(--primary-ink); display: inline-grid; place-items: center; }
+.ai-empty { display: flex; flex-direction: column; gap: 10px; padding: 16px; font-size: var(--fs-sm); color: var(--ink-2); }
+
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(84px + env(safe-area-inset-bottom, 0px)); z-index: 60;
+  display: flex; align-items: center; gap: 12px; max-width: calc(100% - 32px);
+  background: var(--board); color: var(--board-ink); padding: 10px 10px 10px 16px; border-radius: 8px; font-size: var(--fs-sm); box-shadow: 0 6px 24px rgba(0,0,0,.25); }
+.toast button { background: transparent; border: 0; color: var(--signal); font-weight: 700; min-height: 36px; padding: 0 8px; }
+@media (min-width: 1024px) { .toast { bottom: 24px; } }
+.flash { animation: flash .6s ease-out; }
+@keyframes flash { from { background: var(--signal); } to { background: transparent; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+
+<div class="app" id="app">
+  <aside class="sidenav" id="sidenav" aria-label="主导航"></aside>
+  <div class="main-col">
+    <header class="topbar" id="topbar"></header>
+    <main class="view" id="view" tabindex="-1"></main>
+  </div>
+  <aside class="ai-panel" id="aiPanel" aria-label="AI 助手" hidden></aside>
+  <nav class="tabbar" id="tabbar" aria-label="行程页面"></nav>
+</div>
+<div class="sheet-backdrop" id="sheetBackdrop" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+(() => {
+'use strict';
+
+/* ================= 图标 ================= */
+const P = {
+  back: '<path d="M15 18l-6-6 6-6"/>',
+  prefs: '<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>',
+  spark: '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 16l.7 1.8 1.8.7-1.8.7L19 21l-.7-1.8-1.8-.7 1.8-.7z"/>',
+  moon: '<path d="M20.5 13.5A8.5 8.5 0 1 1 10.5 3.5a6.5 6.5 0 0 0 10 10z"/>',
+  alert: '<path d="M12 3.5l9 16H3z"/><path d="M12 10v4.5M12 17.2v.3"/>',
+  info: '<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8v.3"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  x: '<path d="M6 6l12 12M18 6L6 18"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  ext: '<path d="M14 4h6v6M20 4l-8.5 8.5M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+  route: '<circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="18" r="2.2"/><path d="M8.2 6H15a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h6.8"/>',
+  cal: '<rect x="3.5" y="5" width="17" height="15" rx="1.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  seat: '<path d="M7 4v9a2 2 0 0 0 2 2h7l2 5M7 13h9"/><path d="M5 20h6"/>',
+  euro: '<path d="M17.5 6.5A6.5 6.5 0 1 0 17.5 17.5"/><path d="M4 10.5h9M4 13.5h9"/>',
+  list: '<path d="M4 6h16M4 12h16M4 18h10"/>',
+  up: '<path d="M6 15l6-6 6 6"/>',
+  down: '<path d="M6 9l6 6 6-6"/>',
+  send: '<path d="M4.5 12L20 4.5 15 20l-3-6.5z"/><path d="M12 13.5L20 4.5"/>',
+  stop: '<rect x="7" y="7" width="10" height="10" rx="1.5"/>',
+  undo: '<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',
+  lock: '<rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'
+};
+const ic = (n, cls = 'ico') => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n]}</svg>`;
+
+/* ================= 工具 ================= */
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const D = s => new Date(s + 'T00:00:00Z');
+const addDays = (s, n) => { const d = D(s); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+const span = (a, b) => Math.round((D(b) - D(a)) / 864e5);
+const WD = '日一二三四五六';
+const fmtLong = s => { const d = D(s); return `${d.getUTCMonth() + 1}月${d.getUTCDate()}日 周${WD[d.getUTCDay()]}`; };
+const fmtMD = s => { const d = D(s); return `${d.getUTCMonth() + 1}/${d.getUTCDate()}`; };
+const fmtWD = s => '周' + WD[D(s).getUTCDay()];
+const eur = n => '€' + Math.round(n);
+const eurRange = (a, b) => Math.round(a) === Math.round(b) ? eur(a) : `€${Math.round(a)}–${Math.round(b)}`;
+
+/* ================= 示例数据 ================= */
+const PASSES = [
+  { id: 'f4',  kind: 'flexi', days: 4,  validity: 31, name: '4天 Flexi',  sub: '1个月内', price: 212 },
+  { id: 'f5',  kind: 'flexi', days: 5,  validity: 31, name: '5天 Flexi',  sub: '1个月内', price: 239 },
+  { id: 'f7',  kind: 'flexi', days: 7,  validity: 31, name: '7天 Flexi',  sub: '1个月内', price: 286 },
+  { id: 'f10', kind: 'flexi', days: 10, validity: 61, name: '10天 Flexi', sub: '2个月内', price: 335 },
+  { id: 'c15', kind: 'cont',  days: 15, validity: 15, name: '15天连续',   sub: '连续使用', price: 357 },
+  { id: 'c22', kind: 'cont',  days: 22, validity: 22, name: '22天连续',   sub: '连续使用', price: 440 }
+];
+const passById = id => PASSES.find(p => p.id === id);
+
+const SRC = {
+  official: '官方', live: '实时', user: '你填写', ai_estimate: 'AI估算', ai_search: 'AI联网', stale: '待核实'
+};
+const SRC_DESC = {
+  official: '来自官方网站。原型中为示例数据，正式版会附上网址和核实日期。',
+  live: '来自 Transitous 实时查询的时刻表。',
+  user: '你自己填写的价格，计算时优先使用。',
+  ai_estimate: 'AI 根据已有知识估算，没有经过核实。可以点开火车段改成你查到的价格。',
+  ai_search: 'AI 联网搜索得到，回答附有来源链接。',
+  stale: '这条信息超过 6 个月没有核实，请以官方为准。'
+};
+const LINKS = {
+  DE: ['DB 德铁', 'https://int.bahn.de/en'], CH: ['SBB 瑞士铁路', 'https://www.sbb.ch/en'], IT: ['Trenitalia', 'https://www.trenitalia.com/en.html'],
+  AT: ['ÖBB 奥地利铁路', 'https://www.oebb.at/en/'], CZ: ['ČD 捷克铁路', 'https://www.cd.cz/en/']
+};
+
+const STOPS_A = [
+  { id: 's0', zh: '柏林',   local: 'Berlin',   cc: 'DE', date: '2027-07-14', nights: 0, role: 'start', note: '出发地 · 你的居住地' },
+  { id: 's1', zh: '慕尼黑', local: 'München',  cc: 'DE', date: '2027-07-14', nights: 2 },
+  { id: 's2', zh: '苏黎世', local: 'Zürich',   cc: 'CH', date: '2027-07-16', nights: 2 },
+  { id: 's3', zh: '米兰',   local: 'Milano',   cc: 'IT', date: '2027-07-18', nights: 2 },
+  { id: 's4', zh: '威尼斯', local: 'Venezia',  cc: 'IT', date: '2027-07-20', nights: 2 },
+  { id: 's5', zh: '佛罗伦萨', local: 'Firenze', cc: 'IT', date: '2027-07-22', nights: 3 },
+  { id: 's6', zh: '罗马',   local: 'Roma',     cc: 'IT', date: '2027-07-25', nights: 3, note: '夜车离开，第二天早上到维也纳' },
+  { id: 's7', zh: '维也纳', local: 'Wien',     cc: 'AT', date: '2027-07-29', nights: 2 },
+  { id: 's8', zh: '布拉格', local: 'Praha',    cc: 'CZ', date: '2027-07-31', nights: 2 },
+  { id: 's9', zh: '柏林',   local: 'Berlin',   cc: 'DE', date: '2027-08-02', nights: 0, role: 'end', note: '回到居住地' }
+];
+const seg = (id, after, date, from, fromL, to, toL, cc, num, dep, arr, dur, o = {}) => ({
+  id, after, date, from, fromL, to, toL, cc, num, dep, arr, dur,
+  night: false, home: false, journey: null, res: 'none', fee: 0, resNote: '', quota: '',
+  p: { min: 0, mid: 0, max: 0 }, src: 'ai_estimate', resStatus: 'todo', booking: null, ...o
+});
+const SEGS_A = [
+  seg('g1', 's0', '2027-07-14', '柏林中央站', 'Berlin Hbf', '慕尼黑中央站', 'München Hbf', 'DE', 'ICE 1005', '08:34', '12:35', '4小时01分',
+    { home: true, p: { min: 30, mid: 60, max: 110 } }),
+  seg('g2', 's1', '2027-07-16', '慕尼黑中央站', 'München Hbf', '苏黎世中央站', 'Zürich HB', 'DE', 'ECE 196', '09:33', '13:01', '3小时28分',
+    { journey: 'out', p: { min: 45, mid: 80, max: 130 } }),
+  seg('g3', 's2', '2027-07-18', '苏黎世中央站', 'Zürich HB', '米兰中央站', 'Milano Centrale', 'CH', 'EC 317', '09:33', '12:50', '3小时17分',
+    { res: 'recommended', resNote: '可选订座，旺季建议订，约 €10', p: { min: 40, mid: 75, max: 110 } }),
+  seg('g4', 's3', '2027-07-20', '米兰中央站', 'Milano Centrale', '威尼斯圣卢西亚站', 'Venezia S. Lucia', 'IT', 'FR 9709', '10:05', '12:30', '2小时25分',
+    { res: 'mandatory', fee: 13, p: { min: 20, mid: 45, max: 60 } }),
+  seg('g5', 's4', '2027-07-22', '威尼斯圣卢西亚站', 'Venezia S. Lucia', '佛罗伦萨新圣母站', 'Firenze S.M.N.', 'IT', 'FR 9417', '10:26', '12:40', '2小时14分',
+    { res: 'mandatory', fee: 13, p: { min: 25, mid: 50, max: 65 } }),
+  seg('g6', 's5', '2027-07-25', '佛罗伦萨新圣母站', 'Firenze S.M.N.', '罗马特米尼站', 'Roma Termini', 'IT', 'FR 9531', '11:10', '12:46', '1小时36分',
+    { res: 'mandatory', fee: 13, p: { min: 20, mid: 45, max: 60 }, resStatus: 'booked', booking: { ref: 'K7Q2XB', seat: '8车 6A', paid: 13 } }),
+  seg('g7', 's6', '2027-07-28', '罗马特米尼站', 'Roma Termini', '维也纳中央站', 'Wien Hbf', 'IT', 'NJ 294', '19:18', '09:59', '14小时41分',
+    { night: true, res: 'mandatory', fee: 40, resNote: '6人卧铺包厢，约 €40', quota: '夜车卧铺旺季经常提前一两个月订满', p: { min: 70, mid: 120, max: 170 } }),
+  seg('g8', 's7', '2027-07-31', '维也纳中央站', 'Wien Hbf', '布拉格中央站', 'Praha hl.n.', 'AT', 'RJ 72', '08:10', '12:08', '3小时58分',
+    { p: { min: 20, mid: 40, max: 60 } }),
+  seg('g9', 's8', '2027-08-02', '布拉格中央站', 'Praha hl.n.', '柏林中央站', 'Berlin Hbf', 'CZ', 'EC 172', '10:27', '14:45', '4小时18分',
+    { journey: 'in', res: 'optional', resNote: '可选订座', p: { min: 30, mid: 50, max: 80 } })
+];
+
+const clone = o => JSON.parse(JSON.stringify(o));
+function makeTripA() {
+  return {
+    id: 't1', name: '意大利 + 中欧 三周',
+    traveller: { resType: 'europe', country: '德国', cc: 'DE', age: '青年', cls: '二等', count: 1 },
+    stops: clone(STOPS_A), segs: clone(SEGS_A), passId: null, overrides: {}
+  };
+}
+function makeTripB(from) {
+  const t = clone(from);
+  t.stops = t.stops.filter(s => s.id !== 's5');
+  t.stops.find(s => s.id === 's4').nights = 3;
+  Object.assign(t.stops.find(s => s.id === 's6'), { date: '2027-07-23', nights: 5 });
+  t.segs = t.segs.filter(s => s.id !== 'g6').map(s => s.id !== 'g5' ? s :
+    Object.assign(s, { date: '2027-07-23', to: '罗马特米尼站', toL: 'Roma Termini', num: 'FR 9425', dep: '10:26', arr: '14:15', dur: '3小时49分', p: { min: 30, mid: 60, max: 85 }, src: 'ai_estimate', resStatus: 'todo', booking: null }));
+  t.passId = null; t.overrides = {};
+  return t;
+}
+
+/* ================= 规则引擎（原型简化版，对应开发文档 §3） ================= */
+function dayMap(trip, k) {
+  const m = new Map();
+  for (const s of trip.segs) {
+    if (!m.has(s.date)) m.set(s.date, { date: s.date, segs: [] });
+    m.get(s.date).segs.push(s);
+  }
+  for (const d of m.values()) {
+    const cov = d.segs.filter(s => !s.home);
+    d.coverable = cov.length > 0;
+    d.value = cov.reduce((a, s) => a + s.p[k] - s.fee, 0);
+    d.night = d.segs.some(s => s.night);
+  }
+  return [...m.values()].sort((a, b) => (a.date < b.date ? -1 : 1));
+}
+const ticketsTotal = (trip, k) => trip.segs.reduce((a, s) => a + s.p[k], 0);
+function bestFor(pass, trip, k) {
+  const days = dayMap(trip, k).filter(d => d.coverable && d.value > 0);
+  const dates = trip.segs.map(s => s.date).sort();
+  let best = { savings: 0, chosen: [] };
+  for (let s = dates[0]; s <= dates[dates.length - 1]; s = addDays(s, 1)) {
+    const end = addDays(s, pass.validity - 1);
+    const inW = days.filter(d => d.date >= s && d.date <= end && !(d.date === end && d.night));
+    const chosen = pass.kind === 'flexi' ? [...inW].sort((a, b) => b.value - a.value).slice(0, pass.days) : inW;
+    const sv = chosen.reduce((a, d) => a + d.value, 0);
+    if (sv > best.savings) best = { savings: sv, chosen: chosen.map(d => d.date).sort() };
+  }
+  return { ...best, cost: pass.price + ticketsTotal(trip, k) - best.savings };
+}
+function analyze(trip) {
+  const plans = PASSES.map(p => ({
+    pass: p, mid: bestFor(p, trip, 'mid'), min: bestFor(p, trip, 'min'), max: bestFor(p, trip, 'max')
+  })).sort((a, b) => a.mid.cost - b.mid.cost);
+  const tickets = { min: ticketsTotal(trip, 'min'), mid: ticketsTotal(trip, 'mid'), max: ticketsTotal(trip, 'max') };
+  return { plans, tickets, rec: plans[0] };
+}
+function ensurePass(trip) {
+  if (!trip.passId) trip.passId = analyze(trip).rec.pass.id;
+}
+function dayChoices(trip) {
+  ensurePass(trip);
+  const pass = passById(trip.passId);
+  const opt = bestFor(pass, trip, 'mid');
+  return dayMap(trip, 'mid').map(d => {
+    let c = !d.coverable ? 'home' : (trip.overrides[d.date] || (opt.chosen.includes(d.date) ? 'pass' : 'ticket'));
+    return { ...d, choice: c };
+  });
+}
+function currentCost(trip) {
+  const pass = passById(trip.passId);
+  const days = dayChoices(trip);
+  let fees = 0, tix = 0, feeSegs = [], tixSegs = [];
+  for (const d of days) for (const s of d.segs) {
+    if (d.choice === 'pass' && !s.home) { fees += s.fee; if (s.fee) feeSegs.push(s); }
+    else { tix += s.p.mid; tixSegs.push(s); }
+  }
+  const passDays = days.filter(d => d.choice === 'pass');
+  const errors = [];
+  if (pass.kind === 'flexi' && passDays.length > pass.days) errors.push(`选了 ${passDays.length} 个旅行日，${pass.name} 只有 ${pass.days} 天。`);
+  if (passDays.length > 1) {
+    const sp = span(passDays[0].date, passDays[passDays.length - 1].date) + 1;
+    if (sp > pass.validity) errors.push(`第一个和最后一个旅行日跨了 ${sp} 天，超过了通票 ${pass.validity} 天的有效期。`);
+  }
+  return { pass, days, passDays, fees, tix, feeSegs, tixSegs, total: pass.price + fees + tix, errors };
+}
+function segChoice(trip, s) {
+  const d = dayChoices(trip).find(x => x.date === s.date);
+  return s.home ? 'home' : d.choice;
+}
+
+/* ================= 状态 ================= */
+const state = {
+  trip: makeTripA(),
+  prevTrip: null,
+  aiOpen: false,
+  ai: { msgs: [], busy: false, timer: null },
+  sheet: null,
+  wizard: { step: 1, resType: 'europe', country: '德国', age: '青年', cls: '二等', count: 1, desc: '' },
+  prefs: { provider: 'deepseek', key: '', show: false, model: 'deepseek-chat', base: '', test: null, encrypt: false, theme: 'system', confirmClear: false },
+  openRes: null,
+  flash: null
+};
+ensurePass(state.trip);
+
+/* ================= 路由 ================= */
+const ROUTES = ['home', 'new', 'route', 'days', 'reservations', 'value', 'prefs'];
+const TRIP_TABS = [['route', '路线', 'route'], ['days', '旅行日', 'cal'], ['reservations', '订座', 'seat'], ['value', '回本', 'euro']];
+const current = () => { const h = location.hash.replace('#', ''); return ROUTES.includes(h) ? h : 'home'; };
+const go = r => { if (location.hash !== '#' + r) location.hash = r; else render(); };
+
+/* ================= 渲染 ================= */
+const $ = id => document.getElementById(id);
+function render() {
+  const r = current();
+  const inTrip = ['route', 'days', 'reservations', 'value'].includes(r);
+  renderTopbar(r, inTrip);
+  renderSidenav(r, inTrip);
+  $('tabbar').hidden = !inTrip;
+  $('tabbar').innerHTML = inTrip ? TRIP_TABS.map(([k, label, i]) => `<a href="#${k}" ${k === r ? 'aria-current="page"' : ''}>${ic(i)}<span>${label}</span></a>`).join('') : '';
+  const v = { home: viewHome, new: viewNew, route: viewRoute, days: viewDays, reservations: viewRes, value: viewValue, prefs: viewPrefs }[r];
+  $('view').innerHTML = v() + `<p class="foot-note">原型演示 · 车次、价格、规则均为示例数据，仅用于展示交互<br>本工具与 Interrail / Eurail B.V. 无关联</p>`;
+  $('view').style.paddingBottom = inTrip ? '' : '48px';
+  renderAI();
+  renderSheet();
+  if (state.flash) {
+    const el = document.querySelector(state.flash);
+    if (el) el.classList.add('flash');
+    state.flash = null;
+  }
+}
+
+function renderTopbar(r, inTrip) {
+  const t = state.trip;
+  let left = '', title = '';
+  if (r === 'home') title = `<span class="brand">Passhopper<small>通票漫游</small></span>`;
+  else if (inTrip) { left = `<a class="icon-btn back" href="#home" aria-label="返回我的行程">${ic('back')}</a>`; title = esc(t.name); }
+  else if (r === 'new') { left = `<a class="icon-btn back" href="#home" aria-label="返回">${ic('back')}</a>`; title = '新建行程'; }
+  else if (r === 'prefs') { left = `<a class="icon-btn back" href="#home" aria-label="返回">${ic('back')}</a>`; title = '设置'; }
+  const right = (inTrip ? `<button class="ai-btn" data-act="ai-toggle" aria-pressed="${state.aiOpen}">${ic('spark', 'ico-sm')}AI</button>` : '')
+    + (r === 'home' ? `<a class="icon-btn" href="#prefs" aria-label="设置">${ic('prefs')}</a>` : '');
+  $('topbar').innerHTML = `${left}<div class="title">${title}</div><span class="proto-chip">原型</span>${right}`;
+  if (r === 'home') $('topbar').style.paddingLeft = 'max(16px, env(safe-area-inset-left, 0px))'; else $('topbar').style.paddingLeft = '';
+}
+
+function renderSidenav(r, inTrip) {
+  const t = state.trip;
+  $('sidenav').innerHTML = `
+    <div class="brand">Passhopper<small>通票漫游</small></div>
+    <a href="#home" ${r === 'home' ? 'aria-current="page"' : ''}>${ic('list')}我的行程</a>
+    <div class="tripname">当前行程 · ${esc(t.name)}</div>
+    ${TRIP_TABS.map(([k, label, i]) => `<a href="#${k}" ${k === r ? 'aria-current="page"' : ''}>${ic(i)}${label}</a>`).join('')}
+    <div class="spacer"></div>
+    <a href="#prefs" ${r === 'prefs' ? 'aria-current="page"' : ''}>${ic('prefs')}设置</a>`;
+}
+
+const badge = (src) => `<button class="badge src-${src}" data-act="src" data-src="${src}" aria-label="来源：${SRC[src]}，查看说明">${SRC[src]}</button>`;
+const resChip = s => s.res === 'mandatory' ? `<span class="chip chip-must">必须订座</span>` : s.res === 'recommended' ? `<span class="chip chip-rec">建议订座</span>` : s.res === 'optional' ? `<span class="chip chip-none">可选订座</span>` : `<span class="chip chip-none">无需订座</span>`;
+
+/* ---------- 首页 ---------- */
+function viewHome() {
+  const t = state.trip;
+  const today = new Date(); const todayS = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())).toISOString().slice(0, 10);
+  const start = t.stops[0].date, end = t.stops[t.stops.length - 1].date;
+  const left = span(todayS, start);
+  const cc = currentCost(t);
+  const resNeed = t.segs.filter(s => (s.res === 'mandatory' || s.res === 'recommended') && segChoice(t, s) === 'pass');
+  const resDone = resNeed.filter(s => s.resStatus === 'booked').length;
+  return `
+  <div class="board">
+    <span class="label">下一趟</span>
+    <span class="line">${fmtLong(start)} 出发${left > 0 ? ` · 还有 <span class="num" style="font-size:22px;color:var(--signal)">${left}</span> 天` : ''}</span>
+    <span class="sub">${esc(t.name)}</span>
+  </div>
+  <div class="section-title">我的行程</div>
+  <div class="card trip-card" role="button" tabindex="0" data-act="open-trip">
+    <h3>${esc(t.name)}</h3>
+    <div class="small muted">${t.stops.map(s => s.zh).join(' → ')}</div>
+    <div class="trip-meta"><span>${fmtMD(start)}–${fmtMD(end)}</span><span>${t.stops.length - 2} 城</span><span>${t.segs.length} 段火车</span><span>${cc.pass.name}</span></div>
+    <div class="spread small"><span>订座 ${resDone}/${resNeed.length} 已完成</span><span class="num" style="font-size:18px;font-weight:600">${eur(cc.total)}</span></div>
+    <div class="progress"><i style="width:${resNeed.length ? resDone / resNeed.length * 100 : 100}%"></i></div>
+  </div>
+  <div class="card trip-card" role="button" tabindex="0" data-act="toast" data-msg="原型只包含一个完整的示例行程">
+    <div class="spread"><h3>巴黎到布拉格 10 天</h3><span class="badge src-ai_estimate">示例</span></div>
+    <div class="trip-meta"><span>5 城</span><span>4 段火车</span><span>未选通票</span></div>
+  </div>
+  <a class="btn btn-primary btn-block" href="#new">${ic('plus')}新建行程</a>`;
+}
+
+/* ---------- 新建行程 ---------- */
+function viewNew() {
+  const w = state.wizard;
+  const stepsBar = `<div class="steps" aria-label="第 ${w.step} 步，共 3 步">${[1, 2, 3].map(i => `<i class="${i <= w.step ? 'on' : ''}"></i>`).join('')}</div>`;
+  const segBtns = (key, opts) => `<div class="seg-ctl" role="group">${opts.map(o => `<button data-act="wz" data-k="${key}" data-v="${o[0]}" aria-pressed="${w[key] === o[0]}">${o[1]}</button>`).join('')}</div>`;
+  let body = '';
+  if (w.step === 1) body = `
+    <h2 style="font-size:var(--fs-xl)">你是谁</h2>
+    <p class="small muted" style="margin:0">这些信息决定通票价格和能适用的规则。</p>
+    <div class="stack"><div class="section-title">居住地</div>
+      ${segBtns('resType', [['europe', '欧洲居民'], ['non', '欧洲以外']])}
+      ${w.resType === 'europe' ? `<label class="field">居住国家<select id="wz-country" data-act="wz-country">${['德国', '法国', '荷兰', '英国', '意大利', '西班牙', '奥地利', '瑞士', '比利时', '其他'].map(c => `<option ${c === w.country ? 'selected' : ''}>${c}</option>`).join('')}</select></label>
+      <div class="issue issue-info">${ic('info')}<span>欧洲居民在居住国内只能用通票出境 1 次、入境 1 次，其他国内段需要单独买票。系统会自动帮你判断。</span></div>` : `<div class="issue issue-info">${ic('info')}<span>欧洲以外的居民不受居住国规则限制，所有参与国家都能使用通票。</span></div>`}
+    </div>
+    <div class="stack"><div class="section-title">年龄段</div>${segBtns('age', [['青年', '青年 12–27'], ['成人', '成人 28–59'], ['老人', '老人 60+']])}</div>
+    <div class="stack"><div class="section-title">舱等</div>${segBtns('cls', [['二等', '二等'], ['一等', '一等']])}</div>
+    <div class="stack"><div class="section-title">人数</div>
+      <div class="stepper"><button data-act="wz-count" data-d="-1" aria-label="减少">−</button><span aria-live="polite">${w.count}</span><button data-act="wz-count" data-d="1" aria-label="增加">+</button></div></div>`;
+  if (w.step === 2) body = `
+    <h2 style="font-size:var(--fs-xl)">去哪里</h2>
+    <label class="field">用一句话描述，AI 帮你排路线
+      <textarea id="wz-desc" placeholder="例如：7月从柏林出发玩三周，想去意大利，最后经维也纳和布拉格回来">${esc(w.desc)}</textarea></label>
+    ${state.prefs.key ? `<button class="btn btn-primary" data-act="wz-gen">${ic('spark', 'ico-sm')}生成路线</button>` :
+      `<div class="issue issue-warn">${ic('info')}<span>在设置中填入 API key 后可以用 AI 生成路线。<a href="#prefs">去设置</a></span></div>`}
+    <div class="or">或者手动添加城市</div>
+    <div class="pill-list">${['柏林', '慕尼黑', '苏黎世'].map(c => `<span class="pill">${c}</span>`).join('')}<button class="pill" data-act="toast" data-msg="原型中暂不支持添加城市">${ic('plus', 'ico-sm')}添加</button></div>`;
+  if (w.step === 3) body = `
+    <h2 style="font-size:var(--fs-xl)">什么时候</h2>
+    <label class="field">出发日期<input type="date" id="wz-date" value="2027-07-14"></label>
+    <p class="small muted" style="margin:0">每个城市住几晚，创建后在路线页随时可以改。</p>`;
+  return `${stepsBar}<div class="card stack" style="gap:16px">${body}</div>
+    <div class="spread">
+      ${w.step > 1 ? `<button class="btn" data-act="wz-step" data-d="-1">上一步</button>` : '<span></span>'}
+      ${w.step < 3 ? `<button class="btn btn-primary" data-act="wz-step" data-d="1">下一步</button>` : `<button class="btn btn-primary" data-act="wz-create">创建行程</button>`}
+    </div>`;
+}
+
+/* ---------- 路线 ---------- */
+function viewRoute() {
+  const t = state.trip;
+  const cc = currentCost(t);
+  const resTodo = t.segs.filter(s => (s.res === 'mandatory' || s.res === 'recommended') && segChoice(t, s) === 'pass' && s.resStatus !== 'booked');
+  const days = span(t.stops[0].date, t.stops[t.stops.length - 1].date) + 1;
+  const homeSegs = t.segs.filter(s => s.home);
+  const issues = [];
+  homeSegs.forEach(s => issues.push(['info', `${stopName(t, s.after)} → ${nextStop(t, s.after).zh}：在居住国${t.traveller.country}境内，当天没有出境，不能用通票，需要单独买票。`]));
+  if (resTodo.length) issues.push(['warn', `${resTodo.length} 段火车还没订座，其中夜车卧铺名额紧张。<a href="#reservations">去处理</a>`]);
+  cc.errors.forEach(e => issues.push(['danger', e + ' <a href="#days">去调整</a>']));
+
+  const stopsHtml = t.stops.map((s, i) => {
+    const sg = t.segs.find(x => x.after === s.id);
+    const first = i === 0, last = i === t.stops.length - 1;
+    const when = s.role === 'start' ? fmtLong(s.date) + ' 出发' : s.role === 'end' ? fmtLong(s.date) + ' 到达' : `${fmtLong(s.date)} · ${s.nights}晚`;
+    return `<div class="stop ${first ? 'first' : ''} ${last ? 'last' : ''} ${s.role ? 'home' : ''}" id="stop-${s.id}">
+      <div class="rail"><span class="dot"></span></div>
+      <div>
+        <div class="stop-head"><span class="city">${s.zh}</span><span class="local">${s.local}</span><span class="when">${when}</span>
+          ${!s.role ? `<span class="stop-tools"><button data-act="toast" data-msg="原型：上移城市" aria-label="上移 ${s.zh}">${ic('up', 'ico-sm')}</button><button data-act="toast" data-msg="原型：下移城市" aria-label="下移 ${s.zh}">${ic('down', 'ico-sm')}</button></span>` : ''}</div>
+        <div class="stop-body">
+          ${s.note ? `<div class="stop-note">${s.note}</div>` : ''}
+          ${sg ? ticketHtml(t, sg) : ''}
+        </div>
+      </div></div>`;
+  }).join('');
+
+  return `
+  <div class="summary-line"><span><b>${t.stops.length - 2}</b>城</span><span><b>${days}</b>天</span><span><b>${t.segs.length}</b>段火车</span><span><b>${resTodo.length}</b>段待订座</span><span>${cc.pass.name} · 预计 <b>${eur(cc.total)}</b></span></div>
+  ${issues.map(([k, m]) => `<div class="issue issue-${k}">${ic(k === 'info' ? 'info' : 'alert')}<span>${m}</span></div>`).join('')}
+  <div class="timeline">${stopsHtml}</div>
+  <button class="btn btn-block" data-act="toast" data-msg="原型中暂不支持添加城市">${ic('plus')}添加城市</button>`;
+}
+const stopName = (t, id) => t.stops.find(s => s.id === id).zh;
+const nextStop = (t, id) => t.stops[t.stops.findIndex(s => s.id === id) + 1];
+function ticketHtml(t, s) {
+  const c = segChoice(t, s);
+  const choiceChip = c === 'pass' ? `<span class="chip chip-pass">用旅行日</span>` : `<span class="chip chip-ticket">单独买票</span>`;
+  const priceSrc = s.src;
+  return `<div class="ticket ${s.home ? 'problem' : ''}" role="button" tabindex="0" data-act="seg" data-id="${s.id}" id="tk-${s.id}" aria-label="${s.from}到${s.to}，${s.num}，查看详情">
+    <div class="ticket-main">
+      <div class="ticket-top"><span class="train">${s.night ? ic('moon', 'ico-sm') : ''}${s.num}</span>
+        <span class="times">${s.dep} → ${s.arr}${s.night ? '<sup>+1</sup>' : ''}</span></div>
+      <div class="stations">${s.from} → ${s.to}</div>
+      <div class="stations">${s.dur} · 直达${s.journey === 'out' ? ' · 出境行程' : s.journey === 'in' ? ' · 入境行程' : ''}</div>
+    </div>
+    <div class="perf"></div>
+    <div class="ticket-foot">${choiceChip}${resChip(s)}${s.fee && c === 'pass' ? `<span class="small muted">订座 ${eur(s.fee)}</span>` : ''}
+      <span class="price"><span class="small muted">单独买票</span><span class="num">${eurRange(s.p.min, s.p.max)}</span>${badge(priceSrc)}</span>
+    </div>
+  </div>`;
+}
+
+/* ---------- 旅行日 ---------- */
+function viewDays() {
+  const t = state.trip;
+  const cc = currentCost(t);
+  const a = analyze(t);
+  const pass = cc.pass;
+  const pd = cc.passDays;
+  const winStart = pd.length ? pd[0].date : t.segs[0].date;
+  const winEnd = addDays(winStart, pass.validity - 1);
+  const over = pass.kind === 'flexi' && pd.length > pass.days;
+  const rows = cc.days.map(d => {
+    const segs = d.segs;
+    const routeTxt = segs.map(s => `${s.night ? ic('moon', 'ico-sm') + ' ' : ''}${stopName(t, s.after)} → ${nextStop(t, s.after).zh}`).join('<br>');
+    const val = d.value;
+    let why = '', err = false;
+    if (d.choice === 'home') why = `在居住国${t.traveller.country}境内且当天不出境，只能买票 · 约 ${eur(segs[0].p.mid)}`;
+    else if (d.choice === 'pass') {
+      const fee = segs.reduce((x, s) => x + s.fee, 0);
+      why = `单独买票约 ${eur(segs.reduce((x, s) => x + s.p.mid, 0))}${fee ? `，订座 ${eur(fee)}` : ''}，用通票省 ${eur(val)}`;
+      if (segs.some(s => s.journey === 'out')) why += ' · 出境行程';
+      if (segs.some(s => s.journey === 'in')) why += ' · 入境行程';
+      if (d.date > winEnd || d.date < winStart) { err = true; why = '不在通票有效期内'; }
+      if (d.night && d.date === winEnd) { err = true; why = '有效期最后一天不能坐夜车'; }
+    } else {
+      why = `买票约 ${eur(segs.reduce((x, s) => x + s.p.mid, 0))}，用通票只省 ${eur(val)}，旅行日留给更值的日子`;
+    }
+    if (over && d.choice === 'pass') err = true;
+    const lbl = d.choice === 'pass' ? '通票' : '买票';
+    const btn = d.choice === 'home'
+      ? `<button class="day-toggle is-locked" data-act="toast" data-msg="居住国内且当天不出境的行程不能用通票" aria-label="${fmtMD(d.date)} 只能买票">${ic('lock', 'ico-sm')} 买票</button>`
+      : `<button class="day-toggle is-${d.choice}" data-act="day" data-date="${d.date}" aria-label="${fmtMD(d.date)} 当前：${lbl}，点击切换">${lbl}</button>`;
+    return `<div class="mt-row ${err ? 'err' : ''}" id="day-${d.date}">
+      <div class="mt-date"><b>${fmtMD(d.date)}</b><span>${fmtWD(d.date)}</span></div>
+      <div><div class="mt-route">${routeTxt}</div><div class="mt-why">${why}</div></div>
+      <div>${btn}</div></div>`;
+  }).join('');
+  const changed = Object.keys(t.overrides).length > 0;
+  const recCost = bestFor(pass, t, 'mid').cost;
+  return `
+  <div class="card stack">
+    <div class="spread"><div><div style="font-weight:700;font-size:var(--fs-lg)">${pass.name}</div><div class="small muted">${pass.sub} · 有效期 ${fmtMD(winStart)}–${fmtMD(winEnd)}</div></div>
+      <div style="text-align:right"><div class="num" style="font-size:30px;font-weight:700">${pd.length}<span class="muted" style="font-size:20px"> / ${pass.kind === 'flexi' ? pass.days : '—'}</span></div><div class="xs muted">已用旅行日</div></div></div>
+  </div>
+  ${cc.errors.map(e => `<div class="issue issue-danger">${ic('alert')}<span>${e}</span></div>`).join('')}
+  <div class="legend"><span><i style="background:var(--signal)"></i>用旅行日</span><span><i style="border:1.5px solid var(--ink-2)"></i>单独买票</span><span><i style="border:1.5px dashed var(--ink-2)"></i>只能买票</span><span>点击右侧按钮可以切换</span></div>
+  <div class="mytrip">
+    <div class="mytrip-head"><span class="t">MY TRIP</span><span class="s">${t.traveller.country}居民 · ${t.traveller.age} · ${t.traveller.cls}</span></div>
+    <div class="mt-cols"><div>日期</div><div>路线</div><div>使用</div></div>
+    ${rows}
+  </div>
+  <div class="card spread" aria-live="polite">
+    <div><div class="small muted">当前安排总花费</div><div class="num" style="font-size:28px;font-weight:700">${eur(cc.total)}</div></div>
+    <div style="text-align:right">${changed ? `<div class="small ${cc.total > recCost ? 'status-err' : 'muted'}">推荐安排 ${eur(recCost)}</div><button class="btn btn-sm btn-ghost" data-act="days-reset">${ic('undo', 'ico-sm')}恢复推荐</button>` : `<span class="chip chip-ok">${ic('check', 'ico-sm')}这是最省的安排</span>`}</div>
+  </div>
+  <div class="small muted">推荐的通票是 ${a.rec.pass.name}。想换别的通票，去<a href="#value">回本</a>页面比较。</div>`;
+}
+
+/* ---------- 订座 ---------- */
+function viewRes() {
+  const t = state.trip;
+  const items = t.segs.map(s => ({ s, c: segChoice(t, s) }));
+  const need = items.filter(x => (x.s.res === 'mandatory' || x.s.res === 'recommended') && x.c === 'pass');
+  const todo = need.filter(x => x.s.resStatus !== 'booked').sort((a, b) => (b.s.quota ? 1 : 0) - (a.s.quota ? 1 : 0));
+  const booked = need.filter(x => x.s.resStatus === 'booked');
+  const ticket = items.filter(x => x.s.res !== 'none' && x.c !== 'pass');
+  const none = items.filter(x => x.c === 'pass' && (x.s.res === 'none' || x.s.res === 'optional'));
+  const total = need.reduce((a, x) => a + x.s.fee, 0);
+  const route = s => `${stopName(t, s.after)} → ${nextStop(t, s.after).zh}`;
+  const link = s => LINKS[s.cc];
+  const todoHtml = todo.map(({ s }) => {
+    const open = state.openRes === s.id;
+    return `<div class="card res-item ${s.quota ? 'urgent' : ''}" id="res-${s.id}">
+      <div class="top">${s.night ? ic('moon', 'ico-sm') : ''}<span class="num">${s.num}</span><span>${route(s)}</span><span class="muted small" style="margin-left:auto">${fmtLong(s.date)}</span></div>
+      <div class="row">${resChip(s)}<span class="small">${s.fee ? '约 ' + eur(s.fee) : s.resNote}</span>${badge('official')}</div>
+      ${s.resNote && s.fee ? `<div class="small muted">${s.resNote}</div>` : ''}
+      ${s.quota ? `<div class="issue issue-warn" style="padding:8px 10px">${ic('alert', 'ico-sm')}<span>${s.quota}，建议尽早订</span></div>` : ''}
+      <div class="small">去哪订：<a href="${link(s)[1]}" target="_blank" rel="noopener">${link(s)[0]} ${ic('ext', 'ico-sm')}</a></div>
+      ${open ? `<div class="res-form">
+          <label class="field">订座号<input class="mono" id="rf-ref-${s.id}" placeholder="例如 K7Q2XB"></label>
+          <label class="field">车厢和座位<input id="rf-seat-${s.id}" placeholder="例如 8车 6A"></label>
+          <label class="field">实际花费（€）<input type="number" inputmode="decimal" id="rf-paid-${s.id}" value="${s.fee || ''}"></label>
+        </div>
+        <div class="row"><button class="btn btn-primary btn-sm" data-act="res-save" data-id="${s.id}">保存</button><button class="btn btn-sm" data-act="res-open" data-id="">取消</button></div>`
+      : `<div class="row"><button class="btn btn-sm btn-primary" data-act="res-open" data-id="${s.id}">${ic('check', 'ico-sm')}标记为已订</button><button class="btn btn-sm" data-act="res-ticket" data-id="${s.id}">改为买票</button></div>`}
+    </div>`;
+  }).join('');
+  const line = (s, extra) => `<div class="done-line">${s.night ? ic('moon', 'ico-sm') : ''}<span class="num" style="font-weight:600">${s.num}</span><span>${route(s)}</span><span class="muted">${fmtMD(s.date)}</span><span style="margin-left:auto">${extra}</span></div>`;
+  return `
+  <div class="board">
+    <span class="label">订座</span>
+    <span class="line"><span class="num" style="font-size:24px;color:var(--signal)">${need.length}</span> 段需要订座 · 已订 ${booked.length} · 预计 ${eur(total)}</span>
+    <span class="sub">订座费不含在通票里，需要另外付。网站上订的座位不会自动出现在官方 App 里，记在这里方便查。</span>
+  </div>
+  ${todo.length ? `<div class="section-title">待处理 ${todo.length}</div>${todoHtml}` : `<div class="card row">${ic('check')}<span>需要订座的都订好了</span></div>`}
+  ${booked.length ? `<div class="section-title">已订 ${booked.length}</div><div class="card">${booked.map(({ s }) => line(s, `<span class="chip chip-ok">${ic('check', 'ico-sm')}${s.booking ? `<span class="mono">${esc(s.booking.seat || '')}</span>` : '已订'}</span>`)).join('')}</div>` : ''}
+  ${ticket.length ? `<div class="section-title">单独买票（车票一般已含座位）</div><div class="card">${ticket.map(({ s }) => line(s, `<span class="chip chip-ticket">买票</span>`)).join('')}</div>` : ''}
+  ${none.length ? `<div class="section-title">不需要订座</div><div class="card">${none.map(({ s }) => line(s, `<span class="small muted">${s.res === 'optional' ? '可选' : '直接上车'}</span>`)).join('')}</div>` : ''}`;
+}
+
+/* ---------- 回本 ---------- */
+function viewValue() {
+  const t = state.trip;
+  const a = analyze(t);
+  const rec = a.rec;
+  const cc = currentCost(t);
+  const saving = a.tickets.mid - rec.mid.cost;
+  const worst = a.tickets.min - rec.min.cost;
+  const rows = a.plans.map(p => `<tr class="${p === rec ? 'rec' : ''} ${p.pass.id === t.passId ? 'sel' : ''}">
+      <td>${p.pass.name}<div class="xs muted">${p.pass.sub} · ${eur(p.pass.price)}</div></td>
+      <td class="r"><span class="num">${eur(p.mid.cost)}</span></td>
+      <td class="r muted range">${eurRange(p.min.cost, p.max.cost)}</td>
+      <td class="r">${p.pass.id === t.passId ? `<span class="chip chip-pass">使用中</span>` : `<button class="btn btn-sm" data-act="use-pass" data-id="${p.pass.id}">使用</button>`}</td></tr>`).join('')
+    + `<tr><td>全部单独买票<div class="xs muted">不买通票</div></td><td class="r"><span class="num">${eur(a.tickets.mid)}</span></td><td class="r muted range">${eurRange(a.tickets.min, a.tickets.max)}</td><td></td></tr>`;
+  const segRow = s => `<div class="bd-sub"><span>${s.num} ${stopName(t, s.after)}→${nextStop(t, s.after).zh}</span><span class="num">${eur(s.fee || s.p.mid)}</span></div>`;
+  return `
+  <div class="board">
+    <span class="label">结论</span>
+    <span class="line">建议买 ${rec.pass.name}（${rec.pass.sub}）</span>
+    <span class="big">${saving > 0 ? `省约 ${eur(saving)}` : `多花 ${eur(-saving)}`}</span>
+    <span class="sub">和全部单独买票相比，按常见票价估算</span>
+  </div>
+  <div class="issue ${worst >= 0 ? 'issue-info' : 'issue-warn'}">${ic(worst >= 0 ? 'info' : 'alert')}<span>${worst >= 0
+    ? `即使每段都买到最便宜的特价票，通票仍然省 ${eur(worst)}。`
+    : `如果每段都能提前买到最便宜的特价票，单独买票反而便宜 ${eur(-worst)}。特价票通常要提前一两个月抢，而且不能改签；行程不确定时，通票更灵活。`}</span></div>
+  <div class="section-title">方案对比</div>
+  <div class="card table-wrap" style="padding:4px 6px">
+    <table class="plans"><thead><tr><th>方案</th><th class="r">预计</th><th class="r">区间</th><th class="r"></th></tr></thead><tbody>${rows}</tbody></table>
+  </div>
+  <div class="section-title">${cc.pass.name} 明细（按你当前的旅行日安排）</div>
+  <div class="card breakdown">
+    <div class="bd-row"><span>通票 ${badge('official')}</span><span class="num">${eur(cc.pass.price)}</span></div>
+    <details class="bd"><summary>订座费 ${cc.feeSegs.length} 段</summary>${cc.feeSegs.map(segRow).join('')}</details>
+    <div class="bd-row" style="border-top:0;padding-top:0"><span></span><span class="num">${eur(cc.fees)}</span></div>
+    <details class="bd"><summary>单独买票 ${cc.tixSegs.length} 段</summary>${cc.tixSegs.map(segRow).join('')}</details>
+    <div class="bd-row" style="border-top:0;padding-top:0"><span></span><span class="num">${eur(cc.tix)}</span></div>
+    <div class="bd-row"><span>合计</span><span class="num">${eur(cc.total)}</span></div>
+  </div>
+  <div class="small muted">单独买票的价格大多是 AI 估算。打开路线页里的火车段，填上你查到的实际价格，结论会更准。</div>`;
+}
+
+/* ---------- 设置 ---------- */
+function viewPrefs() {
+  const p = state.prefs;
+  const prov = [['deepseek', 'DeepSeek', '便宜，国内可以直接访问，支持联网搜索'], ['claude', 'Claude', '规划质量较好，自带联网搜索'], ['custom', '自定义', '任何兼容 OpenAI 格式的接口']];
+  return `
+  <div class="section-title">AI 服务</div>
+  <div class="card stack" style="gap:12px">
+    ${prov.map(([v, n, d]) => `<label class="radio-row"><input type="radio" name="prov" value="${v}" data-act="prov" ${p.provider === v ? 'checked' : ''}><span><b>${n}</b><br><span class="small muted">${d}</span></span></label>`).join('')}
+    ${p.provider === 'custom' ? `<label class="field">接口地址<input id="pf-base" placeholder="https://…/v1" value="${esc(p.base)}"></label>` : ''}
+    <label class="field">API key
+      <span class="row" style="flex-wrap:nowrap"><input id="pf-key" type="${p.show ? 'text' : 'password'}" autocomplete="off" placeholder="sk-…" value="${esc(p.key)}" style="flex:1;min-width:0">
+      <button class="btn btn-sm" data-act="pf-show">${p.show ? '隐藏' : '显示'}</button></span></label>
+    <label class="field">模型<input id="pf-model" value="${esc(p.model)}"></label>
+    <div class="row"><button class="btn btn-sm" data-act="pf-test">测试连接</button>
+      ${p.test === 'ok' ? `<span class="status-ok">${ic('check', 'ico-sm')} 连接成功（原型模拟）</span>` : p.test === 'nokey' ? `<span class="status-err">请先填入 API key</span>` : p.test === 'busy' ? `<span class="small muted">测试中…</span>` : ''}
+      ${p.key ? `<button class="btn btn-sm btn-ghost" data-act="pf-clear-key">清除 key</button>` : ''}</div>
+    <div class="issue issue-info">${ic('info')}<span>key 只保存在这台设备的浏览器里，不会上传到我们的服务器。共享设备上请不要保存。</span></div>
+    <label class="check-row"><input type="checkbox" data-act="pf-encrypt" ${p.encrypt ? 'checked' : ''}>用密码加密保存 key</label>
+  </div>
+  <div class="section-title">外观</div>
+  <div class="card"><div class="seg-ctl" role="group">${[['system', '跟随系统'], ['light', '浅色'], ['dark', '深色']].map(([v, n]) => `<button data-act="theme" data-v="${v}" aria-pressed="${p.theme === v}">${n}</button>`).join('')}</div></div>
+  <div class="section-title">数据</div>
+  <div class="card stack">
+    <div class="row"><button class="btn btn-sm" data-act="toast" data-msg="原型：会导出全部行程为 JSON 文件">导出全部行程</button><button class="btn btn-sm" data-act="toast" data-msg="原型：会从 JSON 文件导入行程">导入</button></div>
+    ${p.confirmClear ? `<div class="danger-zone"><span class="small">会删除这台设备上的全部行程和设置，不能恢复。</span><div class="row"><button class="btn btn-sm btn-danger" data-act="pf-clear-all">确认清除</button><button class="btn btn-sm" data-act="pf-confirm" data-v="0">取消</button></div></div>`
+      : `<div><button class="btn btn-sm btn-ghost" style="color:var(--danger);padding:0" data-act="pf-confirm" data-v="1">清除全部数据</button></div>`}
+  </div>
+  <div class="section-title">关于</div>
+  <div class="card stack small">
+    <span>时刻表数据：<a href="https://transitous.org/sources/" target="_blank" rel="noopener">Transitous 数据来源 ${ic('ext', 'ico-sm')}</a></span>
+    <span>开源地址：<a href="https://github.com/VittorioCai/Passhopper" target="_blank" rel="noopener">github.com/VittorioCai/Passhopper ${ic('ext', 'ico-sm')}</a></span>
+    <span class="muted">本工具与 Interrail / Eurail B.V. 无关联。规则和价格仅供参考，以官方为准。</span>
+  </div>`;
+}
+
+/* ---------- 底部面板 ---------- */
+function renderSheet() {
+  const bd = $('sheetBackdrop');
+  if (!state.sheet) { bd.hidden = true; return; }
+  bd.hidden = false;
+  const sh = $('sheet');
+  if (state.sheet.type === 'src') {
+    const s = state.sheet.src;
+    sh.setAttribute('aria-label', '来源说明');
+    sh.innerHTML = `<div class="grabber"></div><div class="spread"><h2 style="font-size:var(--fs-lg)">来源：<span class="badge src-${s}" style="font-size:14px">${SRC[s]}</span></h2><button class="icon-btn" data-act="sheet-close" aria-label="关闭">${ic('x')}</button></div>
+      <p style="margin:0">${SRC_DESC[s]}</p>
+      <div class="row"><button class="btn btn-sm" data-act="toast" data-msg="原型：会打开预填好的 GitHub Issue">报告数据错误</button></div>`;
+    return;
+  }
+  const t = state.trip;
+  const s = t.segs.find(x => x.id === state.sheet.id);
+  if (!s) { state.sheet = null; bd.hidden = true; return; }
+  const mode = state.sheet.mode || 'search';
+  const base = s.dep;
+  const shift = (hm, h) => { let [H, M] = hm.split(':').map(Number); H = (H + h + 24) % 24; return `${String(H).padStart(2, '0')}:${String(M).padStart(2, '0')}`; };
+  const cands = s.night ? [[s.dep, s.arr, s.num, true]] : [[shift(base, -2), shift(s.arr, -2), s.num.split(' ')[0] + ' ' + (parseInt(s.num.split(' ')[1]) - 2)], [s.dep, s.arr, s.num], [shift(base, 2), shift(s.arr, 2), s.num.split(' ')[0] + ' ' + (parseInt(s.num.split(' ')[1]) + 2)]];
+  const lk = LINKS[s.cc];
+  sh.setAttribute('aria-label', '火车段详情');
+  sh.innerHTML = `<div class="grabber"></div>
+    <div class="spread"><div><h2 style="font-size:var(--fs-lg)">${stopName(t, s.after)} → ${nextStop(t, s.after).zh}</h2><div class="small muted">${fmtLong(s.date)}</div></div><button class="icon-btn" data-act="sheet-close" aria-label="关闭">${ic('x')}</button></div>
+    ${s.home ? `<div class="issue issue-info">${ic('info')}<span>这段在居住国${t.traveller.country}境内，当天没有出境，不能用通票。DB 提前买特价票通常更便宜。</span></div>` : ''}
+    <div class="tabs2" role="group"><button data-act="seg-mode" data-v="search" aria-pressed="${mode === 'search'}">查时刻表</button><button data-act="seg-mode" data-v="manual" aria-pressed="${mode === 'manual'}">手动填写</button></div>
+    ${mode === 'search' ? `
+      <div class="spread small"><span class="muted">候选车次</span><span>时刻来自 <a href="https://transitous.org/sources/" target="_blank" rel="noopener">Transitous ${ic('ext', 'ico-sm')}</a> ${badge('live')}</span></div>
+      <div class="stack">${cands.map(([d, a, n]) => `<button class="cand" data-act="pick" data-dep="${d}" data-arr="${a}" data-num="${n}" aria-pressed="${d === s.dep}">
+          <span class="times">${d} → ${a}${s.night ? '<sup>+1</sup>' : ''}</span><span class="small muted">${s.dur}</span>
+          <span class="small">${s.night ? ic('moon', 'ico-sm') + ' ' : ''}${n} · 直达</span><span>${resChip(s)}</span></button>`).join('')}</div>`
+    : `<div class="res-form"><label class="field">车次<input value="${esc(s.num)}"></label><label class="field">出发<input type="time" value="${s.dep}"></label><label class="field">到达<input type="time" value="${s.arr}"></label></div>
+       <p class="small muted" style="margin:0">原型中手动填写的内容不会保存。</p>`}
+    <div class="stack small"><span class="muted">核实信息</span><div class="row"><a href="${lk[1]}" target="_blank" rel="noopener">${lk[0]} ${ic('ext', 'ico-sm')}</a><a href="https://int.bahn.de/en" target="_blank" rel="noopener">DB 查询 ${ic('ext', 'ico-sm')}</a><a href="https://www.seat61.com/" target="_blank" rel="noopener">Seat61 ${ic('ext', 'ico-sm')}</a></div></div>
+    <div class="stack"><span class="small muted">单独买票价格 · 现在是 ${eurRange(s.p.min, s.p.max)} ${badge(s.src)}</span>
+      <div class="price-input"><span class="num" style="font-size:20px">€</span><input type="number" inputmode="decimal" id="price-in" placeholder="${Math.round(s.p.mid)}" aria-label="我查到的价格（欧元）"><button class="btn btn-sm btn-primary" data-act="price-save" data-id="${s.id}">用这个价格</button></div>
+      <div class="row"><button class="btn btn-sm" data-act="ai-price" data-mode="est">${ic('spark', 'ico-sm')}让 AI 估算</button><button class="btn btn-sm" data-act="ai-price" data-mode="search">${ic('spark', 'ico-sm')}让 AI 联网查</button></div></div>`;
+}
+
+/* ---------- AI 助手 ---------- */
+const QUICK = [['crowded', '第二周太赶了，少去一个城市'], ['strike', '7月底意大利有铁路罢工吗？'], ['why', '为什么有一天建议单独买票？']];
+function renderAI() {
+  const el = $('aiPanel');
+  const inTrip = ['route', 'days', 'reservations', 'value'].includes(current());
+  el.hidden = !(state.aiOpen && inTrip);
+  if (el.hidden) return;
+  const p = state.prefs;
+  const provName = { deepseek: 'DeepSeek', claude: 'Claude', custom: '自定义' }[p.provider];
+  const msgs = state.ai.msgs.map(m => m.role === 'me'
+    ? `<div class="msg me">${esc(m.text)}</div>`
+    : `<div class="msg ai"><span class="who">AI · ${provName}</span>${m.html}</div>`).join('');
+  el.innerHTML = `
+    <div class="ai-head">${ic('spark')}<span class="t">AI 助手 · ${provName}</span><span class="proto-chip">预设回复</span><button class="icon-btn" data-act="ai-toggle" aria-label="关闭 AI 助手">${ic('x')}</button></div>
+    <div class="ai-msgs" id="aiMsgs" aria-live="polite">
+      ${!state.ai.msgs.length ? `<div class="ai-empty"><b style="color:var(--ink)">可以让我做这些</b><span>· 用一句话改行程，我会先给你看改动，你确认后才生效</span><span>· 联网查罢工、停运、订座规则变化，并附上来源</span><span>· 解释旅行日和费用是怎么算的</span><span class="xs">原型说明：这里的回复是预设的，但改动预览里的费用由规则引擎实时计算。</span></div>` : msgs}
+      ${state.ai.busy ? `<div class="thinking">思考中…<button class="btn btn-sm" data-act="ai-stop">${ic('stop', 'ico-sm')}停止</button></div>` : ''}
+    </div>
+    <div class="ai-quick">${QUICK.map(([k, q]) => `<button data-act="ai-q" data-k="${k}">${q}</button>`).join('')}</div>
+    <form class="ai-input" data-act="ai-form"><input id="aiInput" placeholder="输入问题或要求…" aria-label="输入问题或要求" autocomplete="off"><button type="submit" aria-label="发送">${ic('send', 'ico-sm')}</button></form>`;
+  const box = $('aiMsgs'); box.scrollTop = box.scrollHeight;
+}
+function aiAsk(key, text) {
+  if (state.ai.busy) return;
+  state.ai.msgs.push({ role: 'me', text });
+  state.ai.busy = true;
+  render();
+  state.ai.timer = setTimeout(() => {
+    state.ai.busy = false;
+    state.ai.msgs.push({ role: 'ai', html: aiAnswer(key) });
+    render();
+  }, 1100);
+}
+function aiAnswer(key) {
+  const t = state.trip;
+  if (key === 'crowded') {
+    if (!t.stops.find(s => s.id === 's5')) return `<span>已经去掉佛罗伦萨了。还想再调整的话，可以告诉我具体想多待哪里。</span>`;
+    const before = analyze(t), nt = makeTripB(t), after = analyze(nt);
+    const d = after.rec.mid.cost - before.rec.mid.cost;
+    state.ai.pending = nt;
+    return `<span>第二周在意大利连着换了 4 个城市。建议去掉佛罗伦萨，从威尼斯直达罗马，威尼斯多住 1 晚、罗马多住 2 晚。这样少坐一段火车，也少订一次座。</span>
+      <div class="diff"><div class="diff-head">改动预览</div>
+        <div class="diff-row del"><span class="op">−</span><span class="txt">佛罗伦萨（3晚）</span></div>
+        <div class="diff-row mod"><span class="op">~</span><span>威尼斯 2晚 → 3晚</span></div>
+        <div class="diff-row mod"><span class="op">~</span><span>罗马 7/25 到达 3晚 → 7/23 到达 5晚</span></div>
+        <div class="diff-row mod"><span class="op">~</span><span>威尼斯 → 罗马 改为直达 FR 9425</span></div>
+        <div class="diff-row mod"><span class="op">~</span><span>火车 ${t.segs.length}段 → ${nt.segs.length}段</span></div>
+        <div class="diff-cost"><span>预计总花费（规则引擎计算）</span><span><span class="num">${eur(before.rec.mid.cost)} → ${eur(after.rec.mid.cost)}</span> ${d < 0 ? `省 ${eur(-d)}` : `多 ${eur(d)}`}</span></div>
+        <div class="diff-actions"><button class="btn btn-sm btn-primary" data-act="ai-apply">应用改动</button><button class="btn btn-sm" data-act="ai-reject">不要</button></div>
+      </div>`;
+  }
+  if (key === 'strike') return `<span>我联网查了 2 个来源：目前还看不到 2027 年 7 月下旬意大利全国性铁路罢工的公告。意大利公共服务罢工需要至少提前 10 天公布，出发前一周再查一次比较稳妥。</span>
+      <div class="sources"><span class="muted xs">来源</span><a href="https://scioperi.mit.gov.it/" target="_blank" rel="noopener">意大利交通部罢工日历 ${ic('ext', 'ico-sm')}</a><a href="https://www.trenitalia.com/en.html" target="_blank" rel="noopener">Trenitalia 官网公告 ${ic('ext', 'ico-sm')}</a></div>
+      <span class="xs muted">原型示例回复，不代表真实查询结果</span>`;
+  if (key === 'why') {
+    const days = dayChoices(t).filter(d => d.choice === 'ticket');
+    if (!days.length) return `<span>现在所有能用通票的日子都用了旅行日，没有建议单独买票的日子。柏林 → 慕尼黑那天是因为在居住国境内，只能买票。</span>`;
+    const d = days[0], s = d.segs[0];
+    const top = dayChoices(t).filter(x => x.choice === 'pass').sort((a, b) => b.value - a.value).slice(0, 2);
+    return `<span>${fmtMD(d.date)} ${stopName(t, s.after)} → ${nextStop(t, s.after).zh}：单独买票约 ${eur(s.p.mid)}，用通票还要付订座费 ${eur(s.fee)}，只省 ${eur(d.value)}。</span>
+      <span>你的 ${passById(t.passId).name} 只有 ${passById(t.passId).days} 个旅行日，留给更值钱的日子更划算，比如 ${top.map(x => `${fmtMD(x.date)}（省 ${eur(x.value)}）`).join('、')}。</span>
+      <span class="small muted">这些数字来自规则引擎，可以在<a href="#days">旅行日</a>页面自己切换试试。</span>`;
+  }
+  return `<span>原型里只演示下面三个常用问题。正式版会把你的问题和当前行程一起发给你选的 AI 服务商。</span>`;
+}
+
+/* ---------- 提示条 ---------- */
+let toastTimer = null;
+function toast(msg, undo) {
+  const el = $('toast');
+  el.innerHTML = `<span>${esc(msg)}</span>${undo ? `<button data-act="undo">${ic('undo', 'ico-sm')} 撤销</button>` : ''}`;
+  el.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.hidden = true; }, undo ? 10000 : 3000);
+}
+
+/* ================= 事件 ================= */
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]');
+  if (!b) return;
+  const a = b.dataset.act;
+  const t = state.trip;
+  switch (a) {
+    case 'open-trip': go('route'); break;
+    case 'toast': toast(b.dataset.msg); break;
+    case 'src': e.stopPropagation(); e.preventDefault(); state.sheet = { type: 'src', src: b.dataset.src }; renderSheet(); break;
+    case 'seg': state.sheet = { type: 'seg', id: b.dataset.id, mode: 'search' }; renderSheet(); break;
+    case 'sheet-close': state.sheet = null; renderSheet(); break;
+    case 'seg-mode': state.sheet.mode = b.dataset.v; renderSheet(); break;
+    case 'pick': {
+      const s = t.segs.find(x => x.id === state.sheet.id);
+      Object.assign(s, { dep: b.dataset.dep, arr: b.dataset.arr, num: b.dataset.num });
+      render(); toast('已换成 ' + s.num); break;
+    }
+    case 'price-save': {
+      const v = parseFloat($('price-in').value);
+      if (!(v > 0)) { toast('请输入大于 0 的价格'); break; }
+      const s = t.segs.find(x => x.id === b.dataset.id);
+      s.p = { min: v, mid: v, max: v }; s.src = 'user';
+      t.passId = null; t.overrides = {}; ensurePass(t);
+      render(); toast('已更新价格，费用和推荐方案已重新计算'); break;
+    }
+    case 'ai-price':
+      if (!state.prefs.key) toast('需要先在设置中填入 API key');
+      else toast(b.dataset.mode === 'est' ? '原型：AI 会估算价格区间' : '原型：AI 会联网查价格并附来源');
+      break;
+    case 'day': {
+      const d = b.dataset.date;
+      const cur = dayChoices(t).find(x => x.date === d).choice;
+      t.overrides[d] = cur === 'pass' ? 'ticket' : 'pass';
+      state.flash = '#day-' + d; render(); break;
+    }
+    case 'days-reset': t.overrides = {}; render(); toast('已恢复推荐安排'); break;
+    case 'use-pass': t.passId = b.dataset.id; t.overrides = {}; render(); toast('已改用 ' + passById(t.passId).name); break;
+    case 'res-open': state.openRes = b.dataset.id || null; render(); if (state.openRes) { const i = $('rf-ref-' + state.openRes); if (i) i.focus(); } break;
+    case 'res-save': {
+      const s = t.segs.find(x => x.id === b.dataset.id);
+      s.resStatus = 'booked';
+      s.booking = { ref: $('rf-ref-' + s.id).value.trim(), seat: $('rf-seat-' + s.id).value.trim(), paid: parseFloat($('rf-paid-' + s.id).value) || s.fee };
+      state.openRes = null; render(); toast('已标记为已订'); break;
+    }
+    case 'res-ticket': { const s = t.segs.find(x => x.id === b.dataset.id); t.overrides[s.date] = 'ticket'; render(); toast('这段改为单独买票，费用已重新计算'); break; }
+    case 'ai-toggle': state.aiOpen = !state.aiOpen; render(); if (state.aiOpen) { const i = $('aiInput'); if (i && window.innerWidth >= 1024) i.focus(); } break;
+    case 'ai-q': { const q = QUICK.find(x => x[0] === b.dataset.k); aiAsk(q[0], q[1]); break; }
+    case 'ai-stop': clearTimeout(state.ai.timer); state.ai.busy = false; state.ai.msgs.push({ role: 'ai', html: '<span class="muted">已停止。</span>' }); render(); break;
+    case 'ai-apply': {
+      if (!state.ai.pending) break;
+      state.prevTrip = clone(t);
+      state.trip = state.ai.pending; ensurePass(state.trip); state.ai.pending = null;
+      const last = state.ai.msgs[state.ai.msgs.length - 1];
+      last.html = last.html.replace(/<div class="diff-actions">[\s\S]*?<\/div>/, '<div class="diff-actions"><span class="status-ok">已应用</span></div>');
+      render(); toast('已应用 5 项改动', true); break;
+    }
+    case 'ai-reject': {
+      state.ai.pending = null;
+      const last = state.ai.msgs[state.ai.msgs.length - 1];
+      last.html = last.html.replace(/<div class="diff-actions">[\s\S]*?<\/div>/, '<div class="diff-actions"><span class="small muted">没有应用</span></div>');
+      render(); break;
+    }
+    case 'undo':
+      if (state.prevTrip) { state.trip = state.prevTrip; state.prevTrip = null; render(); toast('已撤销'); }
+      break;
+    case 'wz': state.wizard[b.dataset.k] = b.dataset.v; render(); break;
+    case 'wz-count': state.wizard.count = Math.min(9, Math.max(1, state.wizard.count + Number(b.dataset.d))); render(); break;
+    case 'wz-step': {
+      const d = $('wz-desc'); if (d) state.wizard.desc = d.value;
+      state.wizard.step += Number(b.dataset.d); render(); break;
+    }
+    case 'wz-gen': toast('原型：AI 会根据描述生成路线，生成后你可以逐项修改'); break;
+    case 'wz-create': state.wizard.step = 1; go('route'); toast('原型中使用示例行程'); break;
+    case 'pf-show': savePrefInputs(); state.prefs.show = !state.prefs.show; render(); break;
+    case 'pf-test': {
+      savePrefInputs();
+      if (!state.prefs.key) { state.prefs.test = 'nokey'; render(); break; }
+      state.prefs.test = 'busy'; render();
+      setTimeout(() => { state.prefs.test = 'ok'; render(); }, 800); break;
+    }
+    case 'pf-clear-key': state.prefs.key = ''; state.prefs.test = null; render(); toast('已清除 key'); break;
+    case 'pf-encrypt': state.prefs.encrypt = b.checked; break;
+    case 'theme': {
+      state.prefs.theme = b.dataset.v;
+      if (b.dataset.v === 'system') document.documentElement.removeAttribute('data-theme');
+      else document.documentElement.setAttribute('data-theme', b.dataset.v);
+      render(); break;
+    }
+    case 'pf-confirm': state.prefs.confirmClear = b.dataset.v === '1'; render(); break;
+    case 'pf-clear-all': state.prefs.confirmClear = false; render(); toast('原型：不会真的清除数据'); break;
+  }
+});
+document.addEventListener('change', e => {
+  const el = e.target;
+  if (el.dataset.act === 'prov') {
+    savePrefInputs();
+    state.prefs.provider = el.value;
+    state.prefs.model = { deepseek: 'deepseek-chat', claude: 'claude-sonnet-5-5', custom: '' }[el.value];
+    state.prefs.test = null; render();
+  }
+  if (el.dataset.act === 'wz-country') state.wizard.country = el.value;
+});
+document.addEventListener('input', e => {
+  if (e.target.id === 'pf-key') { state.prefs.key = e.target.value; }
+});
+document.addEventListener('submit', e => {
+  if (e.target.dataset.act !== 'ai-form') return;
+  e.preventDefault();
+  const v = $('aiInput').value.trim();
+  if (!v) return;
+  const k = /赶|少去|减少|太累/.test(v) ? 'crowded' : /罢工|停运/.test(v) ? 'strike' : /为什么|买票/.test(v) ? 'why' : 'other';
+  aiAsk(k, v);
+});
+$('sheetBackdrop').addEventListener('click', e => { if (e.target.id === 'sheetBackdrop') { state.sheet = null; renderSheet(); } });
+document.addEventListener('keydown', e => {
+  const rb = e.target.closest && e.target.closest('[role="button"][data-act]');
+  if (rb && e.target === rb && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); rb.click(); return; }
+  if (e.key !== 'Escape') return;
+  if (state.sheet) { state.sheet = null; renderSheet(); }
+  else if (state.aiOpen && window.innerWidth < 1024) { state.aiOpen = false; render(); }
+});
+function savePrefInputs() {
+  const k = $('pf-key'), m = $('pf-model'), base = $('pf-base');
+  if (k) state.prefs.key = k.value;
+  if (m) state.prefs.model = m.value;
+  if (base) state.prefs.base = base.value;
+}
+
+window.addEventListener('hashchange', () => { state.sheet = null; render(); window.scrollTo(0, 0); });
+render();
+})();
+</script>

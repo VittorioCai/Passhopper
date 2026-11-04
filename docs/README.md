@@ -10,6 +10,7 @@
 | [DEVELOPMENT.md](./DEVELOPMENT.md) | 开发文档：产品定位、功能需求、规则引擎、AI 接入、技术架构、数据模型、里程碑 |
 | [UI-DESIGN.md](./UI-DESIGN.md) | UI 设计文档：设计原则、视觉规范、信息架构、页面线框、组件、状态与文案 |
 | [RULES-AND-SOURCES.md](./RULES-AND-SOURCES.md) | 规则与数据核实表：每条通票规则、价格、外部服务条款的来源、核实状态 |
+| [../prototype/](../prototype/README.md) | 可点击原型（v0.1） |
 
 ## 已确定的决策（2026-11-04）
 
@@ -25,10 +26,10 @@
 | D8 | 代码仓库 | 新建 GitHub 仓库（待用户创建，见下） |
 | D9 | 文档形式 | Markdown，放在仓库 `docs/` 目录 |
 | D10 | 产品名称 | 英文名 Passhopper，中文名 通票漫游；GitHub 仓库名 `passhopper`。名称不含 Interrail / Eurail 商标 |
+| D11 | 开源许可证 | MIT |
 
 ## 待决定事项
 
 - [ ] 域名（例如 passhopper.app，待查是否可注册）
-- [ ] 开源许可证（建议 MIT，见开发文档 §11）
 - [ ] 第一版是否要保证中国大陆可访问（影响部署方案，见开发文档 §9.3）
 - [ ] 评审本目录三份文档，确认后进入 M0 开发
