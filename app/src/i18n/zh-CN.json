@@ -379,5 +379,24 @@
   "map": {
     "title": "地图",
     "loading": "地图加载中…"
+  },
+  "note": {
+    "title": "备注",
+    "label": "住在哪里、要做什么",
+    "placeholder": "住车站附近的青旅。周五 10 点乌菲兹美术馆的票。",
+    "add": "添加备注",
+    "editFor": "编辑{{name}}的备注",
+    "delete": "删除备注"
+  },
+  "aiPrice": {
+    "estimate": "AI 估算",
+    "search": "联网查价",
+    "working": "查询中…（点击停止）",
+    "none": "AI 没有给出价格，可以重试或自己填写。",
+    "range": "€{{min}}–{{max}}"
+  },
+  "check": {
+    "title": "核实这趟车",
+    "fees": "Interrail 订座费"
   }
 }

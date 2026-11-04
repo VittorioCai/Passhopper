@@ -282,3 +282,26 @@
   flex: none;
   margin-top: 2px;
 }
+.cityNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: left;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.cityNote svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--primary);
+}

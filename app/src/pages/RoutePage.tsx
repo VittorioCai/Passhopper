@@ -4,6 +4,7 @@ import {
   CheckIcon,
   MoonIcon,
   PencilSimpleIcon,
+  NotePencilIcon,
   PlusIcon,
   TrashIcon,
   WarningIcon,
@@ -15,6 +16,7 @@ import { MapCard } from '../components/MapCard';
 import { PassBar } from '../components/PassBar';
 import { SegmentSheet } from '../components/SegmentSheet';
 import { Sheet } from '../components/Sheet';
+import { NoteSheet } from '../components/NoteSheet';
 import { Stepper } from '../components/Stepper';
 import { useTripContext } from '../components/TripContext';
 import ui from '../components/ui.module.css';
@@ -36,6 +38,7 @@ import {
   segmentCount,
   segmentMinutes,
   setNights,
+  setNote,
   setStartDate,
   tripRange,
 } from '../model/trip';
@@ -142,7 +145,10 @@ function Ticket({
 }
 
 type SheetState =
-  { type: 'segment'; fromStopId: string; seg?: Segment } | { type: 'addCity' } | null;
+  | { type: 'segment'; fromStopId: string; seg?: Segment }
+  | { type: 'addCity' }
+  | { type: 'note'; stopId: string }
+  | null;
 
 export function RoutePage() {
   const { t } = useTranslation();
@@ -280,6 +286,29 @@ export function RoutePage() {
                 </div>
                 {isFirst && <div className={r.note}>{t('route.start')}</div>}
                 {isLast && stop.nights === 0 && <div className={r.note}>{t('route.end')}</div>}
+                {stop.note ? (
+                  <button
+                    type="button"
+                    className={r.cityNote}
+                    onClick={() => setSheet({ type: 'note', stopId: stop.id })}
+                    aria-label={t('note.editFor', { name })}
+                  >
+                    <NotePencilIcon size={15} weight="duotone" />
+                    <span>{stop.note}</span>
+                  </button>
+                ) : (
+                  edit && (
+                    <button
+                      type="button"
+                      className={ui.btnGhost}
+                      style={{ alignSelf: 'flex-start', padding: 0 }}
+                      onClick={() => setSheet({ type: 'note', stopId: stop.id })}
+                    >
+                      <NotePencilIcon size={15} weight="bold" />
+                      {t('note.add')}
+                    </button>
+                  )
+                )}
                 {edit && !isFirst && (
                   <div className={r.tools}>
                     <Stepper
@@ -383,6 +412,17 @@ export function RoutePage() {
         </button>
       )}
 
+      {sheet?.type === 'note' && (
+        <NoteSheet
+          trip={trip}
+          stopId={sheet.stopId}
+          onClose={() => setSheet(null)}
+          onSave={(text) => {
+            update((x: Trip) => setNote(x, sheet.stopId, text));
+            setSheet(null);
+          }}
+        />
+      )}
       {sheet?.type === 'addCity' && (
         <Sheet title={t('route.addCity')} onClose={() => setSheet(null)}>
           <CityPicker

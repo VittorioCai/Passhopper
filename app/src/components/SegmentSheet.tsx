@@ -1,9 +1,12 @@
 import { TrashIcon } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SegmentSchema, type Segment, type Trip } from '../model/schema';
-import { journeyFrom, newId, removeSegment, upsertSegment } from '../model/trip';
+import { SegmentSchema, type Price, type Segment, type Trip } from '../model/schema';
+import { addDays } from '../model/dates';
+import { journeyFrom, newId, removeSegment, schedule, upsertSegment } from '../model/trip';
 import { placeName, useLang } from '../lib';
+import { AiPriceButtons } from './AiPriceButtons';
+import { CheckLinks } from './CheckLinks';
 import { Sheet } from './Sheet';
 import { TrainSearch } from './TrainSearch';
 import ui from './ui.module.css';
@@ -36,6 +39,9 @@ export function SegmentSheet({
   const [depNext, setDepNext] = useState((segment?.depDay ?? prev?.arrDay ?? 0) > 0);
   const [arrNext, setArrNext] = useState(segment ? segment.arrDay > segment.depDay : false);
   const [price, setPrice] = useState(segment?.price ? String(segment.price.max) : '');
+  const [aiPrice, setAiPrice] = useState<Price | undefined>(
+    segment?.price?.source.startsWith('ai') ? segment.price : undefined,
+  );
   const [error, setError] = useState('');
   const [confirm, setConfirm] = useState(false);
   const existing = journeyFrom(trip, fromStopId)?.segments ?? [];
@@ -45,6 +51,7 @@ export function SegmentSheet({
     const depDay = depNext ? 1 : 0;
     const p = price.trim() ? Number(price) : undefined;
     if (p !== undefined && !(p >= 0)) return setError(t('segment.badPrice'));
+    const keepAi = aiPrice && p !== undefined && Math.round(aiPrice.max) === p;
     const keepPrice =
       segment?.price &&
       p !== undefined &&
@@ -63,9 +70,11 @@ export function SegmentSheet({
       ...(p === undefined
         ? {}
         : {
-            price: keepPrice
-              ? segment!.price!
-              : { min: p, max: p, currency: 'EUR' as const, source: 'user' as const },
+            price: keepAi
+              ? aiPrice!
+              : keepPrice
+                ? segment!.price!
+                : { min: p, max: p, currency: 'EUR' as const, source: 'user' as const },
           }),
     };
     const res = SegmentSchema.safeParse(candidate);
@@ -186,6 +195,23 @@ export function SegmentSheet({
                 placeholder="€"
               />
             </label>
+            <AiPriceButtons
+              query={{
+                train: trainNumber.trim(),
+                from: fromSt.trim() || from.place.en,
+                to: toSt.trim() || to.place.en,
+                date: addDays(schedule(trip)[idx]?.depart ?? trip.startDate, depNext ? 1 : 0),
+                depTime: depTime || undefined,
+                travelClass: trip.traveller.travelClass,
+                ageGroup: trip.traveller.ageGroup,
+              }}
+              current={aiPrice && Number(price) === Math.round(aiPrice.max) ? aiPrice : undefined}
+              onPrice={(p) => {
+                setAiPrice(p);
+                setPrice(String(Math.round(p.max)));
+              }}
+            />
+            <CheckLinks from={from.place.country} to={to.place.country} night={arrNext} />
             {error && (
               <p className={ui.fieldError} role="alert">
                 {error}

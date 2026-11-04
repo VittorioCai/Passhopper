@@ -151,6 +151,14 @@ export function setNights(trip: Trip, stopId: string, nights: number): Trip {
   });
 }
 
+export function setNote(trip: Trip, stopId: string, note: string): Trip {
+  const clean = note.trim().slice(0, 500);
+  return touch({
+    ...trip,
+    stops: trip.stops.map((s) => (s.id === stopId ? { ...s, note: clean || undefined } : s)),
+  });
+}
+
 export const setStartDate = (trip: Trip, startDate: string): Trip => touch({ ...trip, startDate });
 export const renameTrip = (trip: Trip, name: string): Trip =>
   touch({ ...trip, name: name.trim() || trip.name });

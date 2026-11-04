@@ -33,8 +33,15 @@ export interface ToolContext {
   /** DeepSeek key for the web search API; absent means no search_web tool. */
   searchKey?: string;
   signal: AbortSignal;
-  /** A different set of tools instead of the trip assistant's (used by the new-trip wizard). No web search. */
-  toolset?: { defs: ToolDef[]; run: (name: string, input: unknown) => Promise<ToolResult> };
+  /**
+   * A different set of tools instead of the trip assistant's (new-trip wizard, price lookup).
+   * `webSearch` adds Claude's server web search; OpenAI-style providers get search_web in `defs`.
+   */
+  toolset?: {
+    defs: ToolDef[];
+    run: (name: string, input: unknown) => Promise<ToolResult>;
+    webSearch?: boolean;
+  };
 }
 
 export interface ToolDef {

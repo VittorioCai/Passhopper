@@ -30,6 +30,7 @@ function requestFor(
   system: string,
   messages: MessageParam[],
   defs: ToolDef[] | undefined,
+  webSearch = !defs,
 ) {
   const tools: Anthropic.Beta.BetaToolUnion[] = [
     ...(defs ?? toolsFor(false)).map((t) => ({
@@ -39,7 +40,7 @@ function requestFor(
       eager_input_streaming: true,
     })),
   ];
-  if (!defs)
+  if (webSearch)
     tools.push(
       isCurrent(p.model)
         ? { type: 'web_search_20260209', name: 'web_search', max_uses: 5 }
@@ -74,7 +75,13 @@ export async function runClaudeTurn(
   history.messages.push({ role: 'user', content: userText });
   for (let step = 0; step < MAX_STEPS; step++) {
     const stream = api.beta.messages.stream(
-      requestFor(p, system, history.messages, ctx.toolset?.defs),
+      requestFor(
+        p,
+        system,
+        history.messages,
+        ctx.toolset?.defs,
+        ctx.toolset ? !!ctx.toolset.webSearch : true,
+      ),
       {
         signal: ctx.signal,
       },

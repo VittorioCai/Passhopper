@@ -402,5 +402,24 @@
   "map": {
     "title": "Map",
     "loading": "Loading map…"
+  },
+  "note": {
+    "title": "Notes",
+    "label": "Where you stay, what to do",
+    "placeholder": "Hostel near the station. Uffizi tickets for Friday 10:00.",
+    "add": "Add a note",
+    "editFor": "Edit the note for {{name}}",
+    "delete": "Delete note"
+  },
+  "aiPrice": {
+    "estimate": "AI estimate",
+    "search": "Look up online",
+    "working": "Working… (tap to stop)",
+    "none": "The AI didn't give a price. Try again or enter it yourself.",
+    "range": "€{{min}}–{{max}}"
+  },
+  "check": {
+    "title": "Check this train",
+    "fees": "Interrail reservation fees"
   }
 }

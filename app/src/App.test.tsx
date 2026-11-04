@@ -64,6 +64,92 @@ describe('trip pages', () => {
     expect(await screen.findByText('Trip not found')).toBeInTheDocument();
   });
 
+  it('adds a note to a city', async () => {
+    const trip = makeSampleTrip('en');
+    await saveTrip(trip);
+    at(`/trip/${trip.id}/route`);
+    fireEvent.click(await screen.findByRole('button', { name: 'Edit' }));
+    fireEvent.click(screen.getAllByRole('button', { name: 'Add a note' })[1]!);
+    const dialog = screen.getByRole('dialog');
+    fireEvent.change(within(dialog).getByLabelText('Where you stay, what to do'), {
+      target: { value: 'Hostel near the station' },
+    });
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Save' }));
+    expect(
+      await screen.findByRole('button', { name: 'Edit the note for Munich' }),
+    ).toHaveTextContent('Hostel near the station');
+    await waitFor(async () =>
+      expect((await db.trips.get(trip.id))!.stops[1]!.note).toBe('Hostel near the station'),
+    );
+  });
+
+  it('links to the operator and fee pages for a train', async () => {
+    const trip = makeSampleTrip('en');
+    await saveTrip(trip);
+    at(`/trip/${trip.id}/route`);
+    fireEvent.click(await screen.findByRole('button', { name: /^FR 9709,/ }));
+    const dialog = screen.getByRole('dialog');
+    expect(within(dialog).getByText('Check this train')).toBeInTheDocument();
+    expect(within(dialog).getByRole('link', { name: /Trenitalia/ })).toHaveAttribute(
+      'href',
+      'https://www.trenitalia.com',
+    );
+    expect(
+      within(dialog).getByRole('link', { name: /Interrail reservation fees/ }),
+    ).toHaveAttribute('href', expect.stringContaining('domestic-train-reservation-fees'));
+    // No AI key: no AI price buttons.
+    expect(within(dialog).queryByRole('button', { name: /AI estimate/ })).toBeNull();
+  });
+
+  it('fills in an AI price estimate', async () => {
+    await saveAiSettings({ provider: 'deepseek', keys: { deepseek: 'sk-test' }, models: {} });
+    const sse = (chunks: unknown[]) =>
+      new Response(
+        chunks.map((c) => `data: ${JSON.stringify(c)}\n\n`).join('') + 'data: [DONE]\n\n',
+      );
+    const args = JSON.stringify({ min_eur: 29.9, max_eur: 89, note: 'Trenitalia Base to Economy' });
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        sse([
+          {
+            choices: [
+              {
+                delta: {
+                  tool_calls: [
+                    { index: 0, id: 'c1', function: { name: 'report_price', arguments: args } },
+                  ],
+                },
+              },
+            ],
+          },
+        ]),
+      )
+      .mockResolvedValueOnce(sse([{ choices: [{ delta: { content: '' } }] }]));
+    vi.stubGlobal('fetch', fetchMock);
+    const trip = makeSampleTrip('en');
+    await saveTrip(trip);
+    at(`/trip/${trip.id}/route`);
+    fireEvent.click(await screen.findByRole('button', { name: /^FR 9709,/ }));
+    const dialog = screen.getByRole('dialog');
+    fireEvent.click(await within(dialog).findByRole('button', { name: /AI estimate/ }));
+    expect(await within(dialog).findByText('Trenitalia Base to Economy')).toBeInTheDocument();
+    expect(within(dialog).getByLabelText(/Ticket price you found/)).toHaveValue(89);
+    const body = JSON.parse(fetchMock.mock.calls[0]![1].body as string);
+    expect(body.tools.map((x: { function: { name: string } }) => x.function.name)).toEqual([
+      'report_price',
+    ]);
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Save' }));
+    await waitFor(async () =>
+      expect((await db.trips.get(trip.id))!.journeys[3]!.segments[0]!.price).toEqual({
+        min: 30,
+        max: 89,
+        currency: 'EUR',
+        source: 'ai_estimate',
+      }),
+    );
+  });
+
   it('warns about a missed connection', async () => {
     const trip = makeSampleTrip('en');
     trip.stops[1]!.nights = 0;
