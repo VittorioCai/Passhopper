@@ -1,13 +1,13 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="icon" href="../design/logo/favicon.ico"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
-<title>Passhopper 原型</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="icon" href="../design/logo/favicon.ico"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<title>Passhopper Prototype</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=DM+Mono:wght@500&family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
 <style>
-/* 布局：手机优先。玻璃顶栏 + 内容 + 悬浮胶囊标签栏；≥1024px 为左侧导航 + 内容 + 右侧 AI 面板。
-   视觉：通票做成钱包里的交通卡，路线做成地铁线路图（每个国家一种线路色）。
-   配色：薄荷汽水（薄荷绿 + 柠檬黄）；图标：Phosphor。 */
+/* Layout: mobile first. Glass top bar + content + floating pill tab bar; >=1024px: side nav + content + AI panel.
+   Visuals: the pass as a wallet card, the route as a metro map (one line colour per country).
+   Palette: Mint Soda (mint + lemon). Icons: Phosphor. Language: English by default, Simplified Chinese via toggle. */
 :root {
   --bg: #F3F5F8; --surface: #FFFFFF; --surface-2: #EEF1F5; --surface-3: #E1E6ED; --line: #E3E7ED;
   --ink: #0F1524; --ink-2: #5A6478; --ink-3: #8C95A7; --on-ink: #FFFFFF;
@@ -19,7 +19,6 @@
   --shadow-lg: 0 18px 50px rgba(16, 24, 40, .16);
   --scrim: rgba(10, 14, 22, .45);
   --l-DE: #2F6BFF; --l-CH: #E23B3E; --l-IT: #0C9F72; --l-AT: #E8641C; --l-CZ: #7C5CFA; --on-line: #FFFFFF;
-  /* 配色：薄荷汽水 */
   --primary: #00A37A; --primary-ink: #FFFFFF; --primary-soft: #D9F7EC;
   --sun: #FFD43B; --sun-ink: #2A2100; --sun-text: #8A6A00; --sun-soft: #FFF5CC;
   --pass-grad: linear-gradient(135deg, #C9F7E3 0%, #7FE6C0 48%, #2FD0A0 100%); --pass-ink: #042A20; --pass-chip: rgba(4, 42, 32, .1); --pass-shadow: 0 14px 34px rgba(0, 163, 122, .22);
@@ -82,9 +81,8 @@ h1, h2, h3 { text-wrap: balance; margin: 0; }
 .xs { font-size: 12px; }
 .ico { width: 20px; height: 20px; flex: none; }
 .ico-sm { width: 16px; height: 16px; flex: none; vertical-align: -3px; }
-.ico-lg { width: 24px; height: 24px; flex: none; }
 
-/* ---------- 外框 ---------- */
+/* ---------- Shell ---------- */
 .app { min-height: 100%; }
 .sidenav { display: none; }
 .main-col { min-width: 0; }
@@ -101,6 +99,7 @@ h1, h2, h3 { text-wrap: balance; margin: 0; }
 .logo small { font-family: var(--f-body); font-weight: 500; font-size: 12px; color: var(--ink-2); letter-spacing: 0; }
 .icon-btn { display: inline-grid; place-items: center; width: 42px; height: 42px; border: 0; background: transparent; border-radius: 999px; color: var(--ink); flex: none; }
 .icon-btn:hover { background: var(--surface-2); }
+.lang-btn { display: inline-flex; align-items: center; justify-content: center; height: 34px; min-width: 44px; padding: 0 10px; border-radius: 999px; border: 0; background: var(--surface-2); color: var(--ink-2); font-size: 13px; font-weight: 700; white-space: nowrap; flex: none; }
 .ai-btn { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px 0 5px; border-radius: 999px; border: 0; background: var(--ink); color: var(--on-ink); font-weight: 700; font-size: 14px; white-space: nowrap; flex: none; }
 .ai-btn .orb { width: 26px; height: 26px; border-radius: 50%; background: var(--primary); display: inline-grid; place-items: center; color: var(--primary-ink); }
 .ai-btn[aria-pressed="true"] { background: var(--primary); color: var(--primary-ink); }
@@ -119,7 +118,7 @@ h1, h2, h3 { text-wrap: balance; margin: 0; }
   background: var(--glass); -webkit-backdrop-filter: saturate(1.6) blur(20px); backdrop-filter: saturate(1.6) blur(20px);
   border: 1px solid var(--glass-line); border-radius: 999px; box-shadow: var(--shadow-lg);
 }
-.tabbar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; height: 50px; border-radius: 999px; font-size: 11px; font-weight: 500; color: var(--ink-2); text-decoration: none; transition: background .18s, color .18s; }
+.tabbar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; height: 50px; border-radius: 999px; font-size: 11px; font-weight: 500; color: var(--ink-2); text-decoration: none; transition: background .18s, color .18s; white-space: nowrap; }
 .tabbar a .ico { width: 22px; height: 22px; }
 .tabbar a[aria-current="page"] { background: var(--primary); color: var(--primary-ink); font-weight: 700; }
 
@@ -137,10 +136,10 @@ h1, h2, h3 { text-wrap: balance; margin: 0; }
   .topbar .back { display: none; }
 }
 
-/* ---------- 通用 ---------- */
+/* ---------- Common ---------- */
 .card { background: var(--surface); border-radius: var(--r-lg); padding: 16px; box-shadow: var(--shadow); }
 .h-sec { font-family: var(--f-display); font-size: 19px; font-weight: 800; letter-spacing: -.01em; margin-top: 6px; display: flex; align-items: center; gap: 8px; }
-.h-sec .cnt { font-size: 13px; color: var(--ink-3); font-weight: 700; }
+.h-sec .cnt { font-size: 13px; color: var(--ink-3); font-weight: 700; font-family: var(--f-body); }
 .h-sec .act { margin-left: auto; }
 .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .spread { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
@@ -187,7 +186,7 @@ button.badge { cursor: pointer; }
 
 .foot-note { font-size: 12px; color: var(--ink-3); text-align: center; padding-top: 8px; line-height: 1.7; }
 
-/* ---------- 通票卡（大，回本页）与通票条（小，其他页） ---------- */
+/* ---------- Pass card (Savings page) and pass bar (other pages) ---------- */
 .passcard { position: relative; overflow: hidden; border-radius: var(--r-lg); padding: 18px; color: var(--pass-ink); background: var(--pass-grad); box-shadow: var(--pass-shadow); isolation: isolate; }
 .passcard::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(circle at 88% 12%, rgba(255,255,255,.35), transparent 42%), repeating-linear-gradient(115deg, rgba(255,255,255,.08) 0 2px, transparent 2px 14px); }
 .passcard::after { content: ""; position: absolute; right: -60px; bottom: -80px; width: 210px; height: 210px; border-radius: 50%; border: 26px solid rgba(255,255,255,.14); z-index: -1; }
@@ -196,7 +195,7 @@ button.badge { cursor: pointer; }
 .pc-name { font-family: var(--f-display); font-size: 22px; font-weight: 800; letter-spacing: -.01em; line-height: 1.15; }
 .pc-who { font-size: 12px; font-weight: 700; background: var(--pass-chip); padding: 5px 10px; border-radius: 999px; white-space: nowrap; }
 .pc-big { font-family: var(--f-display); font-weight: 800; font-size: 50px; line-height: 1; letter-spacing: -.03em; margin-top: 14px; font-variant-numeric: tabular-nums; }
-.pc-big small { font-size: 20px; font-weight: 700; letter-spacing: 0; margin-right: 4px; }
+.pc-big small { font-size: 20px; font-weight: 700; letter-spacing: 0; margin-right: 6px; }
 .pc-sub { font-size: 13px; opacity: .85; margin-top: 6px; }
 .pc-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px 12px; margin-top: 16px; flex-wrap: wrap; }
 .dots { display: flex; gap: 6px; }
@@ -210,10 +209,10 @@ button.badge { cursor: pointer; }
 .passbar:hover { text-decoration: none; }
 .passbar .nm { font-family: var(--f-display); font-size: 18px; font-weight: 800; line-height: 1.2; }
 .passbar .sv { font-family: var(--f-display); font-size: 26px; font-weight: 800; letter-spacing: -.02em; line-height: 1; display: inline-flex; align-items: center; gap: 2px; }
-.passbar .sv small { font-size: 14px; font-weight: 700; margin-right: 2px; }
-.passbar .meta2 { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 12px; font-weight: 700; opacity: .9; }
+.passbar .sv small { font-size: 14px; font-weight: 700; margin-right: 4px; letter-spacing: 0; }
+.passbar .meta2 { grid-column: 1 / -1; display: flex; align-items: center; gap: 4px 10px; flex-wrap: wrap; font-size: 12px; font-weight: 700; opacity: .9; }
 
-/* ---------- 首页 ---------- */
+/* ---------- Home ---------- */
 .hello { display: flex; flex-direction: column; gap: 2px; padding: 4px 2px 0; }
 .hello .k { font-size: 14px; color: var(--ink-2); font-weight: 500; }
 .hello h1 { font-family: var(--f-display); font-size: 32px; font-weight: 800; letter-spacing: -.02em; line-height: 1.15; }
@@ -228,13 +227,13 @@ button.badge { cursor: pointer; }
 .city-row span:not(:last-child)::after { content: "·"; margin-left: 6px; color: var(--ink-3); }
 .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .stat { background: var(--surface-2); border-radius: 14px; padding: 9px 12px; min-width: 0; }
-.stat b { display: block; font-family: var(--f-display); font-size: 21px; font-weight: 800; line-height: 1.1; }
+.stat b { display: block; font-family: var(--f-display); font-size: 21px; font-weight: 800; line-height: 1.1; white-space: nowrap; }
 .stat span { font-size: 12px; color: var(--ink-2); }
 .bar { height: 8px; background: var(--surface-2); border-radius: 999px; overflow: hidden; }
 .bar > i { display: block; height: 100%; background: var(--primary); border-radius: 999px; }
 .ghost-card { border: 2px dashed var(--surface-3); background: transparent; box-shadow: none; }
 
-/* ---------- 提醒折叠 ---------- */
+/* ---------- Collapsible alerts ---------- */
 details.alerts { background: var(--surface); border-radius: var(--r-md); box-shadow: var(--shadow); }
 details.alerts > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 12px 14px; font-size: 14px; }
 details.alerts > summary::-webkit-details-marker { display: none; }
@@ -244,7 +243,7 @@ details.alerts > summary .chev { color: var(--ink-3); transition: transform .2s;
 details.alerts[open] > summary .chev { transform: rotate(90deg); }
 details.alerts .items { display: flex; flex-direction: column; gap: 10px; padding: 0 14px 14px 52px; font-size: 14px; color: var(--ink-2); }
 
-/* ---------- 路线（紧凑） ---------- */
+/* ---------- Route (compact) ---------- */
 .timeline { display: flex; flex-direction: column; }
 .stop { display: grid; grid-template-columns: 22px minmax(0, 1fr); column-gap: 10px; }
 .stop .rail { position: relative; }
@@ -254,7 +253,7 @@ details.alerts .items { display: flex; flex-direction: column; gap: 10px; paddin
 .stop .dot { position: absolute; left: 2px; top: 5px; width: 18px; height: 18px; border-radius: 50%; background: var(--surface); border: 4.5px solid var(--ink); z-index: 1; }
 .stop.home .dot { background: var(--ink); }
 .stop-head { display: flex; align-items: baseline; gap: 6px; min-height: 28px; }
-.stop-head .city { font-family: var(--f-display); font-size: 20px; font-weight: 800; letter-spacing: -.02em; line-height: 1.3; }
+.stop-head .city { font-family: var(--f-display); font-size: 20px; font-weight: 800; letter-spacing: -.02em; line-height: 1.3; white-space: nowrap; }
 .stop-head .local { font-size: 13px; color: var(--ink-3); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .stop-head .when { margin-left: auto; font-size: 13px; color: var(--ink-2); white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
 .nights { font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 999px; background: var(--surface); box-shadow: var(--shadow); color: var(--ink); }
@@ -267,6 +266,7 @@ details.alerts .items { display: flex; flex-direction: column; gap: 10px; paddin
 .ticket:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
 .ticket.problem { box-shadow: inset 0 0 0 1.5px var(--sun), var(--shadow); }
 .t-row { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.t-row.wrap { flex-wrap: wrap; row-gap: 6px; }
 .train { display: inline-flex; align-items: center; gap: 4px; font-family: var(--f-display); font-weight: 800; font-size: 13px; letter-spacing: .02em; padding: 4px 9px; border-radius: 999px; color: var(--on-line); background: var(--lc, var(--ink)); white-space: nowrap; flex: none; }
 .train .ico-sm { width: 14px; height: 14px; }
 .times { font-family: var(--f-display); font-weight: 800; font-size: 19px; letter-spacing: -.02em; font-variant-numeric: tabular-nums; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
@@ -277,23 +277,23 @@ details.alerts .items { display: flex; flex-direction: column; gap: 10px; paddin
 .t-row .price { margin-left: auto; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
 .t-row .price b { font-family: var(--f-display); font-size: 16px; font-weight: 800; }
 
-/* ---------- 旅行日（紧凑） ---------- */
+/* ---------- Travel days (compact) ---------- */
 .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--ink-2); }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
 .legend i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
 .days { background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow); overflow: hidden; }
-.day { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; padding: 10px 12px; }
+.day { display: grid; grid-template-columns: 46px minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; padding: 10px 12px; }
 .day + .day { border-top: 1px solid var(--line); }
 .day.err { background: var(--danger-soft); }
-.datebox { grid-row: span 2; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 46px; border-radius: 13px; background: var(--surface-2); line-height: 1.05; transition: background .18s; }
+.datebox { grid-row: span 2; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 54px; border-radius: 13px; background: var(--surface-2); line-height: 1.05; transition: background .18s; }
 .day.is-pass .datebox { background: var(--sun); color: var(--sun-ink); }
-.datebox .d { font-family: var(--f-display); font-size: 19px; font-weight: 800; }
-.datebox .w { font-size: 10px; font-weight: 700; opacity: .75; }
+.datebox .m, .datebox .w { font-size: 10px; font-weight: 700; opacity: .75; text-transform: uppercase; letter-spacing: .04em; }
+.datebox .d { font-family: var(--f-display); font-size: 20px; font-weight: 800; }
 .day-route { font-weight: 700; font-size: 15px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .day-route .ico-sm { width: 14px; height: 14px; margin-right: 2px; vertical-align: -2px; }
 .day-why { grid-column: 2; font-size: 12px; color: var(--ink-2); line-height: 1.4; }
 .day.err .day-why { color: var(--danger); font-weight: 600; }
-.switch { grid-row: span 2; grid-column: 3; position: relative; display: inline-grid; grid-template-columns: 1fr 1fr; width: 100px; height: 34px; padding: 3px; border-radius: 999px; background: var(--surface-2); border: 0; }
+.switch { grid-row: span 2; grid-column: 3; position: relative; display: inline-grid; grid-template-columns: 1fr 1fr; width: 108px; height: 34px; padding: 3px; border-radius: 999px; background: var(--surface-2); border: 0; }
 .switch span { position: relative; z-index: 1; display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--ink-3); transition: color .18s; }
 .switch::before { content: ""; position: absolute; top: 3px; bottom: 3px; left: 3px; width: calc(50% - 3px); border-radius: 999px; background: var(--surface); box-shadow: 0 2px 6px rgba(16,24,40,.15); transition: transform .22s cubic-bezier(.3,1.4,.5,1), background .2s; }
 .switch.on::before { background: var(--sun); }
@@ -308,7 +308,7 @@ details.alerts .items { display: flex; flex-direction: column; gap: 10px; paddin
 .total-bar .l { font-size: 12px; opacity: .7; font-weight: 500; }
 .total-bar .btn-ghost { color: var(--on-ink); text-decoration: underline; text-underline-offset: 3px; }
 
-/* ---------- 订座 ---------- */
+/* ---------- Reservations ---------- */
 .res-head { display: flex; align-items: center; gap: 14px; }
 .ring { width: 64px; height: 64px; flex: none; position: relative; }
 .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
@@ -331,9 +331,9 @@ details.alerts .items { display: flex; flex-direction: column; gap: 10px; paddin
 .list-line .route { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .list-line .end { margin-left: auto; flex: none; }
 
-/* ---------- 回本 ---------- */
+/* ---------- Savings ---------- */
 .chart { display: flex; flex-direction: column; gap: 12px; }
-.crow { display: grid; grid-template-columns: 80px minmax(0, 1fr) 52px; gap: 6px 10px; align-items: center; }
+.crow { display: grid; grid-template-columns: 88px minmax(0, 1fr) 52px; gap: 6px 10px; align-items: center; }
 .crow .nm { font-size: 14px; font-weight: 700; line-height: 1.2; }
 .crow .nm small { display: block; font-size: 11px; font-weight: 500; color: var(--ink-3); }
 .track { position: relative; height: 26px; }
@@ -345,7 +345,7 @@ details.alerts .items { display: flex; flex-direction: column; gap: 10px; paddin
 .crow .tagsel { display: inline-block; margin-top: 3px; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 999px; background: var(--ink); color: var(--on-ink); }
 .crow[role="button"] { cursor: pointer; border-radius: 10px; }
 .crow[role="button"]:hover .nm { color: var(--primary); }
-.axis { display: grid; grid-template-columns: 80px minmax(0, 1fr) 52px; gap: 10px; font-size: 11px; color: var(--ink-3); }
+.axis { display: grid; grid-template-columns: 88px minmax(0, 1fr) 52px; gap: 10px; font-size: 11px; color: var(--ink-3); }
 .axis .ticks { display: flex; justify-content: space-between; }
 .bd-row { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 15px; align-items: center; }
 .bd-row b, details.bd summary b { font-family: var(--f-display); font-size: 19px; font-weight: 800; }
@@ -359,7 +359,7 @@ details.bd summary .lb svg { transition: transform .2s; color: var(--ink-3); }
 details.bd[open] summary .lb svg { transform: rotate(90deg); }
 .bd-sub { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--ink-2); padding: 0 0 8px 22px; }
 
-/* ---------- 向导、设置 ---------- */
+/* ---------- Wizard, settings ---------- */
 .wz-progress { height: 6px; border-radius: 999px; background: var(--surface-3); overflow: hidden; }
 .wz-progress i { display: block; height: 100%; background: var(--primary); border-radius: 999px; transition: width .3s; }
 .wz-step { font-size: 13px; font-weight: 700; color: var(--primary); }
@@ -392,7 +392,7 @@ a.pill { color: var(--ink); }
 .status-err { color: var(--danger); font-weight: 700; font-size: 14px; }
 .danger-zone { background: var(--danger-soft); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; }
 
-/* ---------- 底部面板、AI ---------- */
+/* ---------- Sheets, AI ---------- */
 .sheet-backdrop { position: fixed; inset: 0; z-index: 50; background: var(--scrim); display: flex; align-items: flex-end; justify-content: center; -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
 .sheet { width: 100%; max-height: 90%; overflow-y: auto; background: var(--surface); border-radius: 26px 26px 0 0; display: flex; flex-direction: column; gap: 14px;
   padding-top: 10px; padding-bottom: calc(22px + env(safe-area-inset-bottom, 0px));
@@ -434,7 +434,7 @@ a.pill { color: var(--ink); }
 .typing i:nth-child(2) { animation-delay: .15s; } .typing i:nth-child(3) { animation-delay: .3s; }
 @keyframes bob { 0%, 100% { transform: translateY(0); opacity: .5; } 50% { transform: translateY(-4px); opacity: 1; } }
 .diff { border-radius: 14px; overflow: hidden; background: var(--surface-2); }
-.diff-head { padding: 10px 14px 6px; font-size: 12px; font-weight: 800; letter-spacing: .06em; color: var(--ink-2); }
+.diff-head { padding: 10px 14px 6px; font-size: 12px; font-weight: 800; letter-spacing: .06em; color: var(--ink-2); text-transform: uppercase; }
 .diff-row { display: flex; gap: 10px; padding: 5px 14px; font-size: 14px; align-items: center; }
 .diff-row .op { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; flex: none; font-weight: 800; font-size: 13px; }
 .diff-row.del .op { background: var(--danger-soft); color: var(--danger); }
@@ -477,13 +477,13 @@ a.pill { color: var(--ink); }
 
 <div class="blobs" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="app" id="app">
-  <aside class="sidenav" id="sidenav" aria-label="主导航"></aside>
+  <aside class="sidenav" id="sidenav" aria-label="Main"></aside>
   <div class="main-col">
     <header class="topbar" id="topbar"></header>
     <main class="view" id="view" tabindex="-1"></main>
   </div>
-  <aside class="ai-panel" id="aiPanel" aria-label="AI 助手" hidden></aside>
-  <nav class="tabbar" id="tabbar" aria-label="行程页面"></nav>
+  <aside class="ai-panel" id="aiPanel" aria-label="AI assistant" hidden></aside>
+  <nav class="tabbar" id="tabbar" aria-label="Trip pages"></nav>
 </div>
 <div class="sheet-backdrop" id="sheetBackdrop" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
@@ -492,84 +492,109 @@ a.pill { color: var(--ink); }
 (() => {
 'use strict';
 
-/* ================= 图标（Phosphor 与 Remix Icon，原型评审用两套） ================= */
+/* ================= Icons (Phosphor, MIT) ================= */
 const ICONS = {"ph":{"b":{"back":"<path d=\"M168.49,199.51a12,12,0,0,1-17,17l-80-80a12,12,0,0,1,0-17l80-80a12,12,0,0,1,17,17L97,128Z\"/>","prefs":"<path d=\"M40,92H70.06a36,36,0,0,0,67.88,0H216a12,12,0,0,0,0-24H137.94a36,36,0,0,0-67.88,0H40a12,12,0,0,0,0,24Zm64-24A12,12,0,1,1,92,80,12,12,0,0,1,104,68Zm112,96H201.94a36,36,0,0,0-67.88,0H40a12,12,0,0,0,0,24h94.06a36,36,0,0,0,67.88,0H216a12,12,0,0,0,0-24Zm-48,24a12,12,0,1,1,12-12A12,12,0,0,1,168,188Z\"/>","spark":"<path d=\"M199,125.31l-49.88-18.39L130.69,57a19.92,19.92,0,0,0-37.38,0L74.92,106.92,25,125.31a19.92,19.92,0,0,0,0,37.38l49.88,18.39L93.31,231a19.92,19.92,0,0,0,37.38,0l18.39-49.88L199,162.69a19.92,19.92,0,0,0,0-37.38Zm-63.38,35.16a12,12,0,0,0-7.11,7.11L112,212.28l-16.47-44.7a12,12,0,0,0-7.11-7.11L43.72,144l44.7-16.47a12,12,0,0,0,7.11-7.11L112,75.72l16.47,44.7a12,12,0,0,0,7.11,7.11L180.28,144ZM140,40a12,12,0,0,1,12-12h12V16a12,12,0,0,1,24,0V28h12a12,12,0,0,1,0,24H188V64a12,12,0,0,1-24,0V52H152A12,12,0,0,1,140,40ZM252,88a12,12,0,0,1-12,12h-4v4a12,12,0,0,1-24,0v-4h-4a12,12,0,0,1,0-24h4V72a12,12,0,0,1,24,0v4h4A12,12,0,0,1,252,88Z\"/>","moon":"<path d=\"M236.37,139.4a12,12,0,0,0-12-3A84.07,84.07,0,0,1,119.6,31.59a12,12,0,0,0-15-15A108.86,108.86,0,0,0,49.69,55.07,108,108,0,0,0,136,228a107.09,107.09,0,0,0,64.93-21.69,108.86,108.86,0,0,0,38.44-54.94A12,12,0,0,0,236.37,139.4Zm-49.88,47.74A84,84,0,0,1,68.86,69.51,84.93,84.93,0,0,1,92.27,48.29Q92,52.13,92,56A108.12,108.12,0,0,0,200,164q3.87,0,7.71-.27A84.79,84.79,0,0,1,186.49,187.14Z\"/>","alert":"<path d=\"M240.26,186.1,152.81,34.23h0a28.74,28.74,0,0,0-49.62,0L15.74,186.1a27.45,27.45,0,0,0,0,27.71A28.31,28.31,0,0,0,40.55,228h174.9a28.31,28.31,0,0,0,24.79-14.19A27.45,27.45,0,0,0,240.26,186.1Zm-20.8,15.7a4.46,4.46,0,0,1-4,2.2H40.55a4.46,4.46,0,0,1-4-2.2,3.56,3.56,0,0,1,0-3.73L124,46.2a4.77,4.77,0,0,1,8,0l87.44,151.87A3.56,3.56,0,0,1,219.46,201.8ZM116,136V104a12,12,0,0,1,24,0v32a12,12,0,0,1-24,0Zm28,40a16,16,0,1,1-16-16A16,16,0,0,1,144,176Z\"/>","info":"<path d=\"M108,84a16,16,0,1,1,16,16A16,16,0,0,1,108,84Zm128,44A108,108,0,1,1,128,20,108.12,108.12,0,0,1,236,128Zm-24,0a84,84,0,1,0-84,84A84.09,84.09,0,0,0,212,128Zm-72,36.68V132a20,20,0,0,0-20-20,12,12,0,0,0-4,23.32V168a20,20,0,0,0,20,20,12,12,0,0,0,4-23.32Z\"/>","check":"<path d=\"M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z\"/>","x":"<path d=\"M208.49,191.51a12,12,0,0,1-17,17L128,145,64.49,208.49a12,12,0,0,1-17-17L111,128,47.51,64.49a12,12,0,0,1,17-17L128,111l63.51-63.52a12,12,0,0,1,17,17L145,128Z\"/>","plus":"<path d=\"M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z\"/>","ext":"<path d=\"M204,64V168a12,12,0,0,1-24,0V93L72.49,200.49a12,12,0,0,1-17-17L163,76H88a12,12,0,0,1,0-24H192A12,12,0,0,1,204,64Z\"/>","route":"<path d=\"M200,164a36.07,36.07,0,0,0-33.94,24H72a28,28,0,0,1,0-56h96a44,44,0,0,0,0-88H72a12,12,0,0,0,0,24h96a20,20,0,0,1,0,40H72a52,52,0,0,0,0,104h94.06A36,36,0,1,0,200,164Zm0,48a12,12,0,1,1,12-12A12,12,0,0,1,200,212Z\"/>","cal":"<path d=\"M208,28H188V24a12,12,0,0,0-24,0v4H92V24a12,12,0,0,0-24,0v4H48A20,20,0,0,0,28,48V208a20,20,0,0,0,20,20H208a20,20,0,0,0,20-20V48A20,20,0,0,0,208,28ZM68,52a12,12,0,0,0,24,0h72a12,12,0,0,0,24,0h16V76H52V52ZM52,204V100H204V204Zm92-76a16,16,0,1,1-16-16A16,16,0,0,1,144,128Zm48,0a16,16,0,1,1-16-16A16,16,0,0,1,192,128ZM96,176a16,16,0,1,1-16-16A16,16,0,0,1,96,176Zm48,0a16,16,0,1,1-16-16A16,16,0,0,1,144,176Zm48,0a16,16,0,1,1-16-16A16,16,0,0,1,192,176Z\"/>","seat":"<path d=\"M220,78.53V72a44.05,44.05,0,0,0-44-44H80A44.05,44.05,0,0,0,36,72v6.53a52,52,0,0,0,0,99V200a20,20,0,0,0,20,20H200a20,20,0,0,0,20-20V177.51a52,52,0,0,0,0-99ZM80,52h96a20,20,0,0,1,20,20v4.62A52.09,52.09,0,0,0,152.17,124H103.83A52.09,52.09,0,0,0,60,76.62V72A20,20,0,0,1,80,52ZM206.81,155.86A12,12,0,0,0,196,167.8V196H60V167.8a12,12,0,0,0-10.81-11.94A28,28,0,1,1,80,128v36a12,12,0,0,0,24,0V148h48v16a12,12,0,0,0,24,0V128a28,28,0,1,1,30.81,27.86Z\"/>","euro":"<path d=\"M200,120a16,16,0,1,1-16-16A16,16,0,0,1,200,120ZM156,64H116a12,12,0,0,0,0,24h40a12,12,0,0,0,0-24Zm100,48v32a28,28,0,0,1-27.54,28L213.2,214.73A20,20,0,0,1,194.36,228H181.64a20,20,0,0,1-18.84-13.27l-1-2.73H110.17l-1,2.73A20,20,0,0,1,90.36,228H77.64A20,20,0,0,1,58.8,214.73L46.5,180.28A91.63,91.63,0,0,1,25.75,137.8,11.91,11.91,0,0,0,24,144a12,12,0,0,1-24,0,36.07,36.07,0,0,1,24.56-34.13A92.13,92.13,0,0,1,116,28H220a12,12,0,0,1,0,24H210a92,92,0,0,1,22.48,31.45l.42,1A28.05,28.05,0,0,1,256,112Zm-24,0a4,4,0,0,0-4-4h-3.66a12,12,0,0,1-11.45-8.41A68,68,0,0,0,148,52H116A68,68,0,0,0,65.86,165.94,11.85,11.85,0,0,1,68.31,170l12.15,34h7.08l2.87-8a12,12,0,0,1,11.3-8h68.58a12,12,0,0,1,11.3,8l2.87,8h7.08l17.16-48a12,12,0,0,1,11.3-8h8a4,4,0,0,0,4-4Z\"/>","list":"<path d=\"M222.14,105.85l-80-80a20,20,0,0,0-28.28,0l-80,80A19.86,19.86,0,0,0,28,120v96a12,12,0,0,0,12,12h64a12,12,0,0,0,12-12V164h24v52a12,12,0,0,0,12,12h64a12,12,0,0,0,12-12V120A19.86,19.86,0,0,0,222.14,105.85ZM204,204H164V152a12,12,0,0,0-12-12H104a12,12,0,0,0-12,12v52H52V121.65l76-76,76,76Z\"/>","up":"<path d=\"M216.49,168.49a12,12,0,0,1-17,0L128,97,56.49,168.49a12,12,0,0,1-17-17l80-80a12,12,0,0,1,17,0l80,80A12,12,0,0,1,216.49,168.49Z\"/>","down":"<path d=\"M216.49,104.49l-80,80a12,12,0,0,1-17,0l-80-80a12,12,0,0,1,17-17L128,159l71.51-71.52a12,12,0,0,1,17,17Z\"/>","send":"<path d=\"M230.14,25.86a20,20,0,0,0-19.57-5.11l-.22.07L18.44,79a20,20,0,0,0-3.06,37.25L99,157l40.71,83.65a19.81,19.81,0,0,0,18,11.38c.57,0,1.15,0,1.73-.07A19.82,19.82,0,0,0,177,237.56L235.18,45.65a1.42,1.42,0,0,0,.07-.22A20,20,0,0,0,230.14,25.86ZM156.91,221.07l-34.37-70.64,46-45.95a12,12,0,0,0-17-17l-46,46L34.93,99.09,210,46Z\"/>","stop":"<path d=\"M200,36H56A20,20,0,0,0,36,56V200a20,20,0,0,0,20,20H200a20,20,0,0,0,20-20V56A20,20,0,0,0,200,36Zm-4,160H60V60H196Z\"/>","undo":"<path d=\"M228,128a100,100,0,0,1-98.66,100H128a99.39,99.39,0,0,1-68.62-27.29,12,12,0,0,1,16.48-17.45,76,76,0,1,0-1.57-109c-.13.13-.25.25-.39.37L54.89,92H72a12,12,0,0,1,0,24H24a12,12,0,0,1-12-12V56a12,12,0,0,1,24,0V76.72L57.48,57.06A100,100,0,0,1,228,128Z\"/>","lock":"<path d=\"M208,76H180V56A52,52,0,0,0,76,56V76H48A20,20,0,0,0,28,96V208a20,20,0,0,0,20,20H208a20,20,0,0,0,20-20V96A20,20,0,0,0,208,76ZM100,56a28,28,0,0,1,56,0V76H100ZM204,204H52V100H204Z\"/>","globe":"<path d=\"M128,20A108,108,0,1,0,236,128,108.12,108.12,0,0,0,128,20Zm83.13,96H179.56a144.3,144.3,0,0,0-21.35-66.36A84.22,84.22,0,0,1,211.13,116ZM128,207c-9.36-10.81-24.46-33.13-27.45-67h54.94a119.74,119.74,0,0,1-17.11,52.77A108.61,108.61,0,0,1,128,207Zm-27.45-91a119.74,119.74,0,0,1,17.11-52.77A108.61,108.61,0,0,1,128,49c9.36,10.81,24.46,33.13,27.45,67ZM97.79,49.64A144.3,144.3,0,0,0,76.44,116H44.87A84.22,84.22,0,0,1,97.79,49.64ZM44.87,140H76.44a144.3,144.3,0,0,0,21.35,66.36A84.22,84.22,0,0,1,44.87,140Zm113.34,66.36A144.3,144.3,0,0,0,179.56,140h31.57A84.22,84.22,0,0,1,158.21,206.36Z\"/>","bulb":"<path d=\"M180,232a12,12,0,0,1-12,12H88a12,12,0,0,1,0-24h80A12,12,0,0,1,180,232Zm40-128a91.51,91.51,0,0,1-35.17,72.35A12.26,12.26,0,0,0,180,186v2a20,20,0,0,1-20,20H96a20,20,0,0,1-20-20v-2a12,12,0,0,0-4.7-9.51A91.57,91.57,0,0,1,36,104.52C35.73,54.69,76,13.2,125.79,12A92,92,0,0,1,220,104Zm-24,0a68,68,0,0,0-69.65-68C89.56,36.88,59.8,67.55,60,104.38a67.71,67.71,0,0,0,26.1,53.19A35.87,35.87,0,0,1,100,184h56.1A36.13,36.13,0,0,1,170,157.49,67.68,67.68,0,0,0,196,104Zm-20.07-5.32a48.5,48.5,0,0,0-31.91-40,12,12,0,0,0-8,22.62,24.31,24.31,0,0,1,16.09,20,12,12,0,0,0,23.86-2.64Z\"/>","train":"<path d=\"M184,20H72A36,36,0,0,0,36,56V184a36,36,0,0,0,36,36h0l-9.6,12.8a12,12,0,1,0,19.2,14.4L102,220h52l20.4,27.2a12,12,0,0,0,19.2-14.4L184,220h0a36,36,0,0,0,36-36V56A36,36,0,0,0,184,20ZM72,44H184a12,12,0,0,1,12,12v60H60V56A12,12,0,0,1,72,44ZM184,196H72a12,12,0,0,1-12-12V140H196v44A12,12,0,0,1,184,196Zm-80-28a16,16,0,1,1-16-16A16,16,0,0,1,104,168Zm80,0a16,16,0,1,1-16-16A16,16,0,0,1,184,168Z\"/>","palette":"<path d=\"M203.57,51A107.9,107.9,0,0,0,20,128c0,44.72,27.6,82.25,72,97.94A36,36,0,0,0,140,192a12,12,0,0,1,12-12h46.21a35.79,35.79,0,0,0,35.1-28A108.6,108.6,0,0,0,236,127.09,107.23,107.23,0,0,0,203.57,51Zm6.34,95.67a11.91,11.91,0,0,1-11.7,9.3H152a36,36,0,0,0-36,36,12,12,0,0,1-16,11.3c-16.65-5.88-30.65-15.76-40.48-28.56A76,76,0,0,1,44,128a84,84,0,0,1,83.13-84H128a84.35,84.35,0,0,1,84,83.29A84.72,84.72,0,0,1,209.91,146.71ZM144,76a16,16,0,1,1-16-16A16,16,0,0,1,144,76Zm-44,24A16,16,0,1,1,84,84,16,16,0,0,1,100,100Zm0,56a16,16,0,1,1-16-16A16,16,0,0,1,100,156Zm88-56a16,16,0,1,1-16-16A16,16,0,0,1,188,100Z\"/>","edit":"<path d=\"M230.14,70.54,185.46,25.85a20,20,0,0,0-28.29,0L33.86,149.17A19.85,19.85,0,0,0,28,163.31V208a20,20,0,0,0,20,20H92.69a19.86,19.86,0,0,0,14.14-5.86L230.14,98.82a20,20,0,0,0,0-28.28ZM91,204H52V165l84-84,39,39ZM192,103,153,64l18.34-18.34,39,39Z\"/>","right":"<path d=\"M184.49,136.49l-80,80a12,12,0,0,1-17-17L159,128,87.51,56.49a12,12,0,1,1,17-17l80,80A12,12,0,0,1,184.49,136.49Z\"/>","ticket":"<path d=\"M232,108a12,12,0,0,0,12-12V64a20,20,0,0,0-20-20H32A20,20,0,0,0,12,64V96a12,12,0,0,0,12,12,20,20,0,0,1,0,40,12,12,0,0,0-12,12v32a20,20,0,0,0,20,20H224a20,20,0,0,0,20-20V160a12,12,0,0,0-12-12,20,20,0,0,1,0-40ZM36,170.34a44,44,0,0,0,0-84.68V68H88V188H36Zm184,0V188H112V68H220V85.66a44,44,0,0,0,0,84.68Z\"/>","fire":"<path d=\"M177.62,159.6a52,52,0,0,1-34,34,12.2,12.2,0,0,1-3.6.55,12,12,0,0,1-3.6-23.45,28,28,0,0,0,18.32-18.32,12,12,0,0,1,22.9,7.2ZM220,144a92,92,0,0,1-184,0c0-28.81,11.27-58.18,33.48-87.28a12,12,0,0,1,17.9-1.33L107.07,74.5,127,19.89a12,12,0,0,1,18.94-5.12C168.2,33.25,220,82.85,220,144Zm-24,0c0-41.71-30.61-78.39-52.52-99.29l-20.21,55.4a12,12,0,0,1-19.63,4.5L80.71,82.36C67,103.38,60,124.06,60,144a68,68,0,0,0,136,0Z\"/>"},"f":{"back":"<path d=\"M168,48V208a8,8,0,0,1-13.66,5.66l-80-80a8,8,0,0,1,0-11.32l80-80A8,8,0,0,1,168,48Z\"/>","prefs":"<path d=\"M32,80a8,8,0,0,1,8-8H77.17a28,28,0,0,1,53.66,0H216a8,8,0,0,1,0,16H130.83a28,28,0,0,1-53.66,0H40A8,8,0,0,1,32,80Zm184,88H194.83a28,28,0,0,0-53.66,0H40a8,8,0,0,0,0,16H141.17a28,28,0,0,0,53.66,0H216a8,8,0,0,0,0-16Z\"/>","spark":"<path d=\"M208,144a15.78,15.78,0,0,1-10.42,14.94L146,178l-19,51.62a15.92,15.92,0,0,1-29.88,0L78,178l-51.62-19a15.92,15.92,0,0,1,0-29.88L78,110l19-51.62a15.92,15.92,0,0,1,29.88,0L146,110l51.62,19A15.78,15.78,0,0,1,208,144ZM152,48h16V64a8,8,0,0,0,16,0V48h16a8,8,0,0,0,0-16H184V16a8,8,0,0,0-16,0V32H152a8,8,0,0,0,0,16Zm88,32h-8V72a8,8,0,0,0-16,0v8h-8a8,8,0,0,0,0,16h8v8a8,8,0,0,0,16,0V96h8a8,8,0,0,0,0-16Z\"/>","moon":"<path d=\"M235.54,150.21a104.84,104.84,0,0,1-37,52.91A104,104,0,0,1,32,120,103.09,103.09,0,0,1,52.88,57.48a104.84,104.84,0,0,1,52.91-37,8,8,0,0,1,10,10,88.08,88.08,0,0,0,109.8,109.8,8,8,0,0,1,10,10Z\"/>","alert":"<path d=\"M236.8,188.09,149.35,36.22h0a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM120,104a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm8,88a12,12,0,1,1,12-12A12,12,0,0,1,128,192Z\"/>","info":"<path d=\"M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm-4,48a12,12,0,1,1-12,12A12,12,0,0,1,124,72Zm12,112a16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40a8,8,0,0,1,0,16Z\"/>","check":"<path d=\"M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM205.66,85.66l-96,96a8,8,0,0,1-11.32,0l-40-40a8,8,0,0,1,11.32-11.32L104,164.69l90.34-90.35a8,8,0,0,1,11.32,11.32Z\"/>","x":"<path d=\"M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM181.66,170.34a8,8,0,0,1-11.32,11.32L128,139.31,85.66,181.66a8,8,0,0,1-11.32-11.32L116.69,128,74.34,85.66A8,8,0,0,1,85.66,74.34L128,116.69l42.34-42.35a8,8,0,0,1,11.32,11.32L139.31,128Z\"/>","plus":"<path d=\"M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM184,136H136v48a8,8,0,0,1-16,0V136H72a8,8,0,0,1,0-16h48V72a8,8,0,0,1,16,0v48h48a8,8,0,0,1,0,16Z\"/>","ext":"<path d=\"M200,64V168a8,8,0,0,1-13.66,5.66L140,127.31,69.66,197.66a8,8,0,0,1-11.32-11.32L128.69,116,82.34,69.66A8,8,0,0,1,88,56H192A8,8,0,0,1,200,64Z\"/>","route":"<path d=\"M228,200a28,28,0,0,1-54.83,8H72a48,48,0,0,1,0-96h96a24,24,0,0,0,0-48H72a8,8,0,0,1,0-16h96a40,40,0,0,1,0,80H72a32,32,0,0,0,0,64H173.17A28,28,0,0,1,228,200Z\"/>","cal":"<path d=\"M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM84,184a12,12,0,1,1,12-12A12,12,0,0,1,84,184Zm44,0a12,12,0,1,1,12-12A12,12,0,0,1,128,184Zm0-40a12,12,0,1,1,12-12A12,12,0,0,1,128,144Zm44,40a12,12,0,1,1,12-12A12,12,0,0,1,172,184Zm0-40a12,12,0,1,1,12-12A12,12,0,0,1,172,144Zm36-64H48V48H72v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24Z\"/>","seat":"<path d=\"M240,132a28,28,0,0,1-24,27.71V200a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V159.71A28,28,0,1,1,72,132v36a8,8,0,0,0,16,0V144h80v24a8,8,0,0,0,16,0V132a28,28,0,0,1,56,0ZM44,88a44.06,44.06,0,0,1,43.81,40h80.38A44.06,44.06,0,0,1,212,88a4,4,0,0,0,4-4V72a40,40,0,0,0-40-40H80A40,40,0,0,0,40,72V84A4,4,0,0,0,44,88Z\"/>","euro":"<path d=\"M226,88.08c-.4-1-.82-2-1.25-3a87.93,87.93,0,0,0-30.17-37H216a8,8,0,0,0,0-16H112a88.12,88.12,0,0,0-87.72,81A32,32,0,0,0,0,144a8,8,0,0,0,16,0,16,16,0,0,1,8.57-14.16A87.69,87.69,0,0,0,46,178.22l12.56,35.16A16,16,0,0,0,73.64,224H86.36a16,16,0,0,0,15.07-10.62l1.92-5.38h57.3l1.92,5.38A16,16,0,0,0,177.64,224h12.72a16,16,0,0,0,15.07-10.62L221.64,168H224a24,24,0,0,0,24-24V112A24,24,0,0,0,226,88.08ZM152,72H112a8,8,0,0,1,0-16h40a8,8,0,0,1,0,16Zm28,56a12,12,0,1,1,12-12A12,12,0,0,1,180,128Z\"/>","list":"<path d=\"M224,120v96a8,8,0,0,1-8,8H160a8,8,0,0,1-8-8V164a4,4,0,0,0-4-4H108a4,4,0,0,0-4,4v52a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V120a16,16,0,0,1,4.69-11.31l80-80a16,16,0,0,1,22.62,0l80,80A16,16,0,0,1,224,120Z\"/>","up":"<path d=\"M215.39,163.06A8,8,0,0,1,208,168H48a8,8,0,0,1-5.66-13.66l80-80a8,8,0,0,1,11.32,0l80,80A8,8,0,0,1,215.39,163.06Z\"/>","down":"<path d=\"M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,48,88H208a8,8,0,0,1,5.66,13.66Z\"/>","send":"<path d=\"M231.4,44.34s0,.1,0,.15l-58.2,191.94a15.88,15.88,0,0,1-14,11.51q-.69.06-1.38.06a15.86,15.86,0,0,1-14.42-9.15L107,164.15a4,4,0,0,1,.77-4.58l57.92-57.92a8,8,0,0,0-11.31-11.31L96.43,148.26a4,4,0,0,1-4.58.77L17.08,112.64a16,16,0,0,1,2.49-29.8l191.94-58.2.15,0A16,16,0,0,1,231.4,44.34Z\"/>","stop":"<path d=\"M216,56V200a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V56A16,16,0,0,1,56,40H200A16,16,0,0,1,216,56Z\"/>","undo":"<path d=\"M224,128a96,96,0,0,1-94.71,96H128A95.38,95.38,0,0,1,62.1,197.8a8,8,0,0,1,11-11.63A80,80,0,1,0,71.43,71.39a3.07,3.07,0,0,1-.26.25L60.63,81.29l17,17A8,8,0,0,1,72,112H24a8,8,0,0,1-8-8V56A8,8,0,0,1,29.66,50.3L49.31,70,60.25,60A96,96,0,0,1,224,128Z\"/>","lock":"<path d=\"M208,80H176V56a48,48,0,0,0-96,0V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80ZM96,56a32,32,0,0,1,64,0V80H96Z\"/>","globe":"<path d=\"M128,24h0A104,104,0,1,0,232,128,104.12,104.12,0,0,0,128,24Zm87.62,96H175.79C174,83.49,159.94,57.67,148.41,42.4A88.19,88.19,0,0,1,215.63,120ZM96.23,136h63.54c-2.31,41.61-22.23,67.11-31.77,77C118.45,203.1,98.54,177.6,96.23,136Zm0-16C98.54,78.39,118.46,52.89,128,43c9.55,9.93,29.46,35.43,31.77,77Zm52.18,93.6c11.53-15.27,25.56-41.09,27.38-77.6h39.84A88.19,88.19,0,0,1,148.41,213.6Z\"/>","bulb":"<path d=\"M176,232a8,8,0,0,1-8,8H88a8,8,0,0,1,0-16h80A8,8,0,0,1,176,232Zm40-128a87.55,87.55,0,0,1-33.64,69.21A16.24,16.24,0,0,0,176,186v6a16,16,0,0,1-16,16H96a16,16,0,0,1-16-16v-6a16,16,0,0,0-6.23-12.66A87.59,87.59,0,0,1,40,104.49C39.74,56.83,78.26,17.14,125.88,16A88,88,0,0,1,216,104Zm-32.11-9.34a57.6,57.6,0,0,0-46.56-46.55,8,8,0,0,0-2.66,15.78c16.57,2.79,30.63,16.85,33.44,33.45A8,8,0,0,0,176,104a9,9,0,0,0,1.35-.11A8,8,0,0,0,183.89,94.66Z\"/>","train":"<path d=\"M184,24H72A32,32,0,0,0,40,56V184a32,32,0,0,0,32,32h8L65.6,235.2a8,8,0,1,0,12.8,9.6L100,216h56l21.6,28.8a8,8,0,1,0,12.8-9.6L176,216h8a32,32,0,0,0,32-32V56A32,32,0,0,0,184,24Zm0,176H72a16,16,0,0,1-16-16V136H200v48A16,16,0,0,1,184,200ZM96,172a12,12,0,1,1-12-12A12,12,0,0,1,96,172Zm88,0a12,12,0,1,1-12-12A12,12,0,0,1,184,172Z\"/>","palette":"<path d=\"M200.77,53.89A103.27,103.27,0,0,0,128,24h-1.07A104,104,0,0,0,24,128c0,43,26.58,79.06,69.36,94.17A32,32,0,0,0,136,192a16,16,0,0,1,16-16h46.21a31.81,31.81,0,0,0,31.2-24.88,104.43,104.43,0,0,0,2.59-24A103.28,103.28,0,0,0,200.77,53.89ZM84,168a12,12,0,1,1,12-12A12,12,0,0,1,84,168Zm0-56a12,12,0,1,1,12-12A12,12,0,0,1,84,112Zm44-24a12,12,0,1,1,12-12A12,12,0,0,1,128,88Zm44,24a12,12,0,1,1,12-12A12,12,0,0,1,172,112Z\"/>","edit":"<path d=\"M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM192,108.68,147.31,64l24-24L216,84.68Z\"/>","right":"<path d=\"M181.66,133.66l-80,80A8,8,0,0,1,88,208V48a8,8,0,0,1,13.66-5.66l80,80A8,8,0,0,1,181.66,133.66Z\"/>","ticket":"<path d=\"M232,104a8,8,0,0,0,8-8V64a16,16,0,0,0-16-16H32A16,16,0,0,0,16,64V96a8,8,0,0,0,8,8,24,24,0,0,1,0,48,8,8,0,0,0-8,8v32a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V160a8,8,0,0,0-8-8,24,24,0,0,1,0-48ZM32,167.2a40,40,0,0,0,0-78.4V64H88V192H32Z\"/>","fire":"<path d=\"M143.38,17.85a8,8,0,0,0-12.63,3.41l-22,60.41L84.59,58.26a8,8,0,0,0-11.93.89C51,87.53,40,116.08,40,144a88,88,0,0,0,176,0C216,84.55,165.21,36,143.38,17.85Zm40.51,135.49a57.6,57.6,0,0,1-46.56,46.55A7.65,7.65,0,0,1,136,200a8,8,0,0,1-1.32-15.89c16.57-2.79,30.63-16.85,33.44-33.45a8,8,0,0,1,15.78,2.68Z\"/>"},"d":{"back":"<path d=\"M160,48V208L80,128Z\" opacity=\"0.2\"/><path d=\"M163.06,40.61a8,8,0,0,0-8.72,1.73l-80,80a8,8,0,0,0,0,11.32l80,80A8,8,0,0,0,168,208V48A8,8,0,0,0,163.06,40.61ZM152,188.69,91.31,128,152,67.31Z\"/>","prefs":"<path d=\"M128,80a24,24,0,1,1-24-24A24,24,0,0,1,128,80Zm40,72a24,24,0,1,0,24,24A24,24,0,0,0,168,152Z\" opacity=\"0.2\"/><path d=\"M40,88H73a32,32,0,0,0,62,0h81a8,8,0,0,0,0-16H135a32,32,0,0,0-62,0H40a8,8,0,0,0,0,16Zm64-24A16,16,0,1,1,88,80,16,16,0,0,1,104,64ZM216,168H199a32,32,0,0,0-62,0H40a8,8,0,0,0,0,16h97a32,32,0,0,0,62,0h17a8,8,0,0,0,0-16Zm-48,24a16,16,0,1,1,16-16A16,16,0,0,1,168,192Z\"/>","spark":"<path d=\"M194.82,151.43l-55.09,20.3-20.3,55.09a7.92,7.92,0,0,1-14.86,0l-20.3-55.09-55.09-20.3a7.92,7.92,0,0,1,0-14.86l55.09-20.3,20.3-55.09a7.92,7.92,0,0,1,14.86,0l20.3,55.09,55.09,20.3A7.92,7.92,0,0,1,194.82,151.43Z\" opacity=\"0.2\"/><path d=\"M197.58,129.06,146,110l-19-51.62a15.92,15.92,0,0,0-29.88,0L78,110l-51.62,19a15.92,15.92,0,0,0,0,29.88L78,178l19,51.62a15.92,15.92,0,0,0,29.88,0L146,178l51.62-19a15.92,15.92,0,0,0,0-29.88ZM137,164.22a8,8,0,0,0-4.74,4.74L112,223.85,91.78,169A8,8,0,0,0,87,164.22L32.15,144,87,123.78A8,8,0,0,0,91.78,119L112,64.15,132.22,119a8,8,0,0,0,4.74,4.74L191.85,144ZM144,40a8,8,0,0,1,8-8h16V16a8,8,0,0,1,16,0V32h16a8,8,0,0,1,0,16H184V64a8,8,0,0,1-16,0V48H152A8,8,0,0,1,144,40ZM248,88a8,8,0,0,1-8,8h-8v8a8,8,0,0,1-16,0V96h-8a8,8,0,0,1,0-16h8V72a8,8,0,0,1,16,0v8h8A8,8,0,0,1,248,88Z\"/>","moon":"<path d=\"M227.89,147.89A96,96,0,1,1,108.11,28.11,96.09,96.09,0,0,0,227.89,147.89Z\" opacity=\"0.2\"/><path d=\"M233.54,142.23a8,8,0,0,0-8-2,88.08,88.08,0,0,1-109.8-109.8,8,8,0,0,0-10-10,104.84,104.84,0,0,0-52.91,37A104,104,0,0,0,136,224a103.09,103.09,0,0,0,62.52-20.88,104.84,104.84,0,0,0,37-52.91A8,8,0,0,0,233.54,142.23ZM188.9,190.34A88,88,0,0,1,65.66,67.11a89,89,0,0,1,31.4-26A106,106,0,0,0,96,56,104.11,104.11,0,0,0,200,160a106,106,0,0,0,14.92-1.06A89,89,0,0,1,188.9,190.34Z\"/>","alert":"<path d=\"M215.46,216H40.54C27.92,216,20,202.79,26.13,192.09L113.59,40.22c6.3-11,22.52-11,28.82,0l87.46,151.87C236,202.79,228.08,216,215.46,216Z\" opacity=\"0.2\"/><path d=\"M236.8,188.09,149.35,36.22h0a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM222.93,203.8a8.5,8.5,0,0,1-7.48,4.2H40.55a8.5,8.5,0,0,1-7.48-4.2,7.59,7.59,0,0,1,0-7.72L120.52,44.21a8.75,8.75,0,0,1,15,0l87.45,151.87A7.59,7.59,0,0,1,222.93,203.8ZM120,144V104a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,180Z\"/>","info":"<path d=\"M224,128a96,96,0,1,1-96-96A96,96,0,0,1,224,128Z\" opacity=\"0.2\"/><path d=\"M144,176a8,8,0,0,1-8,8,16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40A8,8,0,0,1,144,176Zm88-48A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128ZM124,96a12,12,0,1,0-12-12A12,12,0,0,0,124,96Z\"/>","check":"<path d=\"M232,56V200a16,16,0,0,1-16,16H40a16,16,0,0,1-16-16V56A16,16,0,0,1,40,40H216A16,16,0,0,1,232,56Z\" opacity=\"0.2\"/><path d=\"M205.66,85.66l-96,96a8,8,0,0,1-11.32,0l-40-40a8,8,0,0,1,11.32-11.32L104,164.69l90.34-90.35a8,8,0,0,1,11.32,11.32Z\"/>","x":"<path d=\"M216,56V200a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V56A16,16,0,0,1,56,40H200A16,16,0,0,1,216,56Z\" opacity=\"0.2\"/><path d=\"M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z\"/>","plus":"<path d=\"M216,56V200a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V56A16,16,0,0,1,56,40H200A16,16,0,0,1,216,56Z\" opacity=\"0.2\"/><path d=\"M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z\"/>","ext":"<path d=\"M192,64V168L88,64Z\" opacity=\"0.2\"/><path d=\"M192,56H88a8,8,0,0,0-5.66,13.66L128.69,116,58.34,186.34a8,8,0,0,0,11.32,11.32L140,127.31l46.34,46.35A8,8,0,0,0,200,168V64A8,8,0,0,0,192,56Zm-8,92.69-38.34-38.34h0L107.31,72H184Z\"/>","route":"<path d=\"M224,200a24,24,0,1,1-24-24A24,24,0,0,1,224,200Z\" opacity=\"0.2\"/><path d=\"M200,168a32.06,32.06,0,0,0-31,24H72a32,32,0,0,1,0-64h96a40,40,0,0,0,0-80H72a8,8,0,0,0,0,16h96a24,24,0,0,1,0,48H72a48,48,0,0,0,0,96h97a32,32,0,1,0,31-40Zm0,48a16,16,0,1,1,16-16A16,16,0,0,1,200,216Z\"/>","cal":"<path d=\"M216,48V88H40V48a8,8,0,0,1,8-8H208A8,8,0,0,1,216,48Z\" opacity=\"0.2\"/><path d=\"M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Zm-68-76a12,12,0,1,1-12-12A12,12,0,0,1,140,132Zm44,0a12,12,0,1,1-12-12A12,12,0,0,1,184,132ZM96,172a12,12,0,1,1-12-12A12,12,0,0,1,96,172Zm44,0a12,12,0,1,1-12-12A12,12,0,0,1,140,172Zm44,0a12,12,0,1,1-12-12A12,12,0,0,1,184,172Z\"/>","seat":"<path d=\"M240,128a32,32,0,0,1-32,32v40a8,8,0,0,1-8,8H56a8,8,0,0,1-8-8V160a32,32,0,0,1,0-64V72A32,32,0,0,1,80,40h96a32,32,0,0,1,32,32V96A32,32,0,0,1,240,128Z\" opacity=\"0.2\"/><path d=\"M216,88.8V72a40,40,0,0,0-40-40H80A40,40,0,0,0,40,72V88.8a40,40,0,0,0,0,78.4V200a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V167.2a40,40,0,0,0,0-78.4ZM80,48h96a24,24,0,0,1,24,24V88.8A40.07,40.07,0,0,0,168,128H88A40.07,40.07,0,0,0,56,88.8V72A24,24,0,0,1,80,48ZM208.39,152H208a8,8,0,0,0-8,8v40H56V160a8,8,0,0,0-8-8h-.39A24,24,0,1,1,72,128v40a8,8,0,0,0,16,0V144h80v24a8,8,0,0,0,16,0V128a24,24,0,1,1,24.39,24Z\"/>","euro":"<path d=\"M240,112v32a16,16,0,0,1-16,16h-8l-18.1,50.69a8,8,0,0,1-7.54,5.31H177.64a8,8,0,0,1-7.54-5.31L166.29,200H97.71L93.9,210.69A8,8,0,0,1,86.36,216H73.64a8,8,0,0,1-7.54-5.31L53,174a79.7,79.7,0,0,1-21-54h0a80,80,0,0,1,80-80h32a80,80,0,0,1,73.44,48.22,82.22,82.22,0,0,1,2.9,7.78H224A16,16,0,0,1,240,112Z\" opacity=\"0.2\"/><path d=\"M192,116a12,12,0,1,1-12-12A12,12,0,0,1,192,116ZM152,64H112a8,8,0,0,0,0,16h40a8,8,0,0,0,0-16Zm96,48v32a24,24,0,0,1-24,24h-2.36l-16.21,45.38A16,16,0,0,1,190.36,224H177.64a16,16,0,0,1-15.07-10.62L160.65,208h-57.3l-1.92,5.38A16,16,0,0,1,86.36,224H73.64a16,16,0,0,1-15.07-10.62L46,178.22a87.69,87.69,0,0,1-21.44-48.38A16,16,0,0,0,16,144a8,8,0,0,1-16,0,32,32,0,0,1,24.28-31A88.12,88.12,0,0,1,112,32H216a8,8,0,0,1,0,16H194.61a87.93,87.93,0,0,1,30.17,37c.43,1,.85,2,1.25,3A24,24,0,0,1,248,112Zm-16,0a8,8,0,0,0-8-8h-3.66a8,8,0,0,1-7.64-5.6A71.9,71.9,0,0,0,144,48H112A72,72,0,0,0,58.91,168.64a8,8,0,0,1,1.64,2.71L73.64,208H86.36l3.82-10.69A8,8,0,0,1,97.71,192h68.58a8,8,0,0,1,7.53,5.31L177.64,208h12.72l18.11-50.69A8,8,0,0,1,216,152h8a8,8,0,0,0,8-8Z\"/>","list":"<path d=\"M216,120v96H152V152H104v64H40V120a8,8,0,0,1,2.34-5.66l80-80a8,8,0,0,1,11.32,0l80,80A8,8,0,0,1,216,120Z\" opacity=\"0.2\"/><path d=\"M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z\"/>","up":"<path d=\"M208,160H48l80-80Z\" opacity=\"0.2\"/><path d=\"M213.66,154.34l-80-80a8,8,0,0,0-11.32,0l-80,80A8,8,0,0,0,48,168H208a8,8,0,0,0,5.66-13.66ZM67.31,152,128,91.31,188.69,152Z\"/>","down":"<path d=\"M208,96l-80,80L48,96Z\" opacity=\"0.2\"/><path d=\"M215.39,92.94A8,8,0,0,0,208,88H48a8,8,0,0,0-5.66,13.66l80,80a8,8,0,0,0,11.32,0l80-80A8,8,0,0,0,215.39,92.94ZM128,164.69,67.31,104H188.69Z\"/>","send":"<path d=\"M223.69,42.18l-58.22,192a8,8,0,0,1-14.92,1.25L108,148,20.58,105.45a8,8,0,0,1,1.25-14.92l192-58.22A8,8,0,0,1,223.69,42.18Z\" opacity=\"0.2\"/><path d=\"M227.32,28.68a16,16,0,0,0-15.66-4.08l-.15,0L19.57,82.84a16,16,0,0,0-2.49,29.8L102,154l41.3,84.87A15.86,15.86,0,0,0,157.74,248q.69,0,1.38-.06a15.88,15.88,0,0,0,14-11.51l58.2-191.94c0-.05,0-.1,0-.15A16,16,0,0,0,227.32,28.68ZM157.83,231.85l-.05.14,0-.07-40.06-82.3,48-48a8,8,0,0,0-11.31-11.31l-48,48L24.08,98.25l-.07,0,.14,0L216,40Z\"/>","stop":"<path d=\"M208,56V200a8,8,0,0,1-8,8H56a8,8,0,0,1-8-8V56a8,8,0,0,1,8-8H200A8,8,0,0,1,208,56Z\" opacity=\"0.2\"/><path d=\"M200,40H56A16,16,0,0,0,40,56V200a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V56A16,16,0,0,0,200,40Zm0,160H56V56H200V200Z\"/>","undo":"<path d=\"M216,128a88,88,0,1,1-88-88A88,88,0,0,1,216,128Z\" opacity=\"0.2\"/><path d=\"M224,128a96,96,0,0,1-94.71,96H128A95.38,95.38,0,0,1,62.1,197.8a8,8,0,0,1,11-11.63A80,80,0,1,0,71.43,71.39a3.07,3.07,0,0,1-.26.25L44.59,96H72a8,8,0,0,1,0,16H24a8,8,0,0,1-8-8V56a8,8,0,0,1,16,0V85.8L60.25,60A96,96,0,0,1,224,128Z\"/>","lock":"<path d=\"M216,96V208a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V96a8,8,0,0,1,8-8H208A8,8,0,0,1,216,96Z\" opacity=\"0.2\"/><path d=\"M208,80H176V56a48,48,0,0,0-96,0V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80ZM96,56a32,32,0,0,1,64,0V80H96ZM208,208H48V96H208V208Z\"/>","globe":"<path d=\"M224,128a96,96,0,1,1-96-96A96,96,0,0,1,224,128Z\" opacity=\"0.2\"/><path d=\"M128,24h0A104,104,0,1,0,232,128,104.12,104.12,0,0,0,128,24Zm87.62,96H175.79C174,83.49,159.94,57.67,148.41,42.4A88.19,88.19,0,0,1,215.63,120ZM96.23,136h63.54c-2.31,41.61-22.23,67.11-31.77,77C118.45,203.1,98.54,177.6,96.23,136Zm0-16C98.54,78.39,118.46,52.89,128,43c9.55,9.93,29.46,35.43,31.77,77Zm11.36-77.6C96.06,57.67,82,83.49,80.21,120H40.37A88.19,88.19,0,0,1,107.59,42.4ZM40.37,136H80.21c1.82,36.51,15.85,62.33,27.38,77.6A88.19,88.19,0,0,1,40.37,136Zm108,77.6c11.53-15.27,25.56-41.09,27.38-77.6h39.84A88.19,88.19,0,0,1,148.41,213.6Z\"/>","bulb":"<path d=\"M208,104a79.86,79.86,0,0,1-30.59,62.92A24.29,24.29,0,0,0,168,186v6a8,8,0,0,1-8,8H96a8,8,0,0,1-8-8v-6a24.11,24.11,0,0,0-9.3-19A79.87,79.87,0,0,1,48,104.45C47.76,61.09,82.72,25,126.07,24A80,80,0,0,1,208,104Z\" opacity=\"0.2\"/><path d=\"M176,232a8,8,0,0,1-8,8H88a8,8,0,0,1,0-16h80A8,8,0,0,1,176,232Zm40-128a87.55,87.55,0,0,1-33.64,69.21A16.24,16.24,0,0,0,176,186v6a16,16,0,0,1-16,16H96a16,16,0,0,1-16-16v-6a16,16,0,0,0-6.23-12.66A87.59,87.59,0,0,1,40,104.49C39.74,56.83,78.26,17.14,125.88,16A88,88,0,0,1,216,104Zm-16,0a72,72,0,0,0-73.74-72c-39,.92-70.47,33.39-70.26,72.39a71.65,71.65,0,0,0,27.64,56.3A32,32,0,0,1,96,186v6h64v-6a32.15,32.15,0,0,1,12.47-25.35A71.65,71.65,0,0,0,200,104Zm-16.11-9.34a57.6,57.6,0,0,0-46.56-46.55,8,8,0,0,0-2.66,15.78c16.57,2.79,30.63,16.85,33.44,33.45A8,8,0,0,0,176,104a9,9,0,0,0,1.35-.11A8,8,0,0,0,183.89,94.66Z\"/>","train":"<path d=\"M208,56v72H48V56A24,24,0,0,1,72,32H184A24,24,0,0,1,208,56Z\" opacity=\"0.2\"/><path d=\"M184,24H72A32,32,0,0,0,40,56V184a32,32,0,0,0,32,32h8L65.6,235.2a8,8,0,1,0,12.8,9.6L100,216h56l21.6,28.8a8,8,0,1,0,12.8-9.6L176,216h8a32,32,0,0,0,32-32V56A32,32,0,0,0,184,24ZM72,40H184a16,16,0,0,1,16,16v64H56V56A16,16,0,0,1,72,40ZM184,200H72a16,16,0,0,1-16-16V136H200v48A16,16,0,0,1,184,200ZM96,172a12,12,0,1,1-12-12A12,12,0,0,1,96,172Zm88,0a12,12,0,1,1-12-12A12,12,0,0,1,184,172Z\"/>","palette":"<path d=\"M224,127.17a96.48,96.48,0,0,1-2.39,22.18A24,24,0,0,1,198.21,168H152a24,24,0,0,0-24,24,24,24,0,0,1-32,22.61C58.73,201.44,32,169.81,32,128a96,96,0,0,1,95-96C179.84,31.47,223.55,74.35,224,127.17Z\" opacity=\"0.2\"/><path d=\"M200.77,53.89A103.27,103.27,0,0,0,128,24h-1.07A104,104,0,0,0,24,128c0,43,26.58,79.06,69.36,94.17A32,32,0,0,0,136,192a16,16,0,0,1,16-16h46.21a31.81,31.81,0,0,0,31.2-24.88,104.43,104.43,0,0,0,2.59-24A103.28,103.28,0,0,0,200.77,53.89Zm13,93.71A15.89,15.89,0,0,1,198.21,160H152a32,32,0,0,0-32,32,16,16,0,0,1-21.31,15.07C62.49,194.3,40,164,40,128a88,88,0,0,1,87.09-88h.9a88.35,88.35,0,0,1,88,87.25A88.86,88.86,0,0,1,213.81,147.6ZM140,76a12,12,0,1,1-12-12A12,12,0,0,1,140,76ZM96,100A12,12,0,1,1,84,88,12,12,0,0,1,96,100Zm0,56a12,12,0,1,1-12-12A12,12,0,0,1,96,156Zm88-56a12,12,0,1,1-12-12A12,12,0,0,1,184,100Z\"/>","edit":"<path d=\"M221.66,90.34,192,120,136,64l29.66-29.66a8,8,0,0,1,11.31,0L221.66,79A8,8,0,0,1,221.66,90.34Z\" opacity=\"0.2\"/><path d=\"M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM92.69,208H48V163.31l88-88L180.69,120ZM192,108.68,147.31,64l24-24L216,84.68Z\"/>","right":"<path d=\"M176,128,96,208V48Z\" opacity=\"0.2\"/><path d=\"M181.66,122.34l-80-80A8,8,0,0,0,88,48V208a8,8,0,0,0,13.66,5.66l80-80A8,8,0,0,0,181.66,122.34ZM104,188.69V67.31L164.69,128Z\"/>","ticket":"<path d=\"M200,128a32,32,0,0,0,32,32v32a8,8,0,0,1-8,8H96V56H224a8,8,0,0,1,8,8V96A32,32,0,0,0,200,128Z\" opacity=\"0.2\"/><path d=\"M232,104a8,8,0,0,0,8-8V64a16,16,0,0,0-16-16H32A16,16,0,0,0,16,64V96a8,8,0,0,0,8,8,24,24,0,0,1,0,48,8,8,0,0,0-8,8v32a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V160a8,8,0,0,0-8-8,24,24,0,0,1,0-48ZM32,167.2a40,40,0,0,0,0-78.4V64H88V192H32Zm192,0V192H104V64H224V88.8a40,40,0,0,0,0,78.4Z\"/>","fire":"<path d=\"M208,144a80,80,0,0,1-160,0c0-30.57,14.42-58.26,31-80l33,32,26.27-72C159.86,41.92,208,88.15,208,144Z\" opacity=\"0.2\"/><path d=\"M183.89,153.34a57.6,57.6,0,0,1-46.56,46.55A8.75,8.75,0,0,1,136,200a8,8,0,0,1-1.32-15.89c16.57-2.79,30.63-16.85,33.44-33.45a8,8,0,0,1,15.78,2.68ZM216,144a88,88,0,0,1-176,0c0-27.92,11-56.47,32.66-84.85a8,8,0,0,1,11.93-.89l24.12,23.41,22-60.41a8,8,0,0,1,12.63-3.41C165.21,36,216,84.55,216,144Zm-16,0c0-46.09-35.79-85.92-58.21-106.33L119.52,98.74a8,8,0,0,1-13.09,3L80.06,76.16C64.09,99.21,56,122,56,144a72,72,0,0,0,144,0Z\"/>"}}};
-
 function ic(n, cls = 'ico', v = '') {
   const w = v === 'fill' ? 'f' : v === 'duo' ? 'd' : 'b';
   return `<svg class="${cls}" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">${ICONS.ph[w][n] || ICONS.ph.b[n]}</svg>`;
 }
-/* 标志：1a 精修版的简化版（32px 以下不画残影） */
+/* Logo: station P (1a), simplified form for small sizes */
 const logo = () => `<svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="15" fill="#00A37A"/><g transform="translate(6.4 6.4) scale(.8)"><path d="M19 54V15h12.5a11.5 11.5 0 0 1 0 23H19" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><circle cx="19" cy="38" r="5.5" fill="#00A37A" stroke="#fff" stroke-width="4"/><circle cx="50" cy="11.5" r="8.5" fill="#FFD43B"/></g></svg>`;
 
-/* ================= 工具 ================= */
+/* ================= Language ================= */
+let lang = 'en';
+try { const s = localStorage.getItem('ph-lang'); if (s === 'zh' || s === 'en') lang = s; } catch (e) { /* storage unavailable: keep default */ }
+const T = (en, zh) => (lang === 'zh' ? zh : en);
+const L = o => (o && typeof o === 'object' ? (lang === 'zh' ? o.zh : o.en) : o);
+function setLang(l) {
+  lang = l;
+  try { localStorage.setItem('ph-lang', l); } catch (e) { /* ignore */ }
+  document.documentElement.lang = l === 'zh' ? 'zh-CN' : 'en';
+  document.title = T('Passhopper Prototype', 'Passhopper 原型');
+}
+setLang(lang);
+
+/* ================= Helpers ================= */
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const D = s => new Date(s + 'T00:00:00Z');
 const addDays = (s, n) => { const d = D(s); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
 const span = (a, b) => Math.round((D(b) - D(a)) / 864e5);
-const WD = '日一二三四五六';
-const fmtLong = s => { const d = D(s); return `${d.getUTCMonth() + 1}月${d.getUTCDate()}日 周${WD[d.getUTCDay()]}`; };
-const fmtMD = s => { const d = D(s); return `${d.getUTCMonth() + 1}/${d.getUTCDate()}`; };
-const fmtMDW = s => `${fmtMD(s)} 周${WD[D(s).getUTCDay()]}`;
+const WD_ZH = '日一二三四五六', WD_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MON_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const wd = s => T(WD_EN[D(s).getUTCDay()], '周' + WD_ZH[D(s).getUTCDay()]);
+const mon = s => T(MON_EN[D(s).getUTCMonth()], `${D(s).getUTCMonth() + 1}月`);
+const fmtMD = s => { const d = D(s); return T(`${MON_EN[d.getUTCMonth()]} ${d.getUTCDate()}`, `${d.getUTCMonth() + 1}/${d.getUTCDate()}`); };
+const fmtMDW = s => T(`${wd(s)}, ${fmtMD(s)}`, `${fmtMD(s)} ${wd(s)}`);
+const fmtLong = s => { const d = D(s); return T(`${wd(s)}, ${MON_EN[d.getUTCMonth()]} ${d.getUTCDate()}`, `${d.getUTCMonth() + 1}月${d.getUTCDate()}日 ${wd(s)}`); };
+const durShort = m => T(`${Math.floor(m / 60)}h ${String(m % 60).padStart(2, '0')}m`, `${Math.floor(m / 60)}h${String(m % 60).padStart(2, '0')}`);
+const durLong = m => T(durShort(m), `${Math.floor(m / 60)}小时${String(m % 60).padStart(2, '0')}分`);
+const nightsTxt = n => T(`${n} night${n === 1 ? '' : 's'}`, `${n}晚`);
 const eur = n => '€' + Math.round(n);
 const eurRange = (a, b) => Math.round(a) === Math.round(b) ? eur(a) : `€${Math.round(a)}–${Math.round(b)}`;
 const lc = cc => `var(--l-${cc})`;
-const ccBadge = cc => `<span class="cc" style="background:${lc(cc)}">${cc}</span>`;
 
-/* ================= 示例数据 ================= */
+/* ================= Sample data ================= */
 const PASSES = [
-  { id: 'f4',  kind: 'flexi', days: 4,  validity: 31, name: '4天 Flexi',  sub: '1个月内', price: 212 },
-  { id: 'f5',  kind: 'flexi', days: 5,  validity: 31, name: '5天 Flexi',  sub: '1个月内', price: 239 },
-  { id: 'f7',  kind: 'flexi', days: 7,  validity: 31, name: '7天 Flexi',  sub: '1个月内', price: 286 },
-  { id: 'f10', kind: 'flexi', days: 10, validity: 61, name: '10天 Flexi', sub: '2个月内', price: 335 },
-  { id: 'c15', kind: 'cont',  days: 15, validity: 15, name: '15天连续',   sub: '连续使用', price: 357 },
-  { id: 'c22', kind: 'cont',  days: 22, validity: 22, name: '22天连续',   sub: '连续使用', price: 440 }
+  { id: 'f4',  kind: 'flexi', days: 4,  validity: 31, name: { en: '4-day Flexi', zh: '4天 Flexi' }, sub: { en: 'within 1 month', zh: '1个月内' }, price: 212 },
+  { id: 'f5',  kind: 'flexi', days: 5,  validity: 31, name: { en: '5-day Flexi', zh: '5天 Flexi' }, sub: { en: 'within 1 month', zh: '1个月内' }, price: 239 },
+  { id: 'f7',  kind: 'flexi', days: 7,  validity: 31, name: { en: '7-day Flexi', zh: '7天 Flexi' }, sub: { en: 'within 1 month', zh: '1个月内' }, price: 286 },
+  { id: 'f10', kind: 'flexi', days: 10, validity: 61, name: { en: '10-day Flexi', zh: '10天 Flexi' }, sub: { en: 'within 2 months', zh: '2个月内' }, price: 335 },
+  { id: 'c15', kind: 'cont',  days: 15, validity: 15, name: { en: '15 days in a row', zh: '15天连续' }, sub: { en: 'continuous', zh: '连续使用' }, price: 357 },
+  { id: 'c22', kind: 'cont',  days: 22, validity: 22, name: { en: '22 days in a row', zh: '22天连续' }, sub: { en: 'continuous', zh: '连续使用' }, price: 440 }
 ];
 const passById = id => PASSES.find(p => p.id === id);
-const SRC = { official: '官方', live: '实时', user: '你填写', ai_estimate: 'AI估算', ai_search: 'AI联网', stale: '待核实' };
+const SRC = {
+  official: { en: 'Official', zh: '官方' }, live: { en: 'Live', zh: '实时' }, user: { en: 'Yours', zh: '你填写' },
+  ai_estimate: { en: 'AI est.', zh: 'AI估算' }, ai_search: { en: 'AI web', zh: 'AI联网' }, stale: { en: 'Check', zh: '待核实' }
+};
 const SRC_DESC = {
-  official: '来自官方网站。原型中为示例数据，正式版会附上网址和核实日期。',
-  live: '来自 Transitous 实时查询的时刻表。',
-  user: '你自己填写的价格，计算时优先使用。',
-  ai_estimate: 'AI 根据已有知识估算，没有经过核实。可以点开火车段改成你查到的价格。',
-  ai_search: 'AI 联网搜索得到，回答附有来源链接。',
-  stale: '这条信息超过 6 个月没有核实，请以官方为准。'
+  official: { en: 'From an official website. In this prototype it is sample data; the app will show the link and the date it was checked.', zh: '来自官方网站。原型中为示例数据，正式版会附上网址和核实日期。' },
+  live: { en: 'Live timetable from Transitous.', zh: '来自 Transitous 实时查询的时刻表。' },
+  user: { en: 'A price you entered. It is used before any estimate.', zh: '你自己填写的价格，计算时优先使用。' },
+  ai_estimate: { en: 'Estimated by AI and not checked. Open the train to enter the price you found.', zh: 'AI 根据已有知识估算，没有经过核实。可以点开火车段改成你查到的价格。' },
+  ai_search: { en: 'Found by AI on the web. The answer links to its sources.', zh: 'AI 联网搜索得到，回答附有来源链接。' },
+  stale: { en: 'Not checked for over 6 months. Confirm it on the official site.', zh: '这条信息超过 6 个月没有核实，请以官方为准。' }
 };
 const LINKS = {
-  DE: ['DB 德铁', 'https://int.bahn.de/en'], CH: ['SBB 瑞士铁路', 'https://www.sbb.ch/en'], IT: ['Trenitalia', 'https://www.trenitalia.com/en.html'],
-  AT: ['ÖBB 奥地利铁路', 'https://www.oebb.at/en/'], CZ: ['ČD 捷克铁路', 'https://www.cd.cz/en/']
+  DE: [{ en: 'Deutsche Bahn', zh: 'DB 德铁' }, 'https://int.bahn.de/en'], CH: [{ en: 'SBB', zh: 'SBB 瑞士铁路' }, 'https://www.sbb.ch/en'],
+  IT: ['Trenitalia', 'https://www.trenitalia.com/en.html'], AT: [{ en: 'ÖBB', zh: 'ÖBB 奥地利铁路' }, 'https://www.oebb.at/en/'], CZ: [{ en: 'České dráhy', zh: 'ČD 捷克铁路' }, 'https://www.cd.cz/en/']
 };
 const STOPS_A = [
-  { id: 's0', zh: '柏林',   local: 'Berlin',   cc: 'DE', date: '2027-07-14', nights: 0, role: 'start', note: '出发地 · 你的居住地' },
-  { id: 's1', zh: '慕尼黑', local: 'München',  cc: 'DE', date: '2027-07-14', nights: 2 },
-  { id: 's2', zh: '苏黎世', local: 'Zürich',   cc: 'CH', date: '2027-07-16', nights: 2 },
-  { id: 's3', zh: '米兰',   local: 'Milano',   cc: 'IT', date: '2027-07-18', nights: 2 },
-  { id: 's4', zh: '威尼斯', local: 'Venezia',  cc: 'IT', date: '2027-07-20', nights: 2 },
-  { id: 's5', zh: '佛罗伦萨', local: 'Firenze', cc: 'IT', date: '2027-07-22', nights: 3 },
-  { id: 's6', zh: '罗马',   local: 'Roma',     cc: 'IT', date: '2027-07-25', nights: 3, note: '坐夜车离开，第二天早上到维也纳' },
-  { id: 's7', zh: '维也纳', local: 'Wien',     cc: 'AT', date: '2027-07-29', nights: 2 },
-  { id: 's8', zh: '布拉格', local: 'Praha',    cc: 'CZ', date: '2027-07-31', nights: 2 },
-  { id: 's9', zh: '柏林',   local: 'Berlin',   cc: 'DE', date: '2027-08-02', nights: 0, role: 'end', note: '回到居住地' }
+  { id: 's0', en: 'Berlin', zh: '柏林', local: 'Berlin', cc: 'DE', date: '2027-07-14', nights: 0, role: 'start', note: { en: 'Start · your home', zh: '出发地 · 你的居住地' } },
+  { id: 's1', en: 'Munich', zh: '慕尼黑', local: 'München', cc: 'DE', date: '2027-07-14', nights: 2 },
+  { id: 's2', en: 'Zurich', zh: '苏黎世', local: 'Zürich', cc: 'CH', date: '2027-07-16', nights: 2 },
+  { id: 's3', en: 'Milan', zh: '米兰', local: 'Milano', cc: 'IT', date: '2027-07-18', nights: 2 },
+  { id: 's4', en: 'Venice', zh: '威尼斯', local: 'Venezia', cc: 'IT', date: '2027-07-20', nights: 2 },
+  { id: 's5', en: 'Florence', zh: '佛罗伦萨', local: 'Firenze', cc: 'IT', date: '2027-07-22', nights: 3 },
+  { id: 's6', en: 'Rome', zh: '罗马', local: 'Roma', cc: 'IT', date: '2027-07-25', nights: 3, note: { en: 'Leaves by night train, arrives in Vienna next morning', zh: '坐夜车离开，第二天早上到维也纳' } },
+  { id: 's7', en: 'Vienna', zh: '维也纳', local: 'Wien', cc: 'AT', date: '2027-07-29', nights: 2 },
+  { id: 's8', en: 'Prague', zh: '布拉格', local: 'Praha', cc: 'CZ', date: '2027-07-31', nights: 2 },
+  { id: 's9', en: 'Berlin', zh: '柏林', local: 'Berlin', cc: 'DE', date: '2027-08-02', nights: 0, role: 'end', note: { en: 'Back home', zh: '回到居住地' } }
 ];
-const seg = (id, after, date, from, fromL, to, toL, cc, num, dep, arr, dur, o = {}) => ({
-  id, after, date, from, fromL, to, toL, cc, num, dep, arr, dur,
-  night: false, home: false, journey: null, res: 'none', fee: 0, resNote: '', quota: '',
+const seg = (id, after, date, from, to, cc, num, dep, arr, mins, o = {}) => ({
+  id, after, date, from, to, cc, num, dep, arr, mins,
+  night: false, home: false, journey: null, res: 'none', fee: 0, resNote: null, quota: null,
   p: { min: 0, mid: 0, max: 0 }, src: 'ai_estimate', resStatus: 'todo', booking: null, ...o
 });
+const QUOTA_NJ = { en: 'Night train couchettes often sell out 1–2 months ahead in summer', zh: '夜车卧铺旺季经常提前一两个月订满' };
 const SEGS_A = [
-  seg('g1', 's0', '2027-07-14', '柏林中央站', 'Berlin Hbf', '慕尼黑中央站', 'München Hbf', 'DE', 'ICE 1005', '08:34', '12:35', '4小时01分', { home: true, p: { min: 30, mid: 60, max: 110 } }),
-  seg('g2', 's1', '2027-07-16', '慕尼黑中央站', 'München Hbf', '苏黎世中央站', 'Zürich HB', 'DE', 'ECE 196', '09:33', '13:01', '3小时28分', { journey: 'out', p: { min: 45, mid: 80, max: 130 } }),
-  seg('g3', 's2', '2027-07-18', '苏黎世中央站', 'Zürich HB', '米兰中央站', 'Milano Centrale', 'CH', 'EC 317', '09:33', '12:50', '3小时17分', { res: 'recommended', resNote: '可选订座，旺季建议订，约 €10', p: { min: 40, mid: 75, max: 110 } }),
-  seg('g4', 's3', '2027-07-20', '米兰中央站', 'Milano Centrale', '威尼斯圣卢西亚站', 'Venezia S. Lucia', 'IT', 'FR 9709', '10:05', '12:30', '2小时25分', { res: 'mandatory', fee: 13, p: { min: 20, mid: 45, max: 60 } }),
-  seg('g5', 's4', '2027-07-22', '威尼斯圣卢西亚站', 'Venezia S. Lucia', '佛罗伦萨新圣母站', 'Firenze S.M.N.', 'IT', 'FR 9417', '10:26', '12:40', '2小时14分', { res: 'mandatory', fee: 13, p: { min: 25, mid: 50, max: 65 } }),
-  seg('g6', 's5', '2027-07-25', '佛罗伦萨新圣母站', 'Firenze S.M.N.', '罗马特米尼站', 'Roma Termini', 'IT', 'FR 9531', '11:10', '12:46', '1小时36分', { res: 'mandatory', fee: 13, p: { min: 20, mid: 45, max: 60 }, resStatus: 'booked', booking: { ref: 'K7Q2XB', seat: '8车 6A', paid: 13 } }),
-  seg('g7', 's6', '2027-07-28', '罗马特米尼站', 'Roma Termini', '维也纳中央站', 'Wien Hbf', 'IT', 'NJ 294', '19:18', '09:59', '14小时41分', { night: true, res: 'mandatory', fee: 40, resNote: '6人卧铺包厢，约 €40', quota: '夜车卧铺旺季经常提前一两个月订满', p: { min: 70, mid: 120, max: 170 } }),
-  seg('g8', 's7', '2027-07-31', '维也纳中央站', 'Wien Hbf', '布拉格中央站', 'Praha hl.n.', 'AT', 'RJ 72', '08:10', '12:08', '3小时58分', { p: { min: 20, mid: 40, max: 60 } }),
-  seg('g9', 's8', '2027-08-02', '布拉格中央站', 'Praha hl.n.', '柏林中央站', 'Berlin Hbf', 'CZ', 'EC 172', '10:27', '14:45', '4小时18分', { journey: 'in', res: 'optional', resNote: '可选订座', p: { min: 30, mid: 50, max: 80 } })
+  seg('g1', 's0', '2027-07-14', 'Berlin Hbf', 'München Hbf', 'DE', 'ICE 1005', '08:34', '12:35', 241, { home: true, p: { min: 30, mid: 60, max: 110 } }),
+  seg('g2', 's1', '2027-07-16', 'München Hbf', 'Zürich HB', 'DE', 'ECE 196', '09:33', '13:01', 208, { journey: 'out', p: { min: 45, mid: 80, max: 130 } }),
+  seg('g3', 's2', '2027-07-18', 'Zürich HB', 'Milano Centrale', 'CH', 'EC 317', '09:33', '12:50', 197, { res: 'recommended', resNote: { en: 'Optional, advised in summer, about €10', zh: '可选订座，旺季建议订，约 €10' }, p: { min: 40, mid: 75, max: 110 } }),
+  seg('g4', 's3', '2027-07-20', 'Milano Centrale', 'Venezia S. Lucia', 'IT', 'FR 9709', '10:05', '12:30', 145, { res: 'mandatory', fee: 13, p: { min: 20, mid: 45, max: 60 } }),
+  seg('g5', 's4', '2027-07-22', 'Venezia S. Lucia', 'Firenze S.M.N.', 'IT', 'FR 9417', '10:26', '12:40', 134, { res: 'mandatory', fee: 13, p: { min: 25, mid: 50, max: 65 } }),
+  seg('g6', 's5', '2027-07-25', 'Firenze S.M.N.', 'Roma Termini', 'IT', 'FR 9531', '11:10', '12:46', 96, { res: 'mandatory', fee: 13, p: { min: 20, mid: 45, max: 60 }, resStatus: 'booked', booking: { ref: 'K7Q2XB', seat: { en: 'Coach 8, 6A', zh: '8车 6A' }, paid: 13 } }),
+  seg('g7', 's6', '2027-07-28', 'Roma Termini', 'Wien Hbf', 'IT', 'NJ 294', '19:18', '09:59', 881, { night: true, res: 'mandatory', fee: 40, resNote: { en: '6-berth couchette, about €40', zh: '6人卧铺包厢，约 €40' }, quota: QUOTA_NJ, p: { min: 70, mid: 120, max: 170 } }),
+  seg('g8', 's7', '2027-07-31', 'Wien Hbf', 'Praha hl.n.', 'AT', 'RJ 72', '08:10', '12:08', 238, { p: { min: 20, mid: 40, max: 60 } }),
+  seg('g9', 's8', '2027-08-02', 'Praha hl.n.', 'Berlin Hbf', 'CZ', 'EC 172', '10:27', '14:45', 258, { journey: 'in', res: 'optional', p: { min: 30, mid: 50, max: 80 } })
 ];
 const clone = o => JSON.parse(JSON.stringify(o));
 function makeTripA() {
-  return { id: 't1', name: '意大利 + 中欧 三周', traveller: { resType: 'europe', country: '德国', cc: 'DE', age: '青年', cls: '二等', count: 1 }, stops: clone(STOPS_A), segs: clone(SEGS_A), passId: null, overrides: {} };
+  return {
+    id: 't1', name: { en: 'Italy & Central Europe', zh: '意大利 + 中欧 三周' },
+    traveller: { resType: 'europe', country: { en: 'Germany', zh: '德国' }, cc: 'DE', age: { en: 'Youth', zh: '青年' }, cls: { en: '2nd class', zh: '二等' }, count: 1 },
+    stops: clone(STOPS_A), segs: clone(SEGS_A), passId: null, overrides: {}
+  };
 }
 function makeTripB(from) {
   const t = clone(from);
@@ -577,12 +602,12 @@ function makeTripB(from) {
   t.stops.find(s => s.id === 's4').nights = 3;
   Object.assign(t.stops.find(s => s.id === 's6'), { date: '2027-07-23', nights: 5 });
   t.segs = t.segs.filter(s => s.id !== 'g6').map(s => s.id !== 'g5' ? s :
-    Object.assign(s, { date: '2027-07-23', to: '罗马特米尼站', toL: 'Roma Termini', num: 'FR 9425', dep: '10:26', arr: '14:15', dur: '3小时49分', p: { min: 30, mid: 60, max: 85 }, src: 'ai_estimate', resStatus: 'todo', booking: null }));
+    Object.assign(s, { date: '2027-07-23', to: 'Roma Termini', num: 'FR 9425', dep: '10:26', arr: '14:15', mins: 229, p: { min: 30, mid: 60, max: 85 }, src: 'ai_estimate', resStatus: 'todo', booking: null }));
   t.passId = null; t.overrides = {};
   return t;
 }
 
-/* ================= 规则引擎（原型简化版，对应开发文档 §3） ================= */
+/* ================= Rules engine (simplified, see DEVELOPMENT.md §3) ================= */
 function dayMap(trip, k) {
   const m = new Map();
   for (const s of trip.segs) { if (!m.has(s.date)) m.set(s.date, { date: s.date, segs: [] }); m.get(s.date).segs.push(s); }
@@ -630,34 +655,35 @@ function currentCost(trip) {
   }
   const passDays = days.filter(d => d.choice === 'pass');
   const errors = [];
-  if (pass.kind === 'flexi' && passDays.length > pass.days) errors.push(`选了 ${passDays.length} 个旅行日，${pass.name} 只有 ${pass.days} 天。`);
+  if (pass.kind === 'flexi' && passDays.length > pass.days) errors.push(T(`You picked ${passDays.length} travel days, but the ${L(pass.name)} has ${pass.days}.`, `选了 ${passDays.length} 个旅行日，${L(pass.name)} 只有 ${pass.days} 天。`));
   if (passDays.length > 1) {
     const sp = span(passDays[0].date, passDays[passDays.length - 1].date) + 1;
-    if (sp > pass.validity) errors.push(`第一个和最后一个旅行日跨了 ${sp} 天，超过了通票 ${pass.validity} 天的有效期。`);
+    if (sp > pass.validity) errors.push(T(`Your first and last travel days are ${sp} days apart, longer than the pass's ${pass.validity}-day validity.`, `第一个和最后一个旅行日跨了 ${sp} 天，超过了通票 ${pass.validity} 天的有效期。`));
   }
   return { pass, days, passDays, fees, tix, feeSegs, tixSegs, total: pass.price + fees + tix, errors };
 }
 function segChoice(trip, s) { const d = dayChoices(trip).find(x => x.date === s.date); return s.home ? 'home' : d.choice; }
 
-/* ================= 状态 ================= */
+/* ================= State ================= */
 const state = {
   trip: makeTripA(), prevTrip: null, aiOpen: false,
   ai: { msgs: [], busy: false, timer: null, pending: null },
   sheet: null, editRoute: false,
-  wizard: { step: 1, resType: 'europe', country: '德国', age: '青年', cls: '二等', count: 1, desc: '' },
-  prefs: { provider: 'deepseek', key: '', show: false, model: 'deepseek-chat', base: '', test: null, encrypt: false, theme: 'system', confirmClear: false },
+  wizard: { step: 1, resType: 'europe', country: 0, age: 'youth', cls: '2', count: 1, desc: '' },
+  prefs: { provider: lang === 'zh' ? 'deepseek' : 'claude', key: '', show: false, model: lang === 'zh' ? 'deepseek-chat' : 'claude-sonnet-5-5', base: '', test: null, encrypt: false, theme: 'system', confirmClear: false },
   openRes: null, flash: null, animateValue: false
 };
 ensurePass(state.trip);
 
-/* ================= 路由 ================= */
+/* ================= Routing ================= */
 const ROUTES = ['home', 'new', 'route', 'days', 'reservations', 'value', 'prefs'];
-const TRIP_TABS = [['route', '路线', 'route'], ['days', '旅行日', 'cal'], ['reservations', '订座', 'seat'], ['value', '回本', 'euro']];
+const TRIP_TABS = [['route', { en: 'Route', zh: '路线' }, 'route'], ['days', { en: 'Days', zh: '旅行日' }, 'cal'], ['reservations', { en: 'Seats', zh: '订座' }, 'seat'], ['value', { en: 'Savings', zh: '回本' }, 'euro']];
+const NAV_LONG = { route: { en: 'Route', zh: '路线' }, days: { en: 'Travel days', zh: '旅行日' }, reservations: { en: 'Seat reservations', zh: '订座' }, value: { en: 'Savings', zh: '回本' } };
 const current = () => { const h = location.hash.replace('#', ''); return ROUTES.includes(h) ? h : 'home'; };
 const go = r => { if (location.hash !== '#' + r) location.hash = r; else render(); };
 const inTripRoute = r => ['route', 'days', 'reservations', 'value'].includes(r);
 
-/* ================= 渲染 ================= */
+/* ================= Render ================= */
 const $ = id => document.getElementById(id);
 function render() {
   const r = current();
@@ -665,9 +691,9 @@ function render() {
   renderTopbar(r, inTrip);
   renderSidenav(r);
   $('tabbar').hidden = !inTrip;
-  $('tabbar').innerHTML = inTrip ? TRIP_TABS.map(([k, label, i]) => `<a href="#${k}" ${k === r ? 'aria-current="page"' : ''}>${ic(i, 'ico', k === r ? 'fill' : '')}<span>${label}</span></a>`).join('') : '';
+  $('tabbar').innerHTML = inTrip ? TRIP_TABS.map(([k, label, i]) => `<a href="#${k}" ${k === r ? 'aria-current="page"' : ''}>${ic(i, 'ico', k === r ? 'fill' : '')}<span>${L(label)}</span></a>`).join('') : '';
   const v = { home: viewHome, new: viewNew, route: viewRoute, days: viewDays, reservations: viewRes, value: viewValue, prefs: viewPrefs }[r];
-  $('view').innerHTML = v() + `<p class="foot-note">原型演示 · 车次、价格、规则均为示例数据<br>Passhopper 与 Interrail / Eurail B.V. 无关联</p>`;
+  $('view').innerHTML = v() + `<p class="foot-note">${T('Prototype · trains, prices and rules are sample data', '原型演示 · 车次、价格、规则均为示例数据')}<br>${T('Passhopper is not affiliated with Interrail / Eurail B.V.', 'Passhopper 与 Interrail / Eurail B.V. 无关联')}</p>`;
   $('view').style.paddingBottom = inTrip ? '' : '48px';
   renderAI();
   renderSheet();
@@ -686,12 +712,14 @@ function countUp() {
 function renderTopbar(r, inTrip) {
   const t = state.trip;
   let left = '', title = '';
-  if (r === 'home') title = `<span class="logo">${logo()}Passhopper<small>通票漫游</small></span>`;
-  else if (inTrip) { left = `<a class="icon-btn back" href="#home" aria-label="返回我的行程">${ic('back')}</a>`; title = esc(t.name); }
-  else if (r === 'new') { left = `<a class="icon-btn back" href="#home" aria-label="返回">${ic('back')}</a>`; title = '新建行程'; }
-  else if (r === 'prefs') { left = `<a class="icon-btn back" href="#home" aria-label="返回">${ic('back')}</a>`; title = '设置'; }
-  const right = (inTrip ? `<button class="ai-btn" data-act="ai-toggle" aria-pressed="${state.aiOpen}"><span class="orb">${ic('spark', 'ico-sm', 'fill')}</span>AI</button>` : '')
-    + (r === 'home' ? `<a class="icon-btn" href="#prefs" aria-label="设置">${ic('prefs')}</a>` : '');
+  const back = label => `<a class="icon-btn back" href="#home" aria-label="${label}">${ic('back')}</a>`;
+  if (r === 'home') title = `<span class="logo">${logo()}Passhopper${lang === 'zh' ? '<small>通票漫游</small>' : ''}</span>`;
+  else if (inTrip) { left = back(T('Back to my trips', '返回我的行程')); title = esc(L(t.name)); }
+  else if (r === 'new') { left = back(T('Back', '返回')); title = T('New trip', '新建行程'); }
+  else if (r === 'prefs') { left = back(T('Back', '返回')); title = T('Settings', '设置'); }
+  const right = `<button class="lang-btn" data-act="lang" aria-label="${T('Switch to Chinese', '切换到英文')}">${T('中文', 'EN')}</button>`
+    + (inTrip ? `<button class="ai-btn" data-act="ai-toggle" aria-pressed="${state.aiOpen}"><span class="orb">${ic('spark', 'ico-sm', 'fill')}</span>AI</button>` : '')
+    + (r === 'home' ? `<a class="icon-btn" href="#prefs" aria-label="${T('Settings', '设置')}">${ic('prefs')}</a>` : '');
   $('topbar').innerHTML = `${left}<div class="title">${title}</div>${right}`;
   $('topbar').style.paddingLeft = r === 'home' ? 'max(16px, env(safe-area-inset-left, 0px))' : '';
 }
@@ -699,30 +727,34 @@ function renderSidenav(r) {
   const t = state.trip;
   $('sidenav').innerHTML = `
     <div class="logo">${logo()}Passhopper</div>
-    <a href="#home" ${r === 'home' ? 'aria-current="page"' : ''}>${ic('list', 'ico', r === 'home' ? 'fill' : '')}我的行程</a>
-    <div class="tripname">当前行程 · ${esc(t.name)}</div>
-    ${TRIP_TABS.map(([k, label, i]) => `<a href="#${k}" ${k === r ? 'aria-current="page"' : ''}>${ic(i, 'ico', k === r ? 'fill' : '')}${label}</a>`).join('')}
+    <a href="#home" ${r === 'home' ? 'aria-current="page"' : ''}>${ic('list', 'ico', r === 'home' ? 'fill' : '')}${T('My trips', '我的行程')}</a>
+    <div class="tripname">${T('Current trip', '当前行程')} · ${esc(L(t.name))}</div>
+    ${TRIP_TABS.map(([k, , i]) => `<a href="#${k}" ${k === r ? 'aria-current="page"' : ''}>${ic(i, 'ico', k === r ? 'fill' : '')}${L(NAV_LONG[k])}</a>`).join('')}
     <div class="spacer"></div>
-    <a href="#prefs" ${r === 'prefs' ? 'aria-current="page"' : ''}>${ic('prefs')}设置</a>`;
+    <a href="#prefs" ${r === 'prefs' ? 'aria-current="page"' : ''}>${ic('prefs')}${T('Settings', '设置')}</a>`;
 }
 
-const badge = src => `<button class="badge src-${src}" data-act="src" data-src="${src}" aria-label="来源：${SRC[src]}，查看说明">${SRC[src]}</button>`;
-const resChip = (s, withFee) => s.res === 'mandatory' ? `<span class="chip chip-must">必须订座${withFee && s.fee ? ' ' + eur(s.fee) : ''}</span>` : s.res === 'recommended' ? `<span class="chip chip-rec">建议订座</span>` : s.res === 'optional' ? `<span class="chip chip-none">可选订座</span>` : '';
-const stopName = (t, id) => t.stops.find(s => s.id === id).zh;
+const badge = src => `<button class="badge src-${src}" data-act="src" data-src="${src}" aria-label="${T('Source', '来源')}: ${L(SRC[src])}">${L(SRC[src])}</button>`;
+const resChip = (s, withFee) => s.res === 'mandatory' ? `<span class="chip chip-must">${T('Seat required', '必须订座')}${withFee && s.fee ? ' ' + eur(s.fee) : ''}</span>`
+  : s.res === 'recommended' ? `<span class="chip chip-rec">${T('Seat advised', '建议订座')}</span>`
+  : s.res === 'optional' ? `<span class="chip chip-none">${T('Seat optional', '可选订座')}</span>` : '';
+const stopById = (t, id) => t.stops.find(s => s.id === id);
 const nextStop = (t, id) => t.stops[t.stops.findIndex(s => s.id === id) + 1];
-const routeOf = (t, s) => `${stopName(t, s.after)} → ${nextStop(t, s.after).zh}`;
+const cityName = s => T(s.en, s.zh);
+const routeOf = (t, s) => `${cityName(stopById(t, s.after))} → ${cityName(nextStop(t, s.after))}`;
 
 function dotsHtml(pass, used) {
   if (pass.kind !== 'flexi') return '';
-  return `<div class="dots" aria-label="已用 ${used} 个旅行日">${Array.from({ length: Math.max(pass.days, used) }, (_, i) => `<i class="${i < used ? (i >= pass.days ? 'over' : 'on') : ''}"></i>`).join('')}</div>`;
+  return `<div class="dots" aria-label="${T(`${used} travel days used`, `已用 ${used} 个旅行日`)}">${Array.from({ length: Math.max(pass.days, used) }, (_, i) => `<i class="${i < used ? (i >= pass.days ? 'over' : 'on') : ''}"></i>`).join('')}</div>`;
 }
+const saveTxt = s => s >= 0 ? `<small>${T('Save', '省')}</small>${eur(s)}` : `<small>${T('Costs', '多花')}</small>${eur(-s)}`;
 function passBar(t, extra) {
   const a = analyze(t), cc = currentCost(t), pass = cc.pass;
   const saving = a.tickets.mid - cc.total, used = cc.passDays.length;
-  return `<a class="passbar" href="#value" aria-label="${pass.name}，预计省 ${eur(saving)}，查看回本详情">
-    <span class="nm">${pass.name}</span>
-    <span class="sv">${saving >= 0 ? `<small>省</small>${eur(saving)}` : `<small>多花</small>${eur(-saving)}`}${ic('right', 'ico-sm')}</span>
-    <span class="meta2">${dotsHtml(pass, used)}<span>${pass.kind === 'flexi' ? `${used}/${pass.days} 旅行日` : pass.sub}</span>${extra ? `<span>· ${extra}</span>` : ''}</span>
+  return `<a class="passbar" href="#value" aria-label="${L(pass.name)}. ${T('See savings', '查看回本详情')}">
+    <span class="nm">${L(pass.name)}</span>
+    <span class="sv">${saveTxt(saving)}${ic('right', 'ico-sm')}</span>
+    <span class="meta2">${dotsHtml(pass, used)}<span>${pass.kind === 'flexi' ? T(`${used}/${pass.days} travel days`, `${used}/${pass.days} 旅行日`) : L(pass.sub)}</span>${extra ? `<span>· ${extra}</span>` : ''}</span>
   </a>`;
 }
 function passCard(t, sub) {
@@ -730,14 +762,14 @@ function passCard(t, sub) {
   const saving = a.tickets.mid - cc.total, used = cc.passDays.length;
   const winStart = used ? cc.passDays[0].date : t.segs[0].date;
   return `<div class="passcard">
-    <div class="pc-top"><div><div class="pc-kicker">GLOBAL PASS</div><div class="pc-name">${pass.name}</div></div><span class="pc-who">${t.traveller.age} · ${t.traveller.cls}</span></div>
-    <div class="pc-big">${saving >= 0 ? `<small>省</small>€<span data-count="${Math.round(saving)}">${Math.round(saving)}</span>` : `<small>多花</small>${eur(-saving)}`}</div>
+    <div class="pc-top"><div><div class="pc-kicker">GLOBAL PASS</div><div class="pc-name">${L(pass.name)}</div></div><span class="pc-who">${L(t.traveller.age)} · ${L(t.traveller.cls)}</span></div>
+    <div class="pc-big">${saving >= 0 ? `<small>${T('Save', '省')}</small>€<span data-count="${Math.round(saving)}">${Math.round(saving)}</span>` : `<small>${T('Costs', '多花')}</small>${eur(-saving)}`}</div>
     <div class="pc-sub">${sub}</div>
-    <div class="pc-foot">${dotsHtml(pass, used)}<span class="pc-valid">${pass.kind === 'flexi' ? `${used}/${pass.days} 旅行日 · ` : ''}${fmtMD(winStart)}–${fmtMD(addDays(winStart, pass.validity - 1))} 有效</span></div>
+    <div class="pc-foot">${dotsHtml(pass, used)}<span class="pc-valid">${pass.kind === 'flexi' ? T(`${used}/${pass.days} travel days · `, `${used}/${pass.days} 旅行日 · `) : ''}${T('valid', '有效期')} ${fmtMD(winStart)}–${fmtMD(addDays(winStart, pass.validity - 1))}</span></div>
   </div>`;
 }
 
-/* ---------- 首页 ---------- */
+/* ---------- Home ---------- */
 function viewHome() {
   const t = state.trip;
   const today = new Date(); const todayS = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())).toISOString().slice(0, 10);
@@ -748,66 +780,67 @@ function viewHome() {
   const resDone = resNeed.filter(s => s.resStatus === 'booked').length;
   const line = t.segs.map((s, i) => `${i === 0 ? '<span class="st"></span>' : ''}<span class="ln" style="background:${lc(s.cc)}"></span><span class="st"></span>`).join('');
   return `
-  <div class="hello"><span class="k">嗨，旅行者</span><h1>${left > 0 ? `还有 <em>${left} 天</em>出发` : '旅途愉快'}</h1></div>
+  <div class="hello"><span class="k">${T('Hi, traveller', '嗨，旅行者')}</span><h1>${left > 0 ? T(`<em>${left} days</em> to go`, `还有 <em>${left} 天</em>出发`) : T('Have a great trip', '旅途愉快')}</h1></div>
   <div class="card trip-card" role="button" tabindex="0" data-act="open-trip">
-    <div class="spread"><h3>${esc(t.name)}</h3><span class="chip chip-pass">${cc.pass.name}</span></div>
+    <div class="spread"><h3>${esc(L(t.name))}</h3><span class="chip chip-pass">${L(cc.pass.name)}</span></div>
     <div class="mini-line" aria-hidden="true">${line}</div>
-    <div class="city-row">${t.stops.slice(0, -1).map(s => `<span>${s.zh}</span>`).join('')}</div>
+    <div class="city-row">${t.stops.slice(0, -1).map(s => `<span>${cityName(s)}</span>`).join('')}</div>
     <div class="stats">
-      <div class="stat"><b>${fmtMD(start)}</b><span>出发 · ${span(start, end) + 1}天</span></div>
-      <div class="stat"><b>${t.stops.length - 2}</b><span>座城市</span></div>
-      <div class="stat"><b>${eur(cc.total)}</b><span>预计花费</span></div>
+      <div class="stat"><b>${fmtMD(start)}</b><span>${T(`${span(start, end) + 1} days`, `出发 · ${span(start, end) + 1}天`)}</span></div>
+      <div class="stat"><b>${t.stops.length - 2}</b><span>${T('cities', '座城市')}</span></div>
+      <div class="stat"><b>${eur(cc.total)}</b><span>${T('est. cost', '预计花费')}</span></div>
     </div>
-    <div class="stack" style="gap:6px"><div class="spread small"><span class="muted">订座进度</span><b>${resDone}/${resNeed.length}</b></div><div class="bar"><i style="width:${resNeed.length ? resDone / resNeed.length * 100 : 100}%"></i></div></div>
+    <div class="stack" style="gap:6px"><div class="spread small"><span class="muted">${T('Seat reservations', '订座进度')}</span><b>${resDone}/${resNeed.length}</b></div><div class="bar"><i style="width:${resNeed.length ? resDone / resNeed.length * 100 : 100}%"></i></div></div>
   </div>
-  <div class="card ghost-card trip-card" role="button" tabindex="0" data-act="toast" data-msg="原型只包含一个完整的示例行程">
-    <div class="spread"><h3 class="muted" style="font-size:17px">巴黎到布拉格 10 天</h3><span class="badge src-ai_estimate">示例</span></div>
-    <div class="city-row"><span>5 座城市</span><span>4 段火车</span><span>还没选通票</span></div>
+  <div class="card ghost-card trip-card" role="button" tabindex="0" data-act="toast" data-msg="${T('The prototype has one full sample trip', '原型只包含一个完整的示例行程')}">
+    <div class="spread"><h3 class="muted" style="font-size:17px">${T('Paris to Prague, 10 days', '巴黎到布拉格 10 天')}</h3><span class="badge src-ai_estimate">${T('Example', '示例')}</span></div>
+    <div class="city-row"><span>${T('5 cities', '5 座城市')}</span><span>${T('4 trains', '4 段火车')}</span><span>${T('No pass yet', '还没选通票')}</span></div>
   </div>
-  <a class="btn btn-primary btn-block" href="#new">${ic('plus')}新建行程</a>`;
+  <a class="btn btn-primary btn-block" href="#new">${ic('plus')}${T('New trip', '新建行程')}</a>`;
 }
 
-/* ---------- 新建行程 ---------- */
+/* ---------- New trip ---------- */
+const COUNTRIES = [['Germany', '德国'], ['France', '法国'], ['Netherlands', '荷兰'], ['United Kingdom', '英国'], ['Italy', '意大利'], ['Spain', '西班牙'], ['Austria', '奥地利'], ['Switzerland', '瑞士'], ['Belgium', '比利时'], ['Other', '其他']];
 function viewNew() {
   const w = state.wizard;
   const segBtns = (key, opts) => `<div class="seg-ctl" role="group">${opts.map(o => `<button data-act="wz" data-k="${key}" data-v="${o[0]}" aria-pressed="${w[key] === o[0]}">${o[1]}</button>`).join('')}</div>`;
-  const titles = ['', '先认识一下你', '想去哪里？', '什么时候出发？'];
+  const titles = ['', T('About you', '先认识一下你'), T('Where to?', '想去哪里？'), T('When do you leave?', '什么时候出发？')];
   let body = '';
   if (w.step === 1) body = `
-    <div class="stack"><span class="lbl">住在哪里</span>
-      ${segBtns('resType', [['europe', '欧洲'], ['non', '欧洲以外']])}
-      ${w.resType === 'europe' ? `<label class="field">居住国家<select id="wz-country" data-act="wz-country">${['德国', '法国', '荷兰', '英国', '意大利', '西班牙', '奥地利', '瑞士', '比利时', '其他'].map(c => `<option ${c === w.country ? 'selected' : ''}>${c}</option>`).join('')}</select></label>
-      <div class="note note-info"><span class="ib">${ic('info', 'ico', 'duo')}</span><span>欧洲居民在居住国内只能用通票出境 1 次、入境 1 次。我们会自动帮你判断。</span></div>`
-      : `<div class="note note-info"><span class="ib">${ic('info', 'ico', 'duo')}</span><span>欧洲以外的居民不受居住国规则限制。</span></div>`}
+    <div class="stack"><span class="lbl">${T('Where do you live?', '住在哪里')}</span>
+      ${segBtns('resType', [['europe', T('In Europe', '欧洲')], ['non', T('Outside Europe', '欧洲以外')]])}
+      ${w.resType === 'europe' ? `<label class="field">${T('Country of residence', '居住国家')}<select id="wz-country" data-act="wz-country">${COUNTRIES.map((c, i) => `<option value="${i}" ${i === Number(w.country) ? 'selected' : ''}>${T(c[0], c[1])}</option>`).join('')}</select></label>
+      <div class="note note-info"><span class="ib">${ic('info', 'ico', 'duo')}</span><span>${T('In your home country, the pass covers one trip out and one trip back. We work this out for you.', '欧洲居民在居住国内只能用通票出境 1 次、入境 1 次。我们会自动帮你判断。')}</span></div>`
+      : `<div class="note note-info"><span class="ib">${ic('info', 'ico', 'duo')}</span><span>${T("If you live outside Europe, the home-country limit doesn't apply.", '欧洲以外的居民不受居住国规则限制。')}</span></div>`}
     </div>
-    <div class="stack"><span class="lbl">年龄段</span>${segBtns('age', [['青年', '青年 12–27'], ['成人', '成人 28–59'], ['老人', '老人 60+']])}</div>
-    <div class="stack"><span class="lbl">舱等</span>${segBtns('cls', [['二等', '二等座'], ['一等', '一等座']])}</div>
-    <div class="spread"><span class="lbl">几个人</span>
-      <div class="stepper"><button data-act="wz-count" data-d="-1" aria-label="减少">−</button><span aria-live="polite">${w.count}</span><button data-act="wz-count" data-d="1" aria-label="增加">+</button></div></div>`;
+    <div class="stack"><span class="lbl">${T('Age', '年龄段')}</span>${segBtns('age', [['youth', T('Youth 12–27', '青年 12–27')], ['adult', T('Adult 28–59', '成人 28–59')], ['senior', T('Senior 60+', '老人 60+')]])}</div>
+    <div class="stack"><span class="lbl">${T('Class', '舱等')}</span>${segBtns('cls', [['2', T('2nd class', '二等座')], ['1', T('1st class', '一等座')]])}</div>
+    <div class="spread"><span class="lbl">${T('Travellers', '几个人')}</span>
+      <div class="stepper"><button data-act="wz-count" data-d="-1" aria-label="${T('Fewer', '减少')}">−</button><span aria-live="polite">${w.count}</span><button data-act="wz-count" data-d="1" aria-label="${T('More', '增加')}">+</button></div></div>`;
   if (w.step === 2) body = `
-    <label class="field">用一句话描述，AI 帮你排路线
-      <textarea id="wz-desc" placeholder="例如：7月从柏林出发玩三周，想去意大利，最后经维也纳和布拉格回来">${esc(w.desc)}</textarea></label>
-    ${state.prefs.key ? `<button class="btn btn-primary" data-act="wz-gen">${ic('spark', 'ico-sm', 'fill')}生成路线</button>`
-      : `<div class="note note-warn"><span class="ib">${ic('spark', 'ico', 'duo')}</span><span>在设置里填入 API key 后就能用 AI 生成路线。<a href="#prefs">去设置</a></span></div>`}
-    <div class="or">或者自己添加城市</div>
-    <div class="pill-list">${['柏林', '慕尼黑', '苏黎世'].map(c => `<span class="pill">${c}</span>`).join('')}<button class="pill" data-act="toast" data-msg="原型中暂不支持添加城市">${ic('plus', 'ico-sm')}添加</button></div>`;
+    <label class="field">${T('Describe your trip and AI will plan the route', '用一句话描述，AI 帮你排路线')}
+      <textarea id="wz-desc" placeholder="${T('e.g. Three weeks in July from Berlin, mostly Italy, back via Vienna and Prague', '例如：7月从柏林出发玩三周，想去意大利，最后经维也纳和布拉格回来')}">${esc(w.desc)}</textarea></label>
+    ${state.prefs.key ? `<button class="btn btn-primary" data-act="wz-gen">${ic('spark', 'ico-sm', 'fill')}${T('Plan my route', '生成路线')}</button>`
+      : `<div class="note note-warn"><span class="ib">${ic('spark', 'ico', 'duo')}</span><span>${T('Add an API key in Settings to let AI plan your route.', '在设置里填入 API key 后就能用 AI 生成路线。')} <a href="#prefs">${T('Open Settings', '去设置')}</a></span></div>`}
+    <div class="or">${T('or add cities yourself', '或者自己添加城市')}</div>
+    <div class="pill-list">${[['Berlin', '柏林'], ['Munich', '慕尼黑'], ['Zurich', '苏黎世']].map(c => `<span class="pill">${T(c[0], c[1])}</span>`).join('')}<button class="pill" data-act="toast" data-msg="${T("Adding cities isn't in the prototype", '原型中暂不支持添加城市')}">${ic('plus', 'ico-sm')}${T('Add', '添加')}</button></div>`;
   if (w.step === 3) body = `
-    <label class="field">出发日期<input type="date" id="wz-date" value="2027-07-14"></label>
-    <p class="small muted" style="margin:0">每个城市住几晚，创建后在路线页随时可以改。</p>`;
+    <label class="field">${T('Departure date', '出发日期')}<input type="date" id="wz-date" value="2027-07-14"></label>
+    <p class="small muted" style="margin:0">${T('You can change the nights in each city later on the Route page.', '每个城市住几晚，创建后在路线页随时可以改。')}</p>`;
   return `
-  <div class="stack" style="gap:8px"><div class="wz-progress"><i style="width:${w.step / 3 * 100}%"></i></div><span class="wz-step">第 ${w.step} 步 / 共 3 步</span><h1 class="wz-title">${titles[w.step]}</h1></div>
+  <div class="stack" style="gap:8px"><div class="wz-progress"><i style="width:${w.step / 3 * 100}%"></i></div><span class="wz-step">${T(`Step ${w.step} of 3`, `第 ${w.step} 步 / 共 3 步`)}</span><h1 class="wz-title">${titles[w.step]}</h1></div>
   <div class="card stack" style="gap:18px">${body}</div>
   <div class="spread">
-    ${w.step > 1 ? `<button class="btn" data-act="wz-step" data-d="-1">上一步</button>` : '<span></span>'}
-    ${w.step < 3 ? `<button class="btn btn-ink" data-act="wz-step" data-d="1">下一步</button>` : `<button class="btn btn-primary" data-act="wz-create">创建行程</button>`}
+    ${w.step > 1 ? `<button class="btn" data-act="wz-step" data-d="-1">${T('Back', '上一步')}</button>` : '<span></span>'}
+    ${w.step < 3 ? `<button class="btn btn-ink" data-act="wz-step" data-d="1">${T('Next', '下一步')}</button>` : `<button class="btn btn-primary" data-act="wz-create">${T('Create trip', '创建行程')}</button>`}
   </div>`;
 }
 
-/* ---------- 路线 ---------- */
-function alertsHtml(items, open) {
+/* ---------- Route ---------- */
+function alertsHtml(items) {
   if (!items.length) return '';
   const first = items.find(x => x[0] === 'danger') || items.find(x => x[0] === 'warn') || items[0];
-  return `<details class="alerts" ${open ? 'open' : ''}><summary><span class="ib">${ic('alert', 'ico-sm', 'fill')}</span><span class="txt">${first[1]}${items.length > 1 ? ` <span class="faint">· 共 ${items.length} 条提醒</span>` : ''}</span>${items.length > 1 ? `<span class="chev">${ic('right', 'ico-sm')}</span>` : ''}</summary>
+  return `<details class="alerts"><summary><span class="ib">${ic('alert', 'ico-sm', 'fill')}</span><span class="txt">${first[1]}${items.length > 1 ? ` <span class="faint">· ${T(`${items.length} alerts`, `共 ${items.length} 条提醒`)}</span>` : ''}</span>${items.length > 1 ? `<span class="chev">${ic('right', 'ico-sm')}</span>` : ''}</summary>
     ${items.length > 1 ? `<div class="items">${items.filter(x => x !== first).map(x => `<span>${x[1]}</span>`).join('')}</div>` : ''}</details>`;
 }
 function viewRoute() {
@@ -816,45 +849,45 @@ function viewRoute() {
   const resTodo = t.segs.filter(s => (s.res === 'mandatory' || s.res === 'recommended') && segChoice(t, s) === 'pass' && s.resStatus !== 'booked');
   const days = span(t.stops[0].date, t.stops[t.stops.length - 1].date) + 1;
   const items = [];
-  cc.errors.forEach(e => items.push(['danger', e + ' <a href="#days">去调整</a>']));
-  if (resTodo.length) items.push(['warn', `还有 <b>${resTodo.length} 段</b>没订座，夜车卧铺很抢手 <a href="#reservations">去订座</a>`]);
-  t.segs.filter(s => s.home).forEach(s => items.push(['info', `<b>${routeOf(t, s)}</b> 在居住国${t.traveller.country}境内，当天不出境，只能单独买票`]));
+  cc.errors.forEach(e => items.push(['danger', `${e} <a href="#days">${T('Fix', '去调整')}</a>`]));
+  if (resTodo.length) items.push(['warn', T(`<b>${resTodo.length} trains</b> still need a seat. Night trains sell out fast. <a href="#reservations">Reserve</a>`, `还有 <b>${resTodo.length} 段</b>没订座，夜车卧铺很抢手 <a href="#reservations">去订座</a>`)]);
+  t.segs.filter(s => s.home).forEach(s => items.push(['info', T(`<b>${routeOf(t, s)}</b> stays inside ${L(t.traveller.country)}, your home country, so it needs a ticket`, `<b>${routeOf(t, s)}</b> 在居住国${L(t.traveller.country)}境内，当天不出境，只能单独买票`)]));
 
   const stopsHtml = t.stops.map((s, i) => {
     const sg = t.segs.find(x => x.after === s.id);
     const prev = i > 0 ? t.segs.find(x => x.after === t.stops[i - 1].id) : null;
     const first = i === 0, last = i === t.stops.length - 1;
-    const when = `${fmtMDW(s.date)}${s.role === 'start' ? ' 出发' : s.role === 'end' ? ' 到达' : ''}`;
+    const when = `${fmtMDW(s.date)}`;
     const style = `${sg ? `--lc:${lc(sg.cc)};` : ''}${prev ? `--lc-prev:${lc(prev.cc)};` : ''}`;
     return `<div class="stop ${first ? 'first' : ''} ${last ? 'last' : ''} ${s.role ? 'home' : ''}" style="${style}">
       <div class="rail"><span class="dot"></span></div>
       <div>
-        <div class="stop-head"><span class="city">${s.zh}</span><span class="local">${s.local}</span>
-          <span class="when">${when}${!s.role ? `<span class="nights">${s.nights}晚</span>` : ''}</span>
-          ${state.editRoute && !s.role ? `<span class="stop-tools"><button data-act="toast" data-msg="原型：上移城市" aria-label="上移 ${s.zh}">${ic('up', 'ico-sm')}</button><button data-act="toast" data-msg="原型：下移城市" aria-label="下移 ${s.zh}">${ic('down', 'ico-sm')}</button></span>` : ''}</div>
-        <div class="stop-body">${s.note && (s.role || state.editRoute) ? `<div class="stop-note">${s.note}</div>` : ''}${sg ? ticketHtml(t, sg) : ''}</div>
+        <div class="stop-head"><span class="city">${cityName(s)}</span>${s.local !== cityName(s) ? `<span class="local">${s.local}</span>` : ''}
+          <span class="when">${when}${!s.role ? `<span class="nights">${nightsTxt(s.nights)}</span>` : ''}</span>
+          ${state.editRoute && !s.role ? `<span class="stop-tools"><button data-act="toast" data-msg="${T('Prototype: move city up', '原型：上移城市')}" aria-label="${T('Move up', '上移')} ${cityName(s)}">${ic('up', 'ico-sm')}</button><button data-act="toast" data-msg="${T('Prototype: move city down', '原型：下移城市')}" aria-label="${T('Move down', '下移')} ${cityName(s)}">${ic('down', 'ico-sm')}</button></span>` : ''}</div>
+        <div class="stop-body">${s.note && (s.role || state.editRoute) ? `<div class="stop-note">${L(s.note)}</div>` : ''}${sg ? ticketHtml(t, sg) : ''}</div>
       </div></div>`;
   }).join('');
   return `
-  ${passBar(t, `${days}天 · ${t.stops.length - 2}城 · ${t.segs.length}段火车`)}
-  ${alertsHtml(items, false)}
-  <h2 class="h-sec">路线 <button class="btn btn-sm btn-ghost act" data-act="edit-route">${ic('edit', 'ico-sm')}${state.editRoute ? '完成' : '编辑'}</button></h2>
+  ${passBar(t, T(`${days} days · ${t.stops.length - 2} cities · ${t.segs.length} trains`, `${days}天 · ${t.stops.length - 2}城 · ${t.segs.length}段火车`))}
+  ${alertsHtml(items)}
+  <h2 class="h-sec">${T('Route', '路线')} <button class="btn btn-sm btn-ghost act" data-act="edit-route">${ic('edit', 'ico-sm')}${state.editRoute ? T('Done', '完成') : T('Edit', '编辑')}</button></h2>
   <div class="timeline">${stopsHtml}</div>
-  ${state.editRoute ? `<button class="btn btn-block" data-act="toast" data-msg="原型中暂不支持添加城市">${ic('plus')}添加城市</button>` : ''}`;
+  ${state.editRoute ? `<button class="btn btn-block" data-act="toast" data-msg="${T("Adding cities isn't in the prototype", '原型中暂不支持添加城市')}">${ic('plus')}${T('Add city', '添加城市')}</button>` : ''}`;
 }
 function ticketHtml(t, s) {
   const c = segChoice(t, s);
-  const choiceChip = c === 'pass' ? `<span class="chip chip-pass">旅行日</span>` : `<span class="chip chip-ticket">买票</span>`;
-  const jr = s.journey === 'out' ? `<span class="chip chip-info">出境</span>` : s.journey === 'in' ? `<span class="chip chip-info">入境</span>` : '';
-  return `<div class="ticket ${s.home ? 'problem' : ''}" role="button" tabindex="0" data-act="seg" data-id="${s.id}" style="--lc:${lc(s.cc)}" aria-label="${routeOf(t, s)}，${s.num}，${s.dep} 出发，查看详情">
+  const choiceChip = c === 'pass' ? `<span class="chip chip-pass">${T('Travel day', '旅行日')}</span>` : `<span class="chip chip-ticket">${T('Ticket', '买票')}</span>`;
+  const jr = s.journey === 'out' ? `<span class="chip chip-info">${T('Outbound', '出境')}</span>` : s.journey === 'in' ? `<span class="chip chip-info">${T('Inbound', '入境')}</span>` : '';
+  return `<div class="ticket ${s.home ? 'problem' : ''}" role="button" tabindex="0" data-act="seg" data-id="${s.id}" style="--lc:${lc(s.cc)}" aria-label="${routeOf(t, s)}, ${s.num}, ${s.dep}">
     <div class="t-row"><span class="train">${s.night ? ic('moon', 'ico-sm', 'fill') : ''}${s.num}</span>
-      <span class="times">${s.dep}<span class="arr">→</span>${s.arr}${s.night ? '<sup>+1</sup>' : ''}</span><span class="dur">${s.dur.replace('小时', 'h').replace('分', '')}</span></div>
-    <div class="t-row"><span class="chips">${choiceChip}${resChip(s, c === 'pass')}${jr}</span>
+      <span class="times">${s.dep}<span class="arr">→</span>${s.arr}${s.night ? '<sup>+1</sup>' : ''}</span><span class="dur">${durShort(s.mins)}</span></div>
+    <div class="t-row wrap"><span class="chips">${choiceChip}${resChip(s, c === 'pass')}${jr}</span>
       <span class="price"><b>${eurRange(s.p.min, s.p.max)}</b>${badge(s.src)}</span></div>
   </div>`;
 }
 
-/* ---------- 旅行日 ---------- */
+/* ---------- Travel days ---------- */
 function viewDays() {
   const t = state.trip;
   const cc = currentCost(t);
@@ -865,22 +898,22 @@ function viewDays() {
   const over = pass.kind === 'flexi' && pd.length > pass.days;
   const rows = cc.days.map(d => {
     const segs = d.segs;
-    const routeTxt = segs.map(s => `${s.night ? ic('moon', 'ico-sm', 'fill') : ''}${routeOf(t, s)}`).join('，');
+    const routeTxt = segs.map(s => `${s.night ? ic('moon', 'ico-sm', 'fill') : ''}${routeOf(t, s)}`).join(', ');
     const p = segs.reduce((x, s) => x + s.p.mid, 0), fee = segs.reduce((x, s) => x + s.fee, 0);
+    const jo = segs.some(s => s.journey === 'out') ? T(' · outbound', ' · 出境') : segs.some(s => s.journey === 'in') ? T(' · inbound', ' · 入境') : '';
     let why = '', err = false;
-    if (d.choice === 'home') why = `居住国内不出境，只能买票 ${eur(p)}`;
+    if (d.choice === 'home') why = T(`Home country, no border crossing: ticket only, ${eur(p)}`, `居住国内不出境，只能买票 ${eur(p)}`);
     else if (d.choice === 'pass') {
-      why = `省 ${eur(d.value)}（票价 ${eur(p)}${fee ? ` − 订座 ${eur(fee)}` : ''}）${segs.some(s => s.journey === 'out') ? ' · 出境' : segs.some(s => s.journey === 'in') ? ' · 入境' : ''}`;
-      if (d.date > winEnd) { err = true; why = '不在通票有效期内'; }
-      if (d.night && d.date === winEnd) { err = true; why = '有效期最后一天不能坐夜车'; }
-    } else why = `买票 ${eur(p)}，用通票只省 ${eur(d.value)}`;
+      why = T(`Saves ${eur(d.value)} (ticket ${eur(p)}${fee ? ` − seat ${eur(fee)}` : ''})${jo}`, `省 ${eur(d.value)}（票价 ${eur(p)}${fee ? ` − 订座 ${eur(fee)}` : ''}）${jo}`);
+      if (d.date > winEnd) { err = true; why = T('Outside the pass validity', '不在通票有效期内'); }
+      if (d.night && d.date === winEnd) { err = true; why = T("Night trains can't start on the last valid day", '有效期最后一天不能坐夜车'); }
+    } else why = T(`Ticket ${eur(p)}; the pass would save only ${eur(d.value)}`, `买票 ${eur(p)}，用通票只省 ${eur(d.value)}`);
     if (over && d.choice === 'pass') err = true;
-    const dd = D(d.date);
     const sw = d.choice === 'home'
-      ? `<button class="switch locked" data-act="toast" data-msg="居住国内且当天不出境的行程不能用通票" aria-label="${fmtMD(d.date)} 只能买票"><span>${ic('lock', 'ico-sm', 'fill')}买票</span></button>`
-      : `<button class="switch ${d.choice === 'pass' ? 'on' : ''}" role="switch" aria-checked="${d.choice === 'pass'}" data-act="day" data-date="${d.date}" aria-label="${fmtMD(d.date)} 用通票"><span>通票</span><span>买票</span></button>`;
+      ? `<button class="switch locked" data-act="toast" data-msg="${T("Trips inside your home country that don't cross a border can't use the pass", '居住国内且当天不出境的行程不能用通票')}" aria-label="${fmtMD(d.date)}: ${T('ticket only', '只能买票')}"><span>${ic('lock', 'ico-sm', 'fill')}${T('Ticket', '买票')}</span></button>`
+      : `<button class="switch ${d.choice === 'pass' ? 'on' : ''}" role="switch" aria-checked="${d.choice === 'pass'}" data-act="day" data-date="${d.date}" aria-label="${fmtMD(d.date)}: ${T('use a travel day', '用通票')}"><span>${T('Pass', '通票')}</span><span>${T('Ticket', '买票')}</span></button>`;
     return `<div class="day is-${d.choice} ${err ? 'err' : ''}" id="day-${d.date}">
-      <div class="datebox"><span class="d">${fmtMD(d.date)}</span><span class="w">周${WD[dd.getUTCDay()]}</span></div>
+      <div class="datebox"><span class="m">${mon(d.date)}</span><span class="d">${D(d.date).getUTCDate()}</span><span class="w">${wd(d.date)}</span></div>
       <div class="day-route">${routeTxt}</div>${sw}
       <div class="day-why">${why}</div>
     </div>`;
@@ -888,17 +921,17 @@ function viewDays() {
   const changed = Object.keys(t.overrides).length > 0;
   const recCost = bestFor(pass, t, 'mid').cost;
   return `
-  ${passBar(t, `有效期 ${fmtMD(winStart)}–${fmtMD(winEnd)}`)}
+  ${passBar(t, T(`valid ${fmtMD(winStart)}–${fmtMD(winEnd)}`, `有效期 ${fmtMD(winStart)}–${fmtMD(winEnd)}`))}
   ${cc.errors.map(e => `<div class="note note-danger"><span class="ib">${ic('alert', 'ico', 'fill')}</span><span>${e}</span></div>`).join('')}
-  <div class="legend"><span><i style="background:var(--sun)"></i>用旅行日</span><span><i style="background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--ink-3)"></i>单独买票</span><span>拨开关切换，花费实时重算</span></div>
+  <div class="legend"><span><i style="background:var(--sun)"></i>${T('Travel day', '用旅行日')}</span><span><i style="background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--ink-3)"></i>${T('Buy a ticket', '单独买票')}</span><span>${T('Flip a switch and the cost updates', '拨开关切换，花费实时重算')}</span></div>
   <div class="days">${rows}</div>
   <div class="total-bar" aria-live="polite">
-    <div><div class="l">当前安排总花费</div><div class="v">${eur(cc.total)}</div></div>
-    ${changed ? `<div style="text-align:right"><div class="l">推荐安排 ${eur(recCost)}</div><button class="btn btn-sm btn-ghost" data-act="days-reset">${ic('undo', 'ico-sm')}恢复推荐</button></div>` : `<span class="chip chip-ok">${ic('check', 'ico-sm')}已是最省</span>`}
+    <div><div class="l">${T('Total for this plan', '当前安排总花费')}</div><div class="v">${eur(cc.total)}</div></div>
+    ${changed ? `<div style="text-align:right"><div class="l">${T('Best plan', '推荐安排')} ${eur(recCost)}</div><button class="btn btn-sm btn-ghost" data-act="days-reset">${ic('undo', 'ico-sm')}${T('Reset', '恢复推荐')}</button></div>` : `<span class="chip chip-ok">${ic('check', 'ico-sm')}${T('Cheapest', '已是最省')}</span>`}
   </div>`;
 }
 
-/* ---------- 订座 ---------- */
+/* ---------- Reservations ---------- */
 function viewRes() {
   const t = state.trip;
   const items = t.segs.map(s => ({ s, c: segChoice(t, s) }));
@@ -913,31 +946,31 @@ function viewRes() {
     const open = state.openRes === s.id, lk = LINKS[s.cc];
     return `<div class="card res-item" id="res-${s.id}">
       <div class="top"><span class="train" style="--lc:${lc(s.cc)}">${s.night ? ic('moon', 'ico-sm', 'fill') : ''}${s.num}</span><span class="route">${routeOf(t, s)}</span><span class="date">${fmtMDW(s.date)}</span></div>
-      <div class="row">${s.quota ? `<span class="hot">${ic('fire', 'ico-sm', 'fill')}抢手</span>` : ''}${resChip(s, true)}${s.res === 'recommended' ? `<span class="small muted">约 €10</span>` : ''}${badge('official')}<a class="small" style="margin-left:auto" href="${lk[1]}" target="_blank" rel="noopener">${lk[0]} ${ic('ext', 'ico-sm')}</a></div>
-      ${s.quota ? `<div class="xs" style="color:var(--primary);font-weight:600">${s.quota}</div>` : ''}
+      <div class="row">${s.quota ? `<span class="hot">${ic('fire', 'ico-sm', 'fill')}${T('Popular', '抢手')}</span>` : ''}${resChip(s, true)}${s.res === 'recommended' ? `<span class="small muted">${T('about €10', '约 €10')}</span>` : ''}${badge('official')}<a class="small" style="margin-left:auto" href="${lk[1]}" target="_blank" rel="noopener">${L(lk[0])} ${ic('ext', 'ico-sm')}</a></div>
+      ${s.quota ? `<div class="xs" style="color:var(--primary);font-weight:600">${L(s.quota)}</div>` : ''}
       ${open ? `<div class="res-form">
-          <label class="field">订座号<input class="mono" id="rf-ref-${s.id}" placeholder="例如 K7Q2XB"></label>
-          <label class="field">车厢和座位<input id="rf-seat-${s.id}" placeholder="例如 8车 6A"></label>
-          <label class="field">实际花费（€）<input type="number" inputmode="decimal" id="rf-paid-${s.id}" value="${s.fee || ''}"></label>
+          <label class="field">${T('Booking reference', '订座号')}<input class="mono" id="rf-ref-${s.id}" placeholder="K7Q2XB"></label>
+          <label class="field">${T('Coach and seat', '车厢和座位')}<input id="rf-seat-${s.id}" placeholder="${T('Coach 8, 6A', '8车 6A')}"></label>
+          <label class="field">${T('Amount paid (€)', '实际花费（€）')}<input type="number" inputmode="decimal" id="rf-paid-${s.id}" value="${s.fee || ''}"></label>
         </div>
-        <div class="row"><button class="btn btn-primary btn-sm" data-act="res-save" data-id="${s.id}">保存</button><button class="btn btn-sm" data-act="res-open" data-id="">取消</button></div>`
-      : `<div class="row"><button class="btn btn-sm btn-primary" data-act="res-open" data-id="${s.id}">${ic('check', 'ico-sm')}已订好</button><button class="btn btn-sm" data-act="res-ticket" data-id="${s.id}">改为买票</button></div>`}
+        <div class="row"><button class="btn btn-primary btn-sm" data-act="res-save" data-id="${s.id}">${T('Save', '保存')}</button><button class="btn btn-sm" data-act="res-open" data-id="">${T('Cancel', '取消')}</button></div>`
+      : `<div class="row"><button class="btn btn-sm btn-primary" data-act="res-open" data-id="${s.id}">${ic('check', 'ico-sm')}${T('Booked it', '已订好')}</button><button class="btn btn-sm" data-act="res-ticket" data-id="${s.id}">${T('Buy a ticket instead', '改为买票')}</button></div>`}
     </div>`;
   }).join('');
   const line = (s, extra) => `<div class="list-line"><span class="train" style="--lc:${lc(s.cc)}">${s.night ? ic('moon', 'ico-sm', 'fill') : ''}${s.num}</span><span class="route">${routeOf(t, s)}</span><span class="end">${extra}</span></div>`;
-  const otherTag = ({ s, c }) => c !== 'pass' ? `<span class="chip chip-ticket">买票含座</span>` : `<span class="small faint">${s.res === 'optional' ? '可选' : '直接上车'}</span>`;
+  const otherTag = ({ s, c }) => c !== 'pass' ? `<span class="chip chip-ticket">${T('Ticket incl. seat', '买票含座')}</span>` : `<span class="small faint">${s.res === 'optional' ? T('Optional', '可选') : T('Just board', '直接上车')}</span>`;
   return `
   <div class="card res-head">
     <div class="ring"><svg viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="34" fill="none" stroke="var(--surface-3)" stroke-width="10"/><circle cx="40" cy="40" r="34" fill="none" stroke="var(--primary)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - pct)}"/></svg>
       <div class="lbl"><b>${booked.length}/${need.length}</b></div></div>
-    <div class="stack" style="gap:2px;min-width:0"><div style="font-family:var(--f-display);font-size:20px;font-weight:800;letter-spacing:-.01em">${need.length} 段要订座 · ${eur(total)}</div><div class="small muted">订座费不含在通票里，要另外付。</div></div>
+    <div class="stack" style="gap:2px;min-width:0"><div style="font-family:var(--f-display);font-size:20px;font-weight:800;letter-spacing:-.01em">${T(`${need.length} seats to reserve · ${eur(total)}`, `${need.length} 段要订座 · ${eur(total)}`)}</div><div class="small muted">${T("Seat reservations aren't included in the pass and cost extra.", '订座费不含在通票里，要另外付。')}</div></div>
   </div>
-  ${todo.length ? `<h2 class="h-sec">待处理 <span class="cnt">${todo.length}</span></h2>${todoHtml}` : `<div class="note note-info"><span class="ib">${ic('check', 'ico')}</span><span>需要订座的都订好了</span></div>`}
-  ${booked.length ? `<h2 class="h-sec">已订 <span class="cnt">${booked.length}</span></h2><div class="card">${booked.map(({ s }) => line(s, `<span class="chip chip-ok">${ic('check', 'ico-sm')}${s.booking && s.booking.seat ? `<span class="mono">${esc(s.booking.seat)}</span>` : '已订'}</span>`)).join('')}</div>` : ''}
-  ${other.length ? `<h2 class="h-sec">其他 <span class="cnt">不用订座</span></h2><div class="card">${other.map(x => line(x.s, otherTag(x))).join('')}</div>` : ''}`;
+  ${todo.length ? `<h2 class="h-sec">${T('To do', '待处理')} <span class="cnt">${todo.length}</span></h2>${todoHtml}` : `<div class="note note-info"><span class="ib">${ic('check', 'ico')}</span><span>${T('All required seats are booked', '需要订座的都订好了')}</span></div>`}
+  ${booked.length ? `<h2 class="h-sec">${T('Booked', '已订')} <span class="cnt">${booked.length}</span></h2><div class="card">${booked.map(({ s }) => line(s, `<span class="chip chip-ok">${ic('check', 'ico-sm')}${s.booking && s.booking.seat ? `<span class="mono">${esc(L(s.booking.seat))}</span>` : T('Booked', '已订')}</span>`)).join('')}</div>` : ''}
+  ${other.length ? `<h2 class="h-sec">${T('Other trains', '其他')} <span class="cnt">${T('no reservation needed', '不用订座')}</span></h2><div class="card">${other.map(x => line(x.s, otherTag(x))).join('')}</div>` : ''}`;
 }
 
-/* ---------- 回本 ---------- */
+/* ---------- Savings ---------- */
 function viewValue() {
   const t = state.trip;
   const a = analyze(t);
@@ -947,83 +980,86 @@ function viewValue() {
   const maxV = Math.max(a.tickets.max, ...a.plans.map(p => p.max.cost));
   const scale = Math.ceil(maxV / 200) * 200;
   const pct = v => (v / scale * 100).toFixed(2) + '%';
-  const crow = (cls, name, sub, mid, min, max, act, sel) => `<div class="crow ${cls}" ${act ? `role="button" tabindex="0" data-act="use-pass" data-id="${act}" aria-label="改用${name}，预计 ${eur(mid)}"` : ''}>
-      <span class="nm">${name}<small>${sub}</small>${sel ? '<span class="tagsel">使用中</span>' : ''}</span>
+  const crow = (cls, name, sub, mid, min, max, act, sel) => `<div class="crow ${cls}" ${act ? `role="button" tabindex="0" data-act="use-pass" data-id="${act}" aria-label="${T('Switch to', '改用')} ${name}, ${eur(mid)}"` : ''}>
+      <span class="nm">${name}<small>${sub}</small>${sel ? `<span class="tagsel">${T('In use', '使用中')}</span>` : ''}</span>
       <span class="track"><span class="rng" style="left:${pct(min)};width:calc(${pct(max)} - ${pct(min)})"></span><span class="fill" style="width:${pct(mid)}"></span></span>
       <span class="val">${eur(mid)}</span></div>`;
-  const rows = a.plans.map(p => crow(p === rec ? 'rec' : '', p.pass.name, `${p.pass.sub} · ${eur(p.pass.price)}`, p.mid.cost, p.min.cost, p.max.cost, p.pass.id === t.passId ? null : p.pass.id, p.pass.id === t.passId)).join('')
-    + crow('tix', '全部买票', '不买通票', a.tickets.mid, a.tickets.min, a.tickets.max, null, false);
+  const rows = a.plans.map(p => crow(p === rec ? 'rec' : '', L(p.pass.name), `${L(p.pass.sub)} · ${eur(p.pass.price)}`, p.mid.cost, p.min.cost, p.max.cost, p.pass.id === t.passId ? null : p.pass.id, p.pass.id === t.passId)).join('')
+    + crow('tix', T('All tickets', '全部买票'), T('no pass', '不买通票'), a.tickets.mid, a.tickets.min, a.tickets.max, null, false);
   const segRow = s => `<div class="bd-sub"><span>${s.num} ${routeOf(t, s)}</span><span>${eur(s.fee || s.p.mid)}</span></div>`;
   return `
-  ${passCard(t, rec.pass.id === t.passId ? '这是最省的通票 · 和全部单独买票比，按常见票价估算' : `换成 ${rec.pass.name} 还能再省 ${eur(cc.total - rec.mid.cost)}`)}
+  ${passCard(t, rec.pass.id === t.passId ? T('The cheapest pass for this trip, compared with buying every ticket at typical fares', '这是最省的通票 · 和全部单独买票比，按常见票价估算') : T(`Switching to the ${L(rec.pass.name)} saves another ${eur(cc.total - rec.mid.cost)}`, `换成 ${L(rec.pass.name)} 还能再省 ${eur(cc.total - rec.mid.cost)}`))}
   <div class="note ${worst >= 0 ? 'note-info' : 'note-warn'}"><span class="ib">${ic('bulb', 'ico', 'duo')}</span><span>${worst >= 0
-    ? `即使每段都买到最便宜的特价票，通票仍然省 ${eur(worst)}。`
-    : `如果每段都提前抢到最便宜的特价票，单独买票反而便宜 <b>${eur(-worst)}</b>。不过特价票不能改签，行程不确定时通票更灵活。`}</span></div>
-  <h2 class="h-sec">方案对比 <span class="cnt">点击切换</span></h2>
+    ? T(`Even at the cheapest advance fares, the pass still saves ${eur(worst)}.`, `即使每段都买到最便宜的特价票，通票仍然省 ${eur(worst)}。`)
+    : T(`If you get the cheapest advance fare on every train, tickets would cost <b>${eur(-worst)}</b> less. Those fares sell early and can't be changed, so the pass is more flexible if your plans might shift.`, `如果每段都提前抢到最便宜的特价票，单独买票反而便宜 <b>${eur(-worst)}</b>。不过特价票不能改签，行程不确定时通票更灵活。`)}</span></div>
+  <h2 class="h-sec">${T('Compare plans', '方案对比')} <span class="cnt">${T('tap to switch', '点击切换')}</span></h2>
   <div class="card">
     <div class="chart">${rows}</div>
     <div class="axis" style="margin-top:10px"><span></span><span class="ticks"><span>€0</span><span>${eur(scale / 2)}</span><span>${eur(scale)}</span></span><span></span></div>
-    <div class="legend" style="margin-top:10px"><span><i style="background:var(--ink-3);width:16px;border-radius:999px"></i>按常见票价</span><span><i style="background:var(--surface-3);width:16px;height:6px;border-radius:999px"></i>最便宜到最贵</span></div>
+    <div class="legend" style="margin-top:10px"><span><i style="background:var(--ink-3);width:16px;border-radius:999px"></i>${T('Typical fares', '按常见票价')}</span><span><i style="background:var(--surface-3);width:16px;height:6px;border-radius:999px"></i>${T('Cheapest to priciest', '最便宜到最贵')}</span></div>
   </div>
-  <h2 class="h-sec">${cc.pass.name} 明细</h2>
+  <h2 class="h-sec">${T(`${L(cc.pass.name)} breakdown`, `${L(cc.pass.name)} 明细`)}</h2>
   <div class="card" style="padding-block:4px 16px">
-    <div class="bd-row"><span class="row">通票 ${badge('official')}</span><b>${eur(cc.pass.price)}</b></div>
-    <details class="bd"><summary><span class="lb">${ic('right', 'ico-sm')}订座费 · ${cc.feeSegs.length} 段</span><b>${eur(cc.fees)}</b></summary>${cc.feeSegs.map(segRow).join('')}</details>
-    <details class="bd"><summary><span class="lb">${ic('right', 'ico-sm')}单独买票 · ${cc.tixSegs.length} 段</span><b>${eur(cc.tix)}</b></summary>${cc.tixSegs.map(segRow).join('')}</details>
-    <div class="bd-row total"><span style="font-weight:700">合计</span><b>${eur(cc.total)}</b></div>
+    <div class="bd-row"><span class="row">${T('Pass', '通票')} ${badge('official')}</span><b>${eur(cc.pass.price)}</b></div>
+    <details class="bd"><summary><span class="lb">${ic('right', 'ico-sm')}${T(`Seat reservations · ${cc.feeSegs.length}`, `订座费 · ${cc.feeSegs.length} 段`)}</span><b>${eur(cc.fees)}</b></summary>${cc.feeSegs.map(segRow).join('')}</details>
+    <details class="bd"><summary><span class="lb">${ic('right', 'ico-sm')}${T(`Tickets · ${cc.tixSegs.length}`, `单独买票 · ${cc.tixSegs.length} 段`)}</span><b>${eur(cc.tix)}</b></summary>${cc.tixSegs.map(segRow).join('')}</details>
+    <div class="bd-row total"><span style="font-weight:700">${T('Total', '合计')}</span><b>${eur(cc.total)}</b></div>
   </div>`;
 }
 
-/* ---------- 设置 ---------- */
+/* ---------- Settings ---------- */
 function viewPrefs() {
   const p = state.prefs;
-  const prov = [['deepseek', 'DeepSeek', '便宜，国内可以直接访问，支持联网搜索', '#4D6BFE', 'DS'], ['claude', 'Claude', '规划质量较好，自带联网搜索', '#D97757', 'C'], ['custom', '自定义', '任何兼容 OpenAI 格式的接口', '#5A6478', '+']];
+  const prov = [['claude', 'Claude', T('Strong trip planning, built-in web search', '规划质量较好，自带联网搜索'), '#D97757', 'C'], ['deepseek', 'DeepSeek', T('Low cost, with web search', '便宜，国内可以直接访问，支持联网搜索'), '#4D6BFE', 'DS'], ['custom', T('Custom', '自定义'), T('Any OpenAI-compatible API', '任何兼容 OpenAI 格式的接口'), '#5A6478', '+']];
   return `
-  <h2 class="h-sec">AI 服务</h2>
+  <h2 class="h-sec">${T('AI provider', 'AI 服务')}</h2>
   <div class="group">
     ${prov.map(([v, n, d, c, ab]) => `<label class="opt"><span class="av" style="background:${c}">${ab}</span><span style="flex:1"><span class="t">${n}</span><br><span class="d">${d}</span></span><input type="radio" name="prov" value="${v}" data-act="prov" ${p.provider === v ? 'checked' : ''}></label>`).join('')}
     <div class="g-pad">
-      ${p.provider === 'custom' ? `<label class="field">接口地址<input id="pf-base" placeholder="https://…/v1" value="${esc(p.base)}"></label>` : ''}
+      ${p.provider === 'custom' ? `<label class="field">${T('API base URL', '接口地址')}<input id="pf-base" placeholder="https://…/v1" value="${esc(p.base)}"></label>` : ''}
       <label class="field">API key
         <span class="row" style="flex-wrap:nowrap"><input id="pf-key" type="${p.show ? 'text' : 'password'}" autocomplete="off" placeholder="sk-…" value="${esc(p.key)}" style="flex:1;min-width:0">
-        <button class="btn btn-sm" data-act="pf-show">${p.show ? '隐藏' : '显示'}</button></span></label>
-      <label class="field">模型<input id="pf-model" value="${esc(p.model)}"></label>
-      <div class="row"><button class="btn btn-sm btn-ink" data-act="pf-test">测试连接</button>
-        ${p.test === 'ok' ? `<span class="status-ok">${ic('check', 'ico-sm')}连接成功（原型模拟）</span>` : p.test === 'nokey' ? `<span class="status-err">请先填入 API key</span>` : p.test === 'busy' ? `<span class="small muted">测试中…</span>` : ''}
-        ${p.key ? `<button class="btn btn-sm btn-ghost" data-act="pf-clear-key">清除 key</button>` : ''}</div>
-      <div class="small muted">key 只保存在这台设备的浏览器里，不会上传到我们的服务器。共享设备上请不要保存。</div>
+        <button class="btn btn-sm" data-act="pf-show">${p.show ? T('Hide', '隐藏') : T('Show', '显示')}</button></span></label>
+      <label class="field">${T('Model', '模型')}<input id="pf-model" value="${esc(p.model)}"></label>
+      <div class="row"><button class="btn btn-sm btn-ink" data-act="pf-test">${T('Test connection', '测试连接')}</button>
+        ${p.test === 'ok' ? `<span class="status-ok">${ic('check', 'ico-sm')}${T('Connected (simulated)', '连接成功（原型模拟）')}</span>` : p.test === 'nokey' ? `<span class="status-err">${T('Enter an API key first', '请先填入 API key')}</span>` : p.test === 'busy' ? `<span class="small muted">${T('Testing…', '测试中…')}</span>` : ''}
+        ${p.key ? `<button class="btn btn-sm btn-ghost" data-act="pf-clear-key">${T('Remove key', '清除 key')}</button>` : ''}</div>
+      <div class="small muted">${T("Your key stays in this browser on this device. It's never sent to our servers. Don't save it on a shared device.", 'key 只保存在这台设备的浏览器里，不会上传到我们的服务器。共享设备上请不要保存。')}</div>
     </div>
-    <label class="opt"><span style="flex:1"><span class="t">用密码加密保存 key</span><br><span class="d">每次打开需要输入密码</span></span><input type="checkbox" class="toggle" data-act="pf-encrypt" ${p.encrypt ? 'checked' : ''}></label>
+    <label class="opt"><span style="flex:1"><span class="t">${T('Protect key with a password', '用密码加密保存 key')}</span><br><span class="d">${T("You'll enter it each time you open the app", '每次打开需要输入密码')}</span></span><input type="checkbox" class="toggle" data-act="pf-encrypt" ${p.encrypt ? 'checked' : ''}></label>
   </div>
-  <h2 class="h-sec">外观</h2>
-  <div class="card"><div class="seg-ctl" role="group">${[['system', '跟随系统'], ['light', '浅色'], ['dark', '深色']].map(([v, n]) => `<button data-act="theme" data-v="${v}" aria-pressed="${p.theme === v}">${n}</button>`).join('')}</div></div>
-  <h2 class="h-sec">数据</h2>
+  <h2 class="h-sec">${T('Language', '语言')}</h2>
+  <div class="card"><div class="seg-ctl" role="group">${[['en', 'English'], ['zh', '简体中文']].map(([v, n]) => `<button data-act="set-lang" data-v="${v}" aria-pressed="${lang === v}" lang="${v === 'zh' ? 'zh-CN' : 'en'}">${n}</button>`).join('')}</div></div>
+  <h2 class="h-sec">${T('Appearance', '外观')}</h2>
+  <div class="card"><div class="seg-ctl" role="group">${[['system', T('System', '跟随系统')], ['light', T('Light', '浅色')], ['dark', T('Dark', '深色')]].map(([v, n]) => `<button data-act="theme" data-v="${v}" aria-pressed="${p.theme === v}">${n}</button>`).join('')}</div></div>
+  <h2 class="h-sec">${T('Your data', '数据')}</h2>
   <div class="card stack">
-    <div class="row"><button class="btn btn-sm" data-act="toast" data-msg="原型：会导出全部行程为 JSON 文件">导出全部行程</button><button class="btn btn-sm" data-act="toast" data-msg="原型：会从 JSON 文件导入行程">导入</button></div>
-    ${p.confirmClear ? `<div class="danger-zone"><span>会删除这台设备上的全部行程和设置，不能恢复。</span><div class="row"><button class="btn btn-sm btn-danger" data-act="pf-clear-all">确认清除</button><button class="btn btn-sm" data-act="pf-confirm" data-v="0">取消</button></div></div>`
-      : `<div><button class="btn btn-sm btn-ghost" style="color:var(--danger);padding:0" data-act="pf-confirm" data-v="1">清除全部数据</button></div>`}
+    <div class="row"><button class="btn btn-sm" data-act="toast" data-msg="${T('Prototype: exports all trips as a JSON file', '原型：会导出全部行程为 JSON 文件')}">${T('Export trips', '导出全部行程')}</button><button class="btn btn-sm" data-act="toast" data-msg="${T('Prototype: imports trips from a JSON file', '原型：会从 JSON 文件导入行程')}">${T('Import', '导入')}</button></div>
+    ${p.confirmClear ? `<div class="danger-zone"><span>${T("This deletes every trip and setting on this device. You can't undo it.", '会删除这台设备上的全部行程和设置，不能恢复。')}</span><div class="row"><button class="btn btn-sm btn-danger" data-act="pf-clear-all">${T('Delete everything', '确认清除')}</button><button class="btn btn-sm" data-act="pf-confirm" data-v="0">${T('Cancel', '取消')}</button></div></div>`
+      : `<div><button class="btn btn-sm btn-ghost" style="color:var(--danger);padding:0" data-act="pf-confirm" data-v="1">${T('Delete all data', '清除全部数据')}</button></div>`}
   </div>
-  <h2 class="h-sec">关于</h2>
+  <h2 class="h-sec">${T('About', '关于')}</h2>
   <div class="card stack small">
-    <span>时刻表数据：<a href="https://transitous.org/sources/" target="_blank" rel="noopener">Transitous 数据来源 ${ic('ext', 'ico-sm')}</a></span>
-    <span>开源地址：<a href="https://github.com/VittorioCai/Passhopper" target="_blank" rel="noopener">github.com/VittorioCai/Passhopper ${ic('ext', 'ico-sm')}</a></span>
-    <span class="muted">Passhopper 与 Interrail / Eurail B.V. 无关联。规则和价格仅供参考，以官方为准。</span>
+    <span>${T('Timetables', '时刻表数据')}: <a href="https://transitous.org/sources/" target="_blank" rel="noopener">${T('Transitous data sources', 'Transitous 数据来源')} ${ic('ext', 'ico-sm')}</a></span>
+    <span>${T('Source code', '开源地址')}: <a href="https://github.com/VittorioCai/Passhopper" target="_blank" rel="noopener">github.com/VittorioCai/Passhopper ${ic('ext', 'ico-sm')}</a></span>
+    <span class="muted">${T('Passhopper is not affiliated with Interrail / Eurail B.V. Rules and prices are for guidance only; check the official sites.', 'Passhopper 与 Interrail / Eurail B.V. 无关联。规则和价格仅供参考，以官方为准。')}</span>
   </div>`;
 }
 
-/* ---------- 底部面板 ---------- */
+/* ---------- Sheets ---------- */
 function renderSheet() {
   const bd = $('sheetBackdrop');
   if (!state.sheet) { bd.hidden = true; return; }
   bd.hidden = false;
   const sh = $('sheet');
+  const closeBtn = `<button class="icon-btn" data-act="sheet-close" aria-label="${T('Close', '关闭')}">${ic('x')}</button>`;
   if (state.sheet.type === 'src') {
     const s = state.sheet.src;
-    sh.setAttribute('aria-label', '来源说明');
-    sh.innerHTML = `<div class="grabber"></div><div class="spread"><h2>数据来源</h2><button class="icon-btn" data-act="sheet-close" aria-label="关闭">${ic('x')}</button></div>
-      <div><span class="badge src-${s}" style="font-size:13px;padding:6px 10px">${SRC[s]}</span></div>
-      <p style="margin:0">${SRC_DESC[s]}</p>
-      <div class="row"><button class="btn btn-sm" data-act="toast" data-msg="原型：会打开预填好的 GitHub Issue">报告数据错误</button></div>`;
+    sh.setAttribute('aria-label', T('Data source', '数据来源'));
+    sh.innerHTML = `<div class="grabber"></div><div class="spread"><h2>${T('Data source', '数据来源')}</h2>${closeBtn}</div>
+      <div><span class="badge src-${s}" style="font-size:13px;padding:6px 10px">${L(SRC[s])}</span></div>
+      <p style="margin:0">${L(SRC_DESC[s])}</p>
+      <div class="row"><button class="btn btn-sm" data-act="toast" data-msg="${T('Prototype: opens a prefilled GitHub issue', '原型：会打开预填好的 GitHub Issue')}">${T('Report a data error', '报告数据错误')}</button></div>`;
     return;
   }
   const t = state.trip;
@@ -1034,41 +1070,41 @@ function renderSheet() {
   const [tp, no] = s.num.split(' ');
   const cands = s.night ? [[s.dep, s.arr, s.num]] : [[shift(s.dep, -2), shift(s.arr, -2), `${tp} ${parseInt(no) - 2}`], [s.dep, s.arr, s.num], [shift(s.dep, 2), shift(s.arr, 2), `${tp} ${parseInt(no) + 2}`]];
   const lk = LINKS[s.cc];
-  sh.setAttribute('aria-label', '火车段详情');
+  sh.setAttribute('aria-label', T('Train details', '火车段详情'));
   sh.innerHTML = `<div class="grabber"></div>
-    <div class="spread"><div><h2>${routeOf(t, s)}</h2><div class="small muted">${fmtLong(s.date)} · ${s.from} → ${s.to}</div></div><button class="icon-btn" data-act="sheet-close" aria-label="关闭">${ic('x')}</button></div>
-    ${s.home ? `<div class="note note-info"><span class="ib">${ic('info', 'ico', 'duo')}</span><span>这段在居住国${t.traveller.country}境内，当天不出境，不能用通票。DB 提前买特价票通常更便宜。</span></div>` : ''}
-    <div class="tabs2" role="group"><button data-act="seg-mode" data-v="search" aria-pressed="${mode === 'search'}">查时刻表</button><button data-act="seg-mode" data-v="manual" aria-pressed="${mode === 'manual'}">手动填写</button></div>
+    <div class="spread"><div><h2>${routeOf(t, s)}</h2><div class="small muted">${fmtLong(s.date)} · ${s.from} → ${s.to}</div></div>${closeBtn}</div>
+    ${s.home ? `<div class="note note-info"><span class="ib">${ic('info', 'ico', 'duo')}</span><span>${T(`This trip stays inside ${L(t.traveller.country)}, your home country, without crossing a border, so the pass doesn't cover it. Advance Deutsche Bahn fares are usually cheaper.`, `这段在居住国${L(t.traveller.country)}境内，当天不出境，不能用通票。DB 提前买特价票通常更便宜。`)}</span></div>` : ''}
+    <div class="tabs2" role="group"><button data-act="seg-mode" data-v="search" aria-pressed="${mode === 'search'}">${T('Timetable', '查时刻表')}</button><button data-act="seg-mode" data-v="manual" aria-pressed="${mode === 'manual'}">${T('Enter manually', '手动填写')}</button></div>
     ${mode === 'search' ? `
-      <div class="spread small"><span class="muted">候选车次</span><span class="row" style="gap:6px">来自 <a href="https://transitous.org/sources/" target="_blank" rel="noopener">Transitous</a>${badge('live')}</span></div>
+      <div class="spread small"><span class="muted">${T('Departures', '候选车次')}</span><span class="row" style="gap:6px">${T('from', '来自')} <a href="https://transitous.org/sources/" target="_blank" rel="noopener">Transitous</a>${badge('live')}</span></div>
       <div class="stack">${cands.map(([d, a, n]) => `<button class="cand" data-act="pick" data-dep="${d}" data-arr="${a}" data-num="${n}" aria-pressed="${d === s.dep}">
-          <span class="times">${d}<span class="arr">→</span>${a}${s.night ? '<sup>+1</sup>' : ''}</span><span class="small muted">${s.dur}</span>
-          <span class="small" style="font-weight:500">${n} · 直达</span><span>${resChip(s, false)}</span></button>`).join('')}</div>`
-    : `<div class="res-form"><label class="field">车次<input value="${esc(s.num)}"></label><label class="field">出发<input type="time" value="${s.dep}"></label><label class="field">到达<input type="time" value="${s.arr}"></label></div>
-       <p class="small muted" style="margin:0">原型中手动填写的内容不会保存。</p>`}
-    <div class="stack" style="gap:8px"><span class="lbl">去官网核实</span><div class="row"><a class="pill" href="${lk[1]}" target="_blank" rel="noopener">${lk[0]} ${ic('ext', 'ico-sm')}</a><a class="pill" href="https://int.bahn.de/en" target="_blank" rel="noopener">DB 查询 ${ic('ext', 'ico-sm')}</a><a class="pill" href="https://www.seat61.com/" target="_blank" rel="noopener">Seat61 ${ic('ext', 'ico-sm')}</a></div></div>
-    <div class="stack"><span class="lbl">单独买票价格 · 现在 ${eurRange(s.p.min, s.p.max)} ${badge(s.src)}</span>
-      <div class="price-input"><span class="in"><span>€</span><input type="number" inputmode="decimal" id="price-in" placeholder="${Math.round(s.p.mid)}" aria-label="我查到的价格（欧元）"></span><button class="btn btn-ink" data-act="price-save" data-id="${s.id}">用这个价格</button></div>
-      <div class="row"><button class="btn btn-sm" data-act="ai-price" data-mode="est">${ic('spark', 'ico-sm', 'fill')}AI 估算</button><button class="btn btn-sm" data-act="ai-price" data-mode="search">${ic('globe', 'ico-sm')}AI 联网查</button></div></div>`;
+          <span class="times">${d}<span class="arr">→</span>${a}${s.night ? '<sup>+1</sup>' : ''}</span><span class="small muted">${durLong(s.mins)}</span>
+          <span class="small" style="font-weight:500">${n} · ${T('direct', '直达')}</span><span>${resChip(s, false)}</span></button>`).join('')}</div>`
+    : `<div class="res-form"><label class="field">${T('Train', '车次')}<input value="${esc(s.num)}"></label><label class="field">${T('Departs', '出发')}<input type="time" value="${s.dep}"></label><label class="field">${T('Arrives', '到达')}<input type="time" value="${s.arr}"></label></div>
+       <p class="small muted" style="margin:0">${T("Manual entries aren't saved in the prototype.", '原型中手动填写的内容不会保存。')}</p>`}
+    <div class="stack" style="gap:8px"><span class="lbl">${T('Check with the operator', '去官网核实')}</span><div class="row"><a class="pill" href="${lk[1]}" target="_blank" rel="noopener">${L(lk[0])} ${ic('ext', 'ico-sm')}</a>${s.cc !== 'DE' ? `<a class="pill" href="https://int.bahn.de/en" target="_blank" rel="noopener">${T('DB journey planner', 'DB 查询')} ${ic('ext', 'ico-sm')}</a>` : ''}<a class="pill" href="https://www.seat61.com/" target="_blank" rel="noopener">Seat61 ${ic('ext', 'ico-sm')}</a></div></div>
+    <div class="stack"><span class="lbl">${T('Ticket price', '单独买票价格')} · ${T('now', '现在')} ${eurRange(s.p.min, s.p.max)} ${badge(s.src)}</span>
+      <div class="price-input"><span class="in"><span>€</span><input type="number" inputmode="decimal" id="price-in" placeholder="${Math.round(s.p.mid)}" aria-label="${T('Price you found (EUR)', '我查到的价格（欧元）')}"></span><button class="btn btn-ink" data-act="price-save" data-id="${s.id}">${T('Use this price', '用这个价格')}</button></div>
+      <div class="row"><button class="btn btn-sm" data-act="ai-price" data-mode="est">${ic('spark', 'ico-sm', 'fill')}${T('AI estimate', 'AI 估算')}</button><button class="btn btn-sm" data-act="ai-price" data-mode="search">${ic('globe', 'ico-sm')}${T('AI web search', 'AI 联网查')}</button></div></div>`;
 }
 
-/* ---------- AI 助手 ---------- */
-const QUICK = [['crowded', '第二周太赶了，少去一个城市'], ['strike', '7月底意大利有铁路罢工吗？'], ['why', '为什么有一天建议单独买票？']];
+/* ---------- AI assistant ---------- */
+const QUICK = [['crowded', { en: 'Week two is too rushed. Drop a city', zh: '第二周太赶了，少去一个城市' }], ['strike', { en: 'Any rail strikes in Italy in late July?', zh: '7月底意大利有铁路罢工吗？' }], ['why', { en: 'Why buy a ticket on one of the days?', zh: '为什么有一天建议单独买票？' }]];
 function renderAI() {
   const el = $('aiPanel');
   el.hidden = !(state.aiOpen && inTripRoute(current()));
   if (el.hidden) return;
-  const provName = { deepseek: 'DeepSeek', claude: 'Claude', custom: '自定义' }[state.prefs.provider];
-  const msgs = state.ai.msgs.map(m => m.role === 'me' ? `<div class="msg me">${esc(m.text)}</div>` : `<div class="msg ai">${m.html}</div>`).join('');
-  const caps = [['spark', 'var(--primary-soft)', 'var(--primary)', '一句话改行程，先看改动再决定'], ['globe', 'var(--blue-soft)', 'var(--blue)', '联网查罢工、停运、订座规则'], ['bulb', 'var(--sun-soft)', 'var(--sun-text)', '解释旅行日和费用怎么算']];
+  const provName = { deepseek: 'DeepSeek', claude: 'Claude', custom: T('Custom', '自定义') }[state.prefs.provider];
+  const msgs = state.ai.msgs.map(m => m.role === 'me' ? `<div class="msg me">${esc(m.text)}</div>` : `<div class="msg ai">${aiAnswer(m)}</div>`).join('');
+  const caps = [['spark', 'var(--primary-soft)', 'var(--primary)', T("Change your trip in one sentence. You'll see the changes first.", '一句话改行程，先看改动再决定')], ['globe', 'var(--blue-soft)', 'var(--blue)', T('Search the web for strikes, disruptions and reservation rules', '联网查罢工、停运、订座规则')], ['bulb', 'var(--sun-soft)', 'var(--sun-text)', T('Explain how travel days and costs are worked out', '解释旅行日和费用怎么算')]];
   el.innerHTML = `
-    <div class="ai-head"><span class="orb-lg">${ic('spark', 'ico', 'fill')}</span><span class="t"><b>AI 助手</b><span>${provName} · 原型为预设回复</span></span><button class="icon-btn" data-act="ai-toggle" aria-label="关闭 AI 助手">${ic('x')}</button></div>
+    <div class="ai-head"><span class="orb-lg">${ic('spark', 'ico', 'fill')}</span><span class="t"><b>${T('AI assistant', 'AI 助手')}</b><span>${provName} · ${T('canned replies in prototype', '原型为预设回复')}</span></span><button class="icon-btn" data-act="ai-toggle" aria-label="${T('Close AI assistant', '关闭 AI 助手')}">${ic('x')}</button></div>
     <div class="ai-msgs" id="aiMsgs" aria-live="polite">
-      ${!state.ai.msgs.length ? `<div class="ai-empty"><h3>想怎么改你的行程？</h3>${caps.map(([i, bg, fg, txt]) => `<div class="cap"><span class="ib" style="background:${bg};color:${fg}">${ic(i, 'ico', 'duo')}</span><span>${txt}</span></div>`).join('')}<span class="xs faint">回复是预设的，但改动预览里的费用由规则引擎实时计算。</span></div>` : msgs}
-      ${state.ai.busy ? `<div class="typing"><i></i><i></i><i></i><span>思考中</span><button class="btn btn-sm" data-act="ai-stop" style="min-height:30px;padding:0 10px">${ic('stop', 'ico-sm', 'fill')}停止</button></div>` : ''}
+      ${!state.ai.msgs.length ? `<div class="ai-empty"><h3>${T('How should we change your trip?', '想怎么改你的行程？')}</h3>${caps.map(([i, bg, fg, txt]) => `<div class="cap"><span class="ib" style="background:${bg};color:${fg}">${ic(i, 'ico', 'duo')}</span><span>${txt}</span></div>`).join('')}<span class="xs faint">${T('Replies are canned, but the costs in change previews come from the rules engine.', '回复是预设的，但改动预览里的费用由规则引擎实时计算。')}</span></div>` : msgs}
+      ${state.ai.busy ? `<div class="typing"><i></i><i></i><i></i><span>${T('Thinking', '思考中')}</span><button class="btn btn-sm" data-act="ai-stop" style="min-height:30px;padding:0 10px">${ic('stop', 'ico-sm', 'fill')}${T('Stop', '停止')}</button></div>` : ''}
     </div>
-    <div class="ai-quick">${QUICK.map(([k, q]) => `<button data-act="ai-q" data-k="${k}">${q}</button>`).join('')}</div>
-    <form class="ai-input" data-act="ai-form"><input id="aiInput" placeholder="说说你想怎么改…" aria-label="输入问题或要求" autocomplete="off"><button type="submit" aria-label="发送">${ic('send', 'ico-sm', 'fill')}</button></form>`;
+    <div class="ai-quick">${QUICK.map(([k, q]) => `<button data-act="ai-q" data-k="${k}">${L(q)}</button>`).join('')}</div>
+    <form class="ai-input" data-act="ai-form"><input id="aiInput" placeholder="${T('Tell me what to change…', '说说你想怎么改…')}" aria-label="${T('Message', '输入问题或要求')}" autocomplete="off"><button type="submit" aria-label="${T('Send', '发送')}">${ic('send', 'ico-sm', 'fill')}</button></form>`;
   const box = $('aiMsgs'); box.scrollTop = box.scrollHeight;
 }
 function aiAsk(key, text) {
@@ -1076,52 +1112,65 @@ function aiAsk(key, text) {
   state.ai.msgs.push({ role: 'me', text });
   state.ai.busy = true;
   render();
-  state.ai.timer = setTimeout(() => { state.ai.busy = false; state.ai.msgs.push({ role: 'ai', html: aiAnswer(key) }); render(); }, 1100);
+  state.ai.timer = setTimeout(() => {
+    state.ai.busy = false;
+    const m = { role: 'ai', key, state: 'open' };
+    if (key === 'crowded' && state.trip.stops.find(s => s.id === 's5')) { m.before = clone(state.trip); state.ai.pending = makeTripB(state.trip); m.after = state.ai.pending; }
+    else if (key === 'crowded') m.state = 'done';
+    m.snapshot = clone(state.trip);
+    state.ai.msgs.push(m);
+    render();
+  }, 1100);
 }
-function aiAnswer(key) {
-  const t = state.trip;
+function aiAnswer(m) {
+  const key = m.key, st = m.state;
+  const t = m.snapshot || state.trip;
+  if (key === 'stopped') return `<span class="muted">${T('Stopped.', '已停止。')}</span>`;
   if (key === 'crowded') {
-    if (!t.stops.find(s => s.id === 's5')) return `<span>已经去掉佛罗伦萨了。还想再调整的话，告诉我想在哪多待几天。</span>`;
-    const before = analyze(t), nt = makeTripB(t), after = analyze(nt);
+    if (!m.before) return `<span>${T("Florence is already gone. Tell me where you'd like more time and I'll adjust.", '已经去掉佛罗伦萨了。还想再调整的话，告诉我想在哪多待几天。')}</span>`;
+    const before = analyze(m.before), after = analyze(m.after);
     const d = after.rec.mid.cost - before.rec.mid.cost;
-    state.ai.pending = nt;
-    return `<span>第二周在意大利连着换了 4 个城市。建议去掉佛罗伦萨，从威尼斯直达罗马，威尼斯多住 1 晚、罗马多住 2 晚。</span>
-      <div class="diff"><div class="diff-head">改动预览</div>
-        <div class="diff-row del"><span class="op">−</span><span class="txt">佛罗伦萨（3晚）</span></div>
-        <div class="diff-row mod"><span class="op">~</span><span>威尼斯 2晚 → 3晚</span></div>
-        <div class="diff-row mod"><span class="op">~</span><span>罗马 7/25 到 3晚 → 7/23 到 5晚</span></div>
-        <div class="diff-row mod"><span class="op">~</span><span>威尼斯 → 罗马 改坐直达 FR 9425</span></div>
-        <div class="diff-row mod"><span class="op">~</span><span>火车 ${t.segs.length}段 → ${nt.segs.length}段</span></div>
-        <div class="diff-cost"><span>预计总花费（规则引擎计算）</span><span><b>${eur(before.rec.mid.cost)} → ${eur(after.rec.mid.cost)}</b> <span class="save">${d < 0 ? `省 ${eur(-d)}` : `多 ${eur(d)}`}</span></span></div>
-        <div class="diff-actions"><button class="btn btn-sm btn-primary" data-act="ai-apply">应用改动</button><button class="btn btn-sm" data-act="ai-reject">不要</button></div>
+    const actions = st === 'applied' ? `<span class="status-ok">${ic('check', 'ico-sm')}${T('Applied', '已应用')}</span>` : st === 'rejected' ? `<span class="small muted">${T('Not applied', '没有应用')}</span>`
+      : `<button class="btn btn-sm btn-primary" data-act="ai-apply">${T('Apply changes', '应用改动')}</button><button class="btn btn-sm" data-act="ai-reject">${T('No thanks', '不要')}</button>`;
+    return `<span>${T('Week two changes city four times in Italy. I suggest dropping Florence and taking a direct train from Venice to Rome, with one more night in Venice and two more in Rome.', '第二周在意大利连着换了 4 个城市。建议去掉佛罗伦萨，从威尼斯直达罗马，威尼斯多住 1 晚、罗马多住 2 晚。')}</span>
+      <div class="diff"><div class="diff-head">${T('Proposed changes', '改动预览')}</div>
+        <div class="diff-row del"><span class="op">−</span><span class="txt">${T('Florence (3 nights)', '佛罗伦萨（3晚）')}</span></div>
+        <div class="diff-row mod"><span class="op">~</span><span>${T('Venice: 2 → 3 nights', '威尼斯 2晚 → 3晚')}</span></div>
+        <div class="diff-row mod"><span class="op">~</span><span>${T('Rome: arrive Jul 23, 5 nights (was Jul 25, 3 nights)', '罗马 7/25 到 3晚 → 7/23 到 5晚')}</span></div>
+        <div class="diff-row mod"><span class="op">~</span><span>${T('Venice → Rome direct on FR 9425', '威尼斯 → 罗马 改坐直达 FR 9425')}</span></div>
+        <div class="diff-row mod"><span class="op">~</span><span>${T(`Trains: ${m.before.segs.length} → ${m.after.segs.length}`, `火车 ${m.before.segs.length}段 → ${m.after.segs.length}段`)}</span></div>
+        <div class="diff-cost"><span>${T('Estimated total (rules engine)', '预计总花费（规则引擎计算）')}</span><span><b>${eur(before.rec.mid.cost)} → ${eur(after.rec.mid.cost)}</b> <span class="save">${d < 0 ? T(`saves ${eur(-d)}`, `省 ${eur(-d)}`) : T(`costs ${eur(d)} more`, `多 ${eur(d)}`)}</span></span></div>
+        <div class="diff-actions">${actions}</div>
       </div>`;
   }
-  if (key === 'strike') return `<span>我联网查了 2 个来源：目前还看不到 2027 年 7 月下旬意大利全国性铁路罢工的公告。意大利公共服务罢工需要至少提前 10 天公布，出发前一周再查一次比较稳。</span>
-      <div class="sources"><span class="xs faint">来源</span><a href="https://scioperi.mit.gov.it/" target="_blank" rel="noopener">意大利交通部罢工日历 ${ic('ext', 'ico-sm')}</a><a href="https://www.trenitalia.com/en.html" target="_blank" rel="noopener">Trenitalia 官网公告 ${ic('ext', 'ico-sm')}</a></div>
-      <span class="xs faint">原型示例回复，不代表真实查询结果</span>`;
+  if (key === 'strike') return `<span>${T("I checked 2 sources and found no announced national rail strike in Italy for late July 2027. Strikes in Italian public services must be announced at least 10 days ahead, so check again the week before you go.", '我联网查了 2 个来源：目前还看不到 2027 年 7 月下旬意大利全国性铁路罢工的公告。意大利公共服务罢工需要至少提前 10 天公布，出发前一周再查一次比较稳。')}</span>
+      <div class="sources"><span class="xs faint">${T('Sources', '来源')}</span><a href="https://scioperi.mit.gov.it/" target="_blank" rel="noopener">${T("Italian transport ministry strike calendar", '意大利交通部罢工日历')} ${ic('ext', 'ico-sm')}</a><a href="https://www.trenitalia.com/en.html" target="_blank" rel="noopener">${T('Trenitalia notices', 'Trenitalia 官网公告')} ${ic('ext', 'ico-sm')}</a></div>
+      <span class="xs faint">${T('Sample reply in the prototype, not a real search result', '原型示例回复，不代表真实查询结果')}</span>`;
   if (key === 'why') {
     const days = dayChoices(t).filter(d => d.choice === 'ticket');
-    if (!days.length) return `<span>现在所有能用通票的日子都用了旅行日，没有建议单独买票的日子。柏林 → 慕尼黑那天是因为在居住国境内，只能买票。</span>`;
+    if (!days.length) return `<span>${T('Every day the pass can cover already uses a travel day. Berlin → Munich needs a ticket because it stays inside your home country.', '现在所有能用通票的日子都用了旅行日，没有建议单独买票的日子。柏林 → 慕尼黑那天是因为在居住国境内，只能买票。')}</span>`;
     const d = days[0], s = d.segs[0];
     const top = dayChoices(t).filter(x => x.choice === 'pass').sort((a, b) => b.value - a.value).slice(0, 2);
-    return `<span><b>${fmtMD(d.date)} ${routeOf(t, s)}</b>：单独买票约 ${eur(s.p.mid)}，用通票还要付订座费 ${eur(s.fee)}，只省 ${eur(d.value)}。</span>
-      <span>你的 ${passById(t.passId).name} 只有 ${passById(t.passId).days} 个旅行日，留给更值钱的日子更划算，比如 ${top.map(x => `${fmtMD(x.date)}（省 ${eur(x.value)}）`).join('、')}。</span>
-      <span class="small muted">数字来自规则引擎，可以去<a href="#days">旅行日</a>页面自己拨开关试试。</span>`;
+    const pass = passById(t.passId);
+    return `<span><b>${fmtMD(d.date)} ${routeOf(t, s)}</b>: ${T(`a ticket costs about ${eur(s.p.mid)}. With the pass you'd still pay a ${eur(s.fee)} seat reservation, so it only saves ${eur(d.value)}.`, `单独买票约 ${eur(s.p.mid)}，用通票还要付订座费 ${eur(s.fee)}，只省 ${eur(d.value)}。`)}</span>
+      <span>${T(`Your ${L(pass.name)} has ${pass.days} travel days. They're worth more on days like ${top.map(x => `${fmtMD(x.date)} (saves ${eur(x.value)})`).join(' and ')}.`, `你的 ${L(pass.name)} 只有 ${pass.days} 个旅行日，留给更值钱的日子更划算，比如 ${top.map(x => `${fmtMD(x.date)}（省 ${eur(x.value)}）`).join('、')}。`)}</span>
+      <span class="small muted">${T('These numbers come from the rules engine. Try flipping the switches on the', '数字来自规则引擎，可以去')} <a href="#days">${T('Days', '旅行日')}</a> ${T('page.', '页面自己拨开关试试。')}</span>`;
   }
-  return `<span>原型里只演示下面三个常用问题。正式版会把你的问题和当前行程一起发给你选的 AI 服务商。</span>`;
+  return `<span>${T("The prototype only answers the three suggested questions. The app will send your question and current trip to the AI provider you picked.", '原型里只演示下面三个常用问题。正式版会把你的问题和当前行程一起发给你选的 AI 服务商。')}</span>`;
 }
 
-/* ---------- 提示条 ---------- */
+/* ---------- Toast ---------- */
 let toastTimer = null;
 function toast(msg, undo) {
   const el = $('toast');
-  el.innerHTML = `<span>${esc(msg)}</span>${undo ? `<button data-act="undo">${ic('undo', 'ico-sm')}撤销</button>` : ''}`;
+  el.innerHTML = `<span>${esc(msg)}</span>${undo ? `<button data-act="undo">${ic('undo', 'ico-sm')}${T('Undo', '撤销')}</button>` : ''}`;
   el.hidden = false;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { el.hidden = true; }, undo ? 10000 : 3000);
 }
 
-/* ================= 事件 ================= */
+/* ================= Events ================= */
+const lastAi = () => [...state.ai.msgs].reverse().find(x => x.role === 'ai' && x.key === 'crowded' && x.state === 'open');
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
   if (!b) return;
@@ -1130,60 +1179,56 @@ document.addEventListener('click', e => {
   switch (a) {
     case 'open-trip': go('route'); break;
     case 'toast': toast(b.dataset.msg); break;
+    case 'lang': setLang(lang === 'en' ? 'zh' : 'en'); render(); break;
+    case 'set-lang': setLang(b.dataset.v); render(); break;
     case 'edit-route': state.editRoute = !state.editRoute; render(); break;
     case 'src': e.stopPropagation(); e.preventDefault(); state.sheet = { type: 'src', src: b.dataset.src }; renderSheet(); break;
     case 'seg': state.sheet = { type: 'seg', id: b.dataset.id, mode: 'search' }; renderSheet(); break;
     case 'sheet-close': state.sheet = null; renderSheet(); break;
     case 'seg-mode': state.sheet.mode = b.dataset.v; renderSheet(); break;
-    case 'pick': { const s = t.segs.find(x => x.id === state.sheet.id); Object.assign(s, { dep: b.dataset.dep, arr: b.dataset.arr, num: b.dataset.num }); render(); toast('已换成 ' + s.num); break; }
+    case 'pick': { const s = t.segs.find(x => x.id === state.sheet.id); Object.assign(s, { dep: b.dataset.dep, arr: b.dataset.arr, num: b.dataset.num }); render(); toast(T('Switched to ', '已换成 ') + s.num); break; }
     case 'price-save': {
       const v = parseFloat($('price-in').value);
-      if (!(v > 0)) { toast('请输入大于 0 的价格'); break; }
+      if (!(v > 0)) { toast(T('Enter a price above 0', '请输入大于 0 的价格')); break; }
       const s = t.segs.find(x => x.id === b.dataset.id);
       s.p = { min: v, mid: v, max: v }; s.src = 'user';
       t.passId = null; t.overrides = {}; ensurePass(t);
-      render(); toast('价格已更新，费用和推荐方案已重新计算'); break;
+      render(); toast(T('Price updated. Costs and the best pass were recalculated.', '价格已更新，费用和推荐方案已重新计算')); break;
     }
-    case 'ai-price': toast(!state.prefs.key ? '需要先在设置里填入 API key' : b.dataset.mode === 'est' ? '原型：AI 会估算价格区间' : '原型：AI 会联网查价格并附来源'); break;
+    case 'ai-price': toast(!state.prefs.key ? T('Add an API key in Settings first', '需要先在设置里填入 API key') : b.dataset.mode === 'est' ? T('Prototype: AI would estimate a price range', '原型：AI 会估算价格区间') : T('Prototype: AI would search the web and cite sources', '原型：AI 会联网查价格并附来源')); break;
     case 'day': {
       const d = b.dataset.date;
       const cur = dayChoices(t).find(x => x.date === d).choice;
       t.overrides[d] = cur === 'pass' ? 'ticket' : 'pass';
       state.flash = '#day-' + d; render(); break;
     }
-    case 'days-reset': t.overrides = {}; render(); toast('已恢复推荐安排'); break;
-    case 'use-pass': t.passId = b.dataset.id; t.overrides = {}; render(); toast('已改用 ' + passById(t.passId).name); break;
+    case 'days-reset': t.overrides = {}; render(); toast(T('Back to the best plan', '已恢复推荐安排')); break;
+    case 'use-pass': t.passId = b.dataset.id; t.overrides = {}; render(); toast(T('Switched to the ', '已改用 ') + L(passById(t.passId).name)); break;
     case 'res-open': state.openRes = b.dataset.id || null; render(); if (state.openRes) { const i = $('rf-ref-' + state.openRes); if (i) i.focus(); } break;
     case 'res-save': {
       const s = t.segs.find(x => x.id === b.dataset.id);
       s.resStatus = 'booked';
-      s.booking = { ref: $('rf-ref-' + s.id).value.trim(), seat: $('rf-seat-' + s.id).value.trim(), paid: parseFloat($('rf-paid-' + s.id).value) || s.fee };
-      state.openRes = null; render(); toast('已标记为已订'); break;
+      const seat = $('rf-seat-' + s.id).value.trim();
+      s.booking = { ref: $('rf-ref-' + s.id).value.trim(), seat: seat ? { en: seat, zh: seat } : null, paid: parseFloat($('rf-paid-' + s.id).value) || s.fee };
+      state.openRes = null; render(); toast(T('Marked as booked', '已标记为已订')); break;
     }
-    case 'res-ticket': { const s = t.segs.find(x => x.id === b.dataset.id); t.overrides[s.date] = 'ticket'; render(); toast('这段改为单独买票，费用已重新计算'); break; }
+    case 'res-ticket': { const s = t.segs.find(x => x.id === b.dataset.id); t.overrides[s.date] = 'ticket'; render(); toast(T('This train now uses a ticket. Costs updated.', '这段改为单独买票，费用已重新计算')); break; }
     case 'ai-toggle': state.aiOpen = !state.aiOpen; render(); if (state.aiOpen && window.innerWidth >= 1024) { const i = $('aiInput'); if (i) i.focus(); } break;
-    case 'ai-q': { const q = QUICK.find(x => x[0] === b.dataset.k); aiAsk(q[0], q[1]); break; }
-    case 'ai-stop': clearTimeout(state.ai.timer); state.ai.busy = false; state.ai.msgs.push({ role: 'ai', html: '<span class="muted">已停止。</span>' }); render(); break;
+    case 'ai-q': { const q = QUICK.find(x => x[0] === b.dataset.k); aiAsk(q[0], L(q[1])); break; }
+    case 'ai-stop': clearTimeout(state.ai.timer); state.ai.busy = false; state.ai.msgs.push({ role: 'ai', key: 'stopped', state: 'x' }); render(); break;
     case 'ai-apply': {
-      if (!state.ai.pending) break;
+      const m = lastAi(); if (!m || !state.ai.pending) break;
       state.prevTrip = clone(t);
-      state.trip = state.ai.pending; ensurePass(state.trip); state.ai.pending = null;
-      const last = state.ai.msgs[state.ai.msgs.length - 1];
-      last.html = last.html.replace(/<div class="diff-actions">[\s\S]*?<\/div>/, `<div class="diff-actions"><span class="status-ok">${ic('check', 'ico-sm')}已应用</span></div>`);
-      render(); toast('已应用 5 项改动', true); break;
+      state.trip = state.ai.pending; ensurePass(state.trip); state.ai.pending = null; m.state = 'applied';
+      render(); toast(T('5 changes applied', '已应用 5 项改动'), true); break;
     }
-    case 'ai-reject': {
-      state.ai.pending = null;
-      const last = state.ai.msgs[state.ai.msgs.length - 1];
-      last.html = last.html.replace(/<div class="diff-actions">[\s\S]*?<\/div>/, '<div class="diff-actions"><span class="small muted">没有应用</span></div>');
-      render(); break;
-    }
-    case 'undo': if (state.prevTrip) { state.trip = state.prevTrip; state.prevTrip = null; render(); toast('已撤销'); } break;
+    case 'ai-reject': { const m = lastAi(); if (m) m.state = 'rejected'; state.ai.pending = null; render(); break; }
+    case 'undo': if (state.prevTrip) { state.trip = state.prevTrip; state.prevTrip = null; render(); toast(T('Undone', '已撤销')); } break;
     case 'wz': state.wizard[b.dataset.k] = b.dataset.v; render(); break;
     case 'wz-count': state.wizard.count = Math.min(9, Math.max(1, state.wizard.count + Number(b.dataset.d))); render(); break;
     case 'wz-step': { const d = $('wz-desc'); if (d) state.wizard.desc = d.value; state.wizard.step += Number(b.dataset.d); render(); break; }
-    case 'wz-gen': toast('原型：AI 会根据描述生成路线，生成后你可以逐项修改'); break;
-    case 'wz-create': state.wizard.step = 1; go('route'); toast('原型中使用示例行程'); break;
+    case 'wz-gen': toast(T('Prototype: AI would draft a route you can then edit', '原型：AI 会根据描述生成路线，生成后你可以逐项修改')); break;
+    case 'wz-create': state.wizard.step = 1; go('route'); toast(T('The prototype opens the sample trip', '原型中使用示例行程')); break;
     case 'pf-show': savePrefInputs(); state.prefs.show = !state.prefs.show; render(); break;
     case 'pf-test': {
       savePrefInputs();
@@ -1191,7 +1236,7 @@ document.addEventListener('click', e => {
       state.prefs.test = 'busy'; render();
       setTimeout(() => { state.prefs.test = 'ok'; render(); }, 800); break;
     }
-    case 'pf-clear-key': state.prefs.key = ''; state.prefs.test = null; render(); toast('已清除 key'); break;
+    case 'pf-clear-key': state.prefs.key = ''; state.prefs.test = null; render(); toast(T('Key removed', '已清除 key')); break;
     case 'pf-encrypt': state.prefs.encrypt = b.checked; break;
     case 'theme': {
       state.prefs.theme = b.dataset.v;
@@ -1200,7 +1245,7 @@ document.addEventListener('click', e => {
       render(); break;
     }
     case 'pf-confirm': state.prefs.confirmClear = b.dataset.v === '1'; render(); break;
-    case 'pf-clear-all': state.prefs.confirmClear = false; render(); toast('原型：不会真的清除数据'); break;
+    case 'pf-clear-all': state.prefs.confirmClear = false; render(); toast(T("Prototype: nothing was deleted", '原型：不会真的清除数据')); break;
   }
 });
 document.addEventListener('change', e => {
@@ -1219,7 +1264,7 @@ document.addEventListener('submit', e => {
   e.preventDefault();
   const v = $('aiInput').value.trim();
   if (!v) return;
-  const k = /赶|少去|减少|太累/.test(v) ? 'crowded' : /罢工|停运/.test(v) ? 'strike' : /为什么|买票/.test(v) ? 'why' : 'other';
+  const k = /rush|drop|fewer|赶|少去|减少|太累/i.test(v) ? 'crowded' : /strike|disrupt|罢工|停运/i.test(v) ? 'strike' : /why|为什么|买票/i.test(v) ? 'why' : 'other';
   aiAsk(k, v);
 });
 $('sheetBackdrop').addEventListener('click', e => { if (e.target.id === 'sheetBackdrop') { state.sheet = null; renderSheet(); } });

@@ -1,5 +1,7 @@
 # 可点击原型
 
+界面默认英文，右上角的"中文"按钮或设置里的"Language"可以切换到简体中文。选择会记在浏览器里。
+
 - `prototype.html`：原型源文件（发布为 Claude Artifact 时使用，没有 `<html>` 外壳）
 - `index.html`：由 `prototype.html` 加上 HTML 外壳生成，可直接用浏览器打开
 
