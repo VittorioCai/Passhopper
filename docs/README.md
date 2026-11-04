@@ -23,7 +23,7 @@
 | D5 | AI 费用 | 只支持用户自带 API key。key 只存在用户自己的浏览器里，服务端不保存。产品公开给所有人使用 |
 | D6 | 联网搜索 | DeepSeek 已于 2026-10-17 推出官方 Search / Fetch API，作为统一的联网搜索能力 |
 | D7 | 第一版功能 | 路线规划、旅行日规划、订座清单、回本计算，四个都做 |
-| D8 | 代码仓库 | 新建 GitHub 仓库（待用户创建，见下） |
+| D8 | 代码仓库 | https://github.com/VittorioCai/Passhopper（公开） |
 | D9 | 文档形式 | Markdown，放在仓库 `docs/` 目录 |
 | D10 | 产品名称 | 英文名 Passhopper，中文名 通票漫游；GitHub 仓库名 `passhopper`。名称不含 Interrail / Eurail 商标 |
 | D11 | 开源许可证 | MIT |
