@@ -7,6 +7,7 @@ import {
 } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { PassBar } from '../components/PassBar';
+import { TripCalendar } from '../components/TripCalendar';
 import { passName, passValidity } from '../components/passText';
 import { useTripContext } from '../components/TripContext';
 import ui from '../components/ui.module.css';
@@ -15,6 +16,7 @@ import type { DayItem } from '../engine/days';
 import type { Plan, PlanError } from '../engine/optimizer';
 import { addDays, dateParts, formatDate } from '../model/dates';
 import type { Trip } from '../model/schema';
+import { tripRange } from '../model/trip';
 import { countryName, eur, placeName, useLang } from '../lib';
 import d from './DaysPage.module.css';
 
@@ -91,6 +93,13 @@ export function DaysPage() {
     );
   }
 
+  const shownDays =
+    plan?.days ??
+    analysis.days.map((x) => ({
+      ...x,
+      choice: x.coverable ? ('ticket' as const) : ('locked' as const),
+      overridden: false,
+    }));
   const first = plan?.passDays[0];
   const product = plan?.result.product;
   return (
@@ -124,26 +133,21 @@ export function DaysPage() {
           {errorText(e)}
         </p>
       ))}
-      <div className={d.legend}>
-        <span>
-          <i className={d.lgPass} />
-          {t('chip.travelDay')}
-        </span>
-        <span>
-          <i className={d.lgTicket} />
-          {t('days.buyTicket')}
-        </span>
-        <span>{t('days.flipHint')}</span>
-      </div>
+      <TripCalendar
+        start={trip.startDate}
+        end={tripRange(trip).end}
+        days={shownDays.map((x) => ({
+          date: x.date,
+          choice: x.choice,
+          night: x.items.some((i) => i.seg.arrDay > i.seg.depDay),
+        }))}
+        validFrom={first}
+        validTo={first && product ? addDays(first, product.validityDays - 1) : undefined}
+        lang={lang}
+      />
+      <p className={d.legend}>{t('days.flipHint')}</p>
       <ol className={d.days}>
-        {(
-          plan?.days ??
-          analysis.days.map((x) => ({
-            ...x,
-            choice: x.coverable ? ('ticket' as const) : ('locked' as const),
-            overridden: false,
-          }))
-        ).map((day) => {
+        {shownDays.map((day) => {
           const parts = dateParts(day.date, lang);
           const isErr =
             !!plan?.errors.some((e) => e.type === 'too_many_days') && day.choice === 'pass';
@@ -151,6 +155,7 @@ export function DaysPage() {
           return (
             <li
               key={day.date}
+              id={`day-${day.date}`}
               className={`${d.day} ${day.choice === 'pass' ? d.isPass : ''} ${isErr ? d.err : ''}`}
             >
               <span

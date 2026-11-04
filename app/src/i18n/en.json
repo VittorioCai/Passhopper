@@ -422,5 +422,13 @@
   "check": {
     "title": "Check this train",
     "fees": "Interrail reservation fees"
+  },
+  "calendar": {
+    "title": "Trip calendar",
+    "pass": "Travel day",
+    "ticket": "Ticket",
+    "stay": "No train",
+    "valid_one": "Pass valid ({{count}} day)",
+    "valid_other": "Pass valid ({{count}} days)"
   }
 }

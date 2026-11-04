@@ -64,6 +64,19 @@ describe('trip pages', () => {
     expect(await screen.findByText('Trip not found')).toBeInTheDocument();
   });
 
+  it('shows the trip as a calendar and jumps to a day', async () => {
+    const trip = makeSampleTrip('en');
+    await saveTrip(trip);
+    at(`/trip/${trip.id}/days`);
+    const cal = await screen.findByRole('region', { name: 'Trip calendar' });
+    expect(within(cal).getByText('July 2027')).toBeInTheDocument();
+    const munich = within(cal).getByRole('button', { name: '2027-07-16: Travel day' });
+    Element.prototype.scrollIntoView = vi.fn();
+    fireEvent.click(munich);
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalled();
+    expect(within(cal).getByRole('button', { name: '2027-07-14: Ticket' })).toBeInTheDocument();
+  });
+
   it('adds a note to a city', async () => {
     const trip = makeSampleTrip('en');
     await saveTrip(trip);

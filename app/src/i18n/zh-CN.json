@@ -399,5 +399,12 @@
   "check": {
     "title": "核实这趟车",
     "fees": "Interrail 订座费"
+  },
+  "calendar": {
+    "title": "行程日历",
+    "pass": "旅行日",
+    "ticket": "买票",
+    "stay": "无火车",
+    "valid_other": "通票有效期（{{count}} 天）"
   }
 }
