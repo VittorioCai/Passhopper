@@ -125,6 +125,21 @@ describe('travel days and seats', () => {
   });
 });
 
+describe('savings', () => {
+  it('compares passes with buying tickets and switches pass on tap', async () => {
+    const trip = makeSampleTrip('en');
+    await saveTrip(trip);
+    at(`/trip/${trip.id}/savings`);
+    expect(await screen.findByText('All tickets')).toBeInTheDocument();
+    expect(screen.getByText('In use')).toBeInTheDocument();
+    const other = screen.getByRole('button', { name: /Use the 10-day Flexi/ });
+    fireEvent.click(other);
+    await waitFor(async () => {
+      expect((await db.trips.get(trip.id))!.pass?.productId).toBe('flexi-10-2m');
+    });
+  });
+});
+
 describe('new trip wizard', () => {
   it('creates a trip and opens its route', async () => {
     at('/new');

@@ -301,3 +301,31 @@ describe('plan', () => {
     expect(plan.errors[0]).toMatchObject({ type: 'too_many_days', allowed: 4 });
   });
 });
+
+describe('sensitivity', () => {
+  it('finds the train whose cheaper fare would make tickets win', async () => {
+    const { findFlip, winner } = await import('./sensitivity');
+    const places = [P('s', 'FR'), P('a', 'FR'), P('b', 'FR'), P('c', 'FR'), P('d', 'FR')];
+    const t = trip(places, [
+      { trainNumber: 'TER 1', price: price(70, 90) },
+      { trainNumber: 'TER 2', price: price(70, 90) },
+      { trainNumber: 'TER 3', price: price(70, 90) },
+      { trainNumber: 'TER 4', price: price(10, 150) },
+    ]);
+    const a = analyze(t);
+    expect(winner(a)).toBe('flexi-4-1m');
+    const f = findFlip(t, a)!;
+    expect(f).toMatchObject({
+      trainNumber: 'TER 4',
+      direction: 'cheaper',
+      price: 10,
+      newWinner: 'tickets',
+    });
+  });
+
+  it('returns null when no single price changes the answer', async () => {
+    const { findFlip } = await import('./sensitivity');
+    const t = trip([P('a', 'FR'), P('b', 'FR')], [{ trainNumber: 'TER 1', price: price(10) }]);
+    expect(findFlip(t)).toBeNull();
+  });
+});

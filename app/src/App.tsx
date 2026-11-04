@@ -6,7 +6,7 @@ import { Settings } from './pages/Settings';
 import { RoutePage } from './pages/RoutePage';
 import { DaysPage } from './pages/DaysPage';
 import { SeatsPage } from './pages/SeatsPage';
-import { SavingsPage } from './pages/TripPages';
+import { SavingsPage } from './pages/SavingsPage';
 
 export function App() {
   return (

@@ -189,7 +189,31 @@
   },
   "savings": {
     "title": "回本",
-    "empty": "我们会把每种通票和单独买票比一比，告诉你能省多少。"
+    "empty": "我们会把每种通票和单独买票比一比，告诉你能省多少。",
+    "ticketsOnly": "全部单独买票大约 {{total}}。",
+    "ticketsWin": "按常见票价，单独买票便宜 {{amount}}",
+    "isBest": "这是最省的通票 · 和全部单独买票比，按常见票价估算",
+    "switchSaves": "换成 {{name}} 还能再省 {{amount}}",
+    "stillSaves": "即使每段都买到最便宜的特价票，通票仍然省 {{amount}}。",
+    "advanceFares": "如果每段都提前抢到最便宜的特价票，单独买票反而便宜 {{amount}}。不过特价票要早买，而且通常不能改签，行程不确定时通票更灵活。",
+    "flipCheaper": "结论最受 {{train}} 影响：如果这段买到 {{price}}，{{winner}}就会变成最省的方案。",
+    "flipPricier": "结论最受 {{train}} 影响：如果这段要 {{price}}，{{winner}}就会变成最省的方案。",
+    "missing_other": "还有 {{count}} 段车没填票价，按 €0 计算。可以在路线页补上。",
+    "compare": "方案对比",
+    "tapToSwitch": "点击可切换通票",
+    "useThis": "改用 {{name}}，合计 {{total}}",
+    "inUse": "使用中",
+    "allTickets": "全部买票",
+    "noPass": "不买通票",
+    "typical": "按常见票价",
+    "range": "最便宜到最贵",
+    "unpriced_other": "另有 {{count}} 种通票没有显示，因为我们还没有你适用的价格。",
+    "breakdown": "{{name}} 明细",
+    "fees_other": "订座费 · {{count}} 段",
+    "tickets_other": "单独买票 · {{count}} 段",
+    "total": "合计",
+    "winnerTickets": "全部单独买票",
+    "winnerPass": "{{name}}"
   },
   "newTrip": {
     "title": "新建行程"
