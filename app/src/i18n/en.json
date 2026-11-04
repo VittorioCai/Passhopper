@@ -379,5 +379,14 @@
     "useOption": "Use {{trains}}, leaving {{dep}}",
     "replaces": "Picking an option replaces the trains already on this leg.",
     "credit": "Timetables from"
+  },
+  "conflict": {
+    "overlap": "{{next}} leaves before {{prev}} arrives. Check the times.",
+    "tight_one": "Only {{count}} minute to change from {{prev}} to {{next}}.",
+    "tight_other": "Only {{count}} minutes to change from {{prev}} to {{next}}.",
+    "manyChanges_one": "{{count}} change on this journey. Look for a more direct train.",
+    "manyChanges_other": "{{count}} changes on this journey. Look for a more direct train.",
+    "longDay": "{{time}} of travel in one day. Consider a night train or a stop on the way.",
+    "missed": "You pass through {{name}} without staying, but the next train leaves before this one arrives."
   }
 }

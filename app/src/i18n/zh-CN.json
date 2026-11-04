@@ -358,5 +358,12 @@
     "useOption": "选择 {{trains}}，{{dep}} 出发",
     "replaces": "选择后会替换这一段已有的车次。",
     "credit": "时刻表数据来自"
+  },
+  "conflict": {
+    "overlap": "{{next}} 在 {{prev}} 到达之前就开了，请检查时间。",
+    "tight_other": "从 {{prev}} 换乘 {{next}} 只有 {{count}} 分钟。",
+    "manyChanges_other": "这一段要换乘 {{count}} 次，可以找找更直达的车。",
+    "longDay": "一天要坐 {{time}} 的车。可以考虑夜车，或者中途停一站。",
+    "missed": "你在{{name}}不过夜，但下一趟车在这趟车到达之前就开了。"
   }
 }

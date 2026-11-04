@@ -6,6 +6,7 @@ import {
   PencilSimpleIcon,
   PlusIcon,
   TrashIcon,
+  WarningIcon,
 } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +17,7 @@ import { Sheet } from '../components/Sheet';
 import { Stepper } from '../components/Stepper';
 import { useTripContext } from '../components/TripContext';
 import ui from '../components/ui.module.css';
+import { findConflicts, type Conflict } from '../engine/conflicts';
 import type { DayItem } from '../engine/days';
 import type { DayChoice } from '../engine/optimizer';
 import { formatDate, formatDuration } from '../model/dates';
@@ -153,6 +155,23 @@ export function RoutePage() {
   const last = trip.stops[trip.stops.length - 1]!;
   const returnsHome = trip.stops.length > 2 && last.place.id === origin.place.id;
   const insertAt = returnsHome ? trip.stops.length - 1 : trip.stops.length;
+  const conflicts = findConflicts(trip);
+  const conflictText = (c: Conflict) => {
+    switch (c.type) {
+      case 'overlap':
+        return t('conflict.overlap', { prev: c.prev, next: c.next });
+      case 'tight':
+        return t('conflict.tight', { count: c.minutes, prev: c.prev, next: c.next });
+      case 'many_changes':
+        return t('conflict.manyChanges', { count: c.changes });
+      case 'long_day':
+        return t('conflict.longDay', { time: formatDuration(c.minutes, lang) });
+      case 'missed_connection': {
+        const stop = trip.stops.find((x) => x.id === c.stopId);
+        return t('conflict.missed', { name: stop ? placeName(stop.place, lang) : '' });
+      }
+    }
+  };
   const infoBySeg = new Map<string, TicketInfo>();
   for (const d of plan?.days ?? analysis.days) {
     for (const item of d.items)
@@ -309,6 +328,14 @@ export function RoutePage() {
                         onOpen={() => setSheet({ type: 'segment', fromStopId: stop.id, seg })}
                       />
                     ))}
+                    {conflicts
+                      .filter((c) => c.fromStopId === stop.id)
+                      .map((c, k) => (
+                        <p key={k} className={r.conflict} role="note">
+                          <WarningIcon size={15} weight="fill" />
+                          <span>{conflictText(c)}</span>
+                        </p>
+                      ))}
                     {j.segments.length === 0 ? (
                       <button
                         type="button"

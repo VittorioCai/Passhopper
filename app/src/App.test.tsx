@@ -64,6 +64,14 @@ describe('trip pages', () => {
     expect(await screen.findByText('Trip not found')).toBeInTheDocument();
   });
 
+  it('warns about a missed connection', async () => {
+    const trip = makeSampleTrip('en');
+    trip.stops[1]!.nights = 0;
+    await saveTrip(trip);
+    at(`/trip/${trip.id}/route`);
+    expect(await screen.findByText(/You pass through Munich without staying/)).toBeInTheDocument();
+  });
+
   it('adds trains from the timetable search', async () => {
     const place = (name: string, lat: number, lon: number) => ({
       name,

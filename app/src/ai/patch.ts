@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { CITIES, type City } from '../data/cities';
 import { COUNTRY_CODES, isCountryCode } from '../data/countries';
+import { findConflicts } from '../engine/conflicts';
 import { currentPlan, analyze } from '../engine/optimizer';
 import {
   addStop,
@@ -436,6 +437,10 @@ export function planForModel(trip: Trip) {
         })),
       })),
       trains_without_price: a.missingPrices,
+      route_warnings: findConflicts(trip).map(({ fromStopId, ...c }) => ({
+        ...c,
+        journey_from: ref(fromStopId),
+      })),
     },
   };
 }
