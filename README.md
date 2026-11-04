@@ -6,16 +6,28 @@
 
 Passhopper is a mobile-first planner for Interrail passes. Build your route, see which days are worth a travel day, keep track of seat reservations, and find out whether the pass actually beats buying tickets. An optional AI assistant (bring your own DeepSeek, Claude or OpenAI-compatible key) can draft and edit your trip. You always see the change before it's applied.
 
-> 🚧 Early stage: design docs and a clickable prototype. No working app yet.
+> 🚧 Early stage. The app skeleton is in place; trip planning features are next.
 
 ## Status
 
-| | |
-|---|---|
-| Design docs (Chinese for now) | [`docs/`](docs/README.md) |
-| Clickable prototype | [`prototype/index.html`](prototype/index.html), download and open in a browser |
-| Logo and brand assets | [`design/logo/`](design/logo/) |
-| App | Not started |
+|                               |                                                                                |
+| ----------------------------- | ------------------------------------------------------------------------------ |
+| Design docs (Chinese for now) | [`docs/`](docs/README.md)                                                      |
+| Clickable prototype           | [`prototype/index.html`](prototype/index.html), download and open in a browser |
+| Logo and brand assets         | [`design/logo/`](design/logo/)                                                 |
+| App                           | Not started                                                                    |
+
+## Development
+
+Requires Node 22 and pnpm 10.
+
+```bash
+pnpm install
+pnpm dev        # start the dev server
+pnpm test       # run unit tests
+pnpm lint && pnpm typecheck
+pnpm build      # production build with offline support
+```
 
 ## Languages
 
@@ -25,4 +37,4 @@ English first. Simplified Chinese (简体中文) is planned as the second langua
 
 [MIT](LICENSE)
 
-*Passhopper is not affiliated with Interrail / Eurail B.V. "Interrail" and "Eurail" are trademarks of Eurail B.V.*
+_Passhopper is not affiliated with Interrail / Eurail B.V. "Interrail" and "Eurail" are trademarks of Eurail B.V._

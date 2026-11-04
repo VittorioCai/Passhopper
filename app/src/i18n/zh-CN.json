@@ -1,0 +1,64 @@
+{
+  "app": {
+    "name": "Passhopper",
+    "tagline": "帮你把 Interrail 通票用到回本",
+    "disclaimer": "Passhopper 与 Interrail / Eurail B.V. 无关联。规则和价格仅供参考，以官方为准。"
+  },
+  "common": {
+    "back": "返回",
+    "comingSoon": "下一个阶段上线"
+  },
+  "nav": {
+    "myTrips": "我的行程",
+    "settings": "设置",
+    "currentTrip": "当前行程",
+    "tabs": "行程页面",
+    "route": "路线",
+    "days": "旅行日",
+    "seats": "订座",
+    "savings": "回本",
+    "daysLong": "旅行日",
+    "seatsLong": "订座"
+  },
+  "lang": {
+    "switchTo": "EN",
+    "switchLabel": "切换到英文"
+  },
+  "home": {
+    "greeting": "嗨，旅行者",
+    "title": "下一站去哪？",
+    "emptyTitle": "还没有行程",
+    "emptyBody": "新建一个行程，排好路线，看看哪些天值得用旅行日，算算通票能不能回本。",
+    "newTrip": "新建行程"
+  },
+  "newTrip": {
+    "title": "新建行程",
+    "body": "新建行程向导会在 M1 阶段上线。"
+  },
+  "route": {
+    "title": "路线",
+    "empty": "你的路线会以地铁线路图的样子显示在这里，一个城市一站。"
+  },
+  "days": {
+    "title": "旅行日",
+    "empty": "添加火车段后，我们会建议哪些天用通票。"
+  },
+  "seats": {
+    "title": "订座",
+    "empty": "需要订座的火车段会列在这里。"
+  },
+  "savings": {
+    "title": "回本",
+    "empty": "我们会把每种通票和单独买票比一比，告诉你能省多少。"
+  },
+  "settings": {
+    "title": "设置",
+    "language": "语言",
+    "appearance": "外观",
+    "themeSystem": "跟随系统",
+    "themeLight": "浅色",
+    "themeDark": "深色",
+    "about": "关于",
+    "source": "开源地址"
+  }
+}

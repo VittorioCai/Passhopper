@@ -1,0 +1,64 @@
+{
+  "app": {
+    "name": "Passhopper",
+    "tagline": "Plan your Interrail trip. Make the pass pay off.",
+    "disclaimer": "Passhopper is not affiliated with Interrail / Eurail B.V. Rules and prices are for guidance only; check the official sites."
+  },
+  "common": {
+    "back": "Back",
+    "comingSoon": "Coming in the next milestone"
+  },
+  "nav": {
+    "myTrips": "My trips",
+    "settings": "Settings",
+    "currentTrip": "Current trip",
+    "tabs": "Trip pages",
+    "route": "Route",
+    "days": "Days",
+    "seats": "Seats",
+    "savings": "Savings",
+    "daysLong": "Travel days",
+    "seatsLong": "Seat reservations"
+  },
+  "lang": {
+    "switchTo": "中文",
+    "switchLabel": "Switch to Chinese"
+  },
+  "home": {
+    "greeting": "Hi, traveller",
+    "title": "Where are you hopping next?",
+    "emptyTitle": "No trips yet",
+    "emptyBody": "Create a trip to plan your route, see which days are worth a travel day, and find out if the pass pays off.",
+    "newTrip": "New trip"
+  },
+  "newTrip": {
+    "title": "New trip",
+    "body": "The trip wizard arrives in milestone M1."
+  },
+  "route": {
+    "title": "Route",
+    "empty": "Your route will appear here as a metro-style line, one stop per city."
+  },
+  "days": {
+    "title": "Travel days",
+    "empty": "Once you add trains, we'll suggest which days to use your pass on."
+  },
+  "seats": {
+    "title": "Seat reservations",
+    "empty": "Trains that need a seat reservation will be listed here."
+  },
+  "savings": {
+    "title": "Savings",
+    "empty": "We'll compare every pass option with buying tickets, and show what you save."
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "appearance": "Appearance",
+    "themeSystem": "System",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "about": "About",
+    "source": "Source code"
+  }
+}

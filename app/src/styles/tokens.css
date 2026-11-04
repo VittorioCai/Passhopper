@@ -1,0 +1,150 @@
+/* Design tokens: Mint Soda palette. Source of truth: docs/UI-DESIGN.md §3.
+   Light values on :root; dark values follow the system setting unless the user picked a theme. */
+:root {
+  --bg: #f3f5f8;
+  --surface: #ffffff;
+  --surface-2: #eef1f5;
+  --surface-3: #e1e6ed;
+  --line: #e3e7ed;
+  --ink: #0f1524;
+  --ink-2: #5a6478;
+  --ink-3: #8c95a7;
+  --on-ink: #ffffff;
+  --primary: #00a37a;
+  --primary-ink: #ffffff;
+  --primary-soft: #d9f7ec;
+  --sun: #ffd43b;
+  --sun-ink: #2a2100;
+  --sun-text: #8a6a00;
+  --sun-soft: #fff5cc;
+  --blue: #2f6bff;
+  --blue-soft: #e4ecff;
+  --mint: #0c9f72;
+  --mint-soft: #dcf5eb;
+  --danger: #e23b3e;
+  --danger-soft: #fde5e5;
+  --glass: rgba(255, 255, 255, 0.74);
+  --glass-line: rgba(255, 255, 255, 0.9);
+  --shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 6px 22px rgba(16, 24, 40, 0.06);
+  --shadow-lg: 0 18px 50px rgba(16, 24, 40, 0.16);
+  --scrim: rgba(10, 14, 22, 0.45);
+  --pass-grad: linear-gradient(135deg, #c9f7e3 0%, #7fe6c0 48%, #2fd0a0 100%);
+  --pass-ink: #042a20;
+  --pass-shadow: 0 14px 34px rgba(0, 163, 122, 0.22);
+  --hl-grad: linear-gradient(90deg, #00a37a, #14b8a6);
+  --blob-a: rgba(0, 200, 150, 0.16);
+  --blob-b: rgba(255, 212, 59, 0.14);
+  --blob-c: rgba(20, 184, 166, 0.1);
+
+  /* Country line colours */
+  --l-DE: #2f6bff;
+  --l-CH: #e23b3e;
+  --l-IT: #0c9f72;
+  --l-AT: #e8641c;
+  --l-CZ: #7c5cfa;
+  --on-line: #ffffff;
+
+  /* Type */
+  --f-body: 'DM Sans Variable', 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', var(--f-body);
+  --f-mono: 'DM Mono', ui-monospace, monospace;
+
+  /* Shape */
+  --r-md: 16px;
+  --r-lg: 22px;
+}
+:root:lang(zh-CN) {
+  --f-body:
+    'DM Sans Variable', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --f-display: 'Bricolage Grotesque Variable', 'Noto Sans SC', 'PingFang SC', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #0b0e14;
+    --surface: #151a23;
+    --surface-2: #1c2230;
+    --surface-3: #283041;
+    --line: #252c3a;
+    --ink: #f1f3f8;
+    --ink-2: #a3acbd;
+    --ink-3: #6e7789;
+    --on-ink: #0b0e14;
+    --primary: #2fd9a6;
+    --primary-ink: #04261c;
+    --primary-soft: #0f2e25;
+    --sun: #ffd84d;
+    --sun-text: #ffd84d;
+    --sun-soft: #332b0a;
+    --blue: #6b96ff;
+    --blue-soft: #172341;
+    --mint: #2dd4a0;
+    --mint-soft: #0e2d24;
+    --danger: #ff6b6b;
+    --danger-soft: #3a1b1d;
+    --glass: rgba(21, 26, 35, 0.74);
+    --glass-line: rgba(255, 255, 255, 0.06);
+    --shadow: 0 1px 0 rgba(255, 255, 255, 0.03), 0 6px 22px rgba(0, 0, 0, 0.35);
+    --shadow-lg: 0 18px 50px rgba(0, 0, 0, 0.5);
+    --scrim: rgba(0, 0, 0, 0.6);
+    --pass-grad: linear-gradient(135deg, #0e3b30 0%, #0f5a47 50%, #13866a 100%);
+    --pass-ink: #e9fff7;
+    --pass-shadow: 0 14px 34px rgba(0, 0, 0, 0.4);
+    --hl-grad: linear-gradient(90deg, #2fd9a6, #5eead4);
+    --blob-a: rgba(47, 217, 166, 0.1);
+    --blob-b: rgba(255, 216, 77, 0.06);
+    --blob-c: rgba(94, 234, 212, 0.06);
+    --l-DE: #5b8cff;
+    --l-CH: #ff6b6b;
+    --l-IT: #2dd4a0;
+    --l-AT: #ff9a55;
+    --l-CZ: #a08bff;
+    --on-line: #0b0e14;
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --bg: #0b0e14;
+  --surface: #151a23;
+  --surface-2: #1c2230;
+  --surface-3: #283041;
+  --line: #252c3a;
+  --ink: #f1f3f8;
+  --ink-2: #a3acbd;
+  --ink-3: #6e7789;
+  --on-ink: #0b0e14;
+  --primary: #2fd9a6;
+  --primary-ink: #04261c;
+  --primary-soft: #0f2e25;
+  --sun: #ffd84d;
+  --sun-text: #ffd84d;
+  --sun-soft: #332b0a;
+  --blue: #6b96ff;
+  --blue-soft: #172341;
+  --mint: #2dd4a0;
+  --mint-soft: #0e2d24;
+  --danger: #ff6b6b;
+  --danger-soft: #3a1b1d;
+  --glass: rgba(21, 26, 35, 0.74);
+  --glass-line: rgba(255, 255, 255, 0.06);
+  --shadow: 0 1px 0 rgba(255, 255, 255, 0.03), 0 6px 22px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 18px 50px rgba(0, 0, 0, 0.5);
+  --scrim: rgba(0, 0, 0, 0.6);
+  --pass-grad: linear-gradient(135deg, #0e3b30 0%, #0f5a47 50%, #13866a 100%);
+  --pass-ink: #e9fff7;
+  --pass-shadow: 0 14px 34px rgba(0, 0, 0, 0.4);
+  --hl-grad: linear-gradient(90deg, #2fd9a6, #5eead4);
+  --blob-a: rgba(47, 217, 166, 0.1);
+  --blob-b: rgba(255, 216, 77, 0.06);
+  --blob-c: rgba(94, 234, 212, 0.06);
+  --l-DE: #5b8cff;
+  --l-CH: #ff6b6b;
+  --l-IT: #2dd4a0;
+  --l-AT: #ff9a55;
+  --l-CZ: #a08bff;
+  --on-line: #0b0e14;
+  color-scheme: dark;
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+}

@@ -287,9 +287,9 @@ interface PlanPatch {
 ### 5.2 技术选型
 | 层 | 选择 | 理由 |
 |---|---|---|
-| 构建 | Vite + TypeScript（strict） | 快、生态成熟 |
-| UI | React | 生态最大，组件和人才都好找 |
-| 样式 | CSS 变量（设计令牌）+ Tailwind CSS | 令牌对应 UI 设计文档，Tailwind 提高开发速度 |
+| 构建 | Vite 8 + TypeScript 6.0（strict） | 快、生态成熟。TypeScript 暂不升 7.0：typescript-eslint 目前只支持到 6.0 |
+| UI | React 19 + React Router 8 | 生态最大，组件和人才都好找 |
+| 样式 | CSS 变量（设计令牌）+ CSS Modules | 令牌对应 UI 设计文档；样式直接沿用原型，不引入 Tailwind，少一层依赖 |
 | 状态 | Zustand | 轻量 |
 | 本地存储 | IndexedDB，通过 Dexie 访问 | 容量大，支持离线 |
 | 校验 | zod | 校验 AI 输出、导入文件、数据文件 |
@@ -297,12 +297,12 @@ interface PlanPatch {
 | 地图（P1） | MapLibre GL JS + OpenFreeMap 矢量瓦片 | 免费、无需 key（条款待核实，S4） |
 | PWA | vite-plugin-pwa（Workbox） | 离线、添加到桌面 |
 | 国际化 | i18next | 第一版只有英文，第二个语言是简体中文。从第一天起所有文案走 i18n，日期、货币按语言区域格式化 |
-| 测试 | Vitest（单元）、Playwright（端到端） | |
+| 测试 | Vitest + Testing Library（单元和组件）、Playwright（端到端，M1 起） | |
 | 代码规范 | ESLint、Prettier、类型检查，CI 中强制执行 | |
-| 包管理 | pnpm workspace | |
+| 包管理 | pnpm workspace（目前只有 `app`，`worker` 在 M4 加入） | |
 | 部署 | Cloudflare Pages（前端）+ Cloudflare Workers（转发） | 个人用量免费，全球边缘节点 |
 
-所有依赖锁定具体版本，开发时选当时的稳定版本。
+所有依赖锁定具体版本（`app/package.json` 不用 `^`），只选发布满两周的版本，并检查相互兼容。字体全部自托管（Fontsource），中文字体只在中文界面按需加载。
 
 ### 5.3 目录结构
 ```
@@ -484,6 +484,8 @@ interface ReservationRule {
 
 ## 10. 里程碑
 
+**当前进度（2026-11-04）**：M0 进行中。项目骨架、CI、设计令牌、多语言框架、页面路由和 PWA 已完成；技术验证 S1、S2、S4 和官方规则核实需要放行外部网站后进行（见 §12.1）。
+
 | 里程碑 | 内容 | 验收标准 |
 |---|---|---|
 | **M0 技术验证与骨架** | 仓库、CI、设计令牌、空页面路由；完成 §12 的技术验证 S1 到 S4 | CI 全绿；预览地址可访问；验证结论写入本文档 |
@@ -509,10 +511,10 @@ interface ReservationRule {
 ### 12.1 M0 阶段要完成的技术验证
 | 编号 | 要验证的问题 | 不成立时的方案 |
 |---|---|---|
-| S1 | Transitous 对欧洲主要铁路（DB、SNCF、Trenitalia、Renfe、ÖBB、SBB、NS、SNCB、ČD、PKP）的覆盖程度，是否支持跨境长途，响应速度如何 | 覆盖不足的国家只提供手动填写和官网链接 |
-| S2 | DeepSeek 对话接口和 Search / Fetch 接口是否允许浏览器跨域直连 | 全部经 Worker 转发 |
+| S1 | （待网络放行 `api.transitous.org`）Transitous 对欧洲主要铁路（DB、SNCF、Trenitalia、Renfe、ÖBB、SBB、NS、SNCB、ČD、PKP）的覆盖程度，是否支持跨境长途，响应速度如何 | 覆盖不足的国家只提供手动填写和官网链接 |
+| S2 | （待网络放行 `api.deepseek.com`）DeepSeek 对话接口和 Search / Fetch 接口是否允许浏览器跨域直连 | 全部经 Worker 转发 |
 | S3 | DeepSeek 对话接口是否有内置的服务端搜索工具，和独立 Search API 的区别 | 统一用独立 Search API 作为函数调用工具 |
-| S4 | OpenFreeMap 的使用条款和可用性 | 换用其他免费矢量瓦片，或第一版不做地图 |
+| S4 | （待网络放行 `tiles.openfreemap.org`）OpenFreeMap 的使用条款和可用性 | 换用其他免费矢量瓦片，或第一版不做地图 |
 
 ### 12.2 风险
 | 风险 | 影响 | 应对 |

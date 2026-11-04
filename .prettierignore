@@ -1,0 +1,6 @@
+pnpm-lock.yaml
+prototype/
+design/
+docs/
+dist/
+dev-dist/
