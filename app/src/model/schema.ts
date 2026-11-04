@@ -47,6 +47,15 @@ export const SegmentSchema = z
     arrTime: hhmm,
     price: PriceSchema.optional(),
     source: z.enum(['manual', 'transitous', 'ai']),
+    /** Seat reservation the traveller has made for this train. */
+    reservation: z
+      .object({
+        status: z.enum(['todo', 'booked']),
+        ref: z.string().max(40).optional(),
+        seat: z.string().max(40).optional(),
+        paid: z.number().nonnegative().optional(),
+      })
+      .optional(),
   })
   .refine(
     (s) => s.arrDay > s.depDay || (s.arrDay === s.depDay && s.arrTime > s.depTime),
@@ -77,6 +86,13 @@ export const TripSchema = z.object({
   startDate: isoDate,
   stops: z.array(StopSchema).min(1),
   journeys: z.array(JourneySchema),
+  /** The pass the traveller picked (otherwise the cheapest is used) and days they set by hand. */
+  pass: z
+    .object({
+      productId: z.string().optional(),
+      overrides: z.record(isoDate, z.enum(['pass', 'ticket'])),
+    })
+    .optional(),
 });
 
 export const ExportFileSchema = z.object({

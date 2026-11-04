@@ -10,11 +10,14 @@ import {
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CityPicker } from '../components/CityPicker';
+import { PassBar } from '../components/PassBar';
 import { SegmentSheet } from '../components/SegmentSheet';
 import { Sheet } from '../components/Sheet';
 import { Stepper } from '../components/Stepper';
 import { useTripContext } from '../components/TripContext';
 import ui from '../components/ui.module.css';
+import type { DayItem } from '../engine/days';
+import type { DayChoice } from '../engine/optimizer';
 import { formatDate, formatDuration } from '../model/dates';
 import type { Segment, Trip } from '../model/schema';
 import {
@@ -36,7 +39,61 @@ import {
 import { eurRange, lineStyle, placeName, useLang } from '../lib';
 import r from './RoutePage.module.css';
 
-function Ticket({ seg, country, onOpen }: { seg: Segment; country: string; onOpen: () => void }) {
+export interface TicketInfo {
+  item?: DayItem;
+  choice?: DayChoice;
+}
+
+function TicketChips({ info }: { info: TicketInfo }) {
+  const { t } = useTranslation();
+  const { item, choice } = info;
+  if (!item) return null;
+  const onPass = choice === 'pass' && item.coverable;
+  const chips: { cls: string | undefined; text: string }[] = [];
+  if (!item.coverable) {
+    chips.push({ cls: ui.chip, text: t('chip.ticket') });
+    if (item.notCoveredReason === 'operator')
+      chips.push({ cls: ui.chipMust, text: t('chip.notCovered') });
+  } else
+    chips.push(
+      onPass
+        ? { cls: ui.chipSun, text: t('chip.travelDay') }
+        : { cls: ui.chip, text: t('chip.ticket') },
+    );
+  if (onPass && item.rule.reservation === 'mandatory')
+    chips.push({
+      cls: ui.chipMust,
+      text: item.rule.fee
+        ? t('chip.seatRequiredFee', { fee: item.rule.fee })
+        : t('chip.seatRequired'),
+    });
+  if (onPass && item.rule.reservation === 'recommended')
+    chips.push({ cls: ui.chipRec, text: t('chip.seatAdvised') });
+  if (item.rule.coverage === 'unknown') chips.push({ cls: ui.chipRec, text: t('chip.checkRules') });
+  if (item.kind === 'outbound' || item.kind === 'inbound')
+    chips.push({ cls: ui.chipInfo, text: t(`chip.${item.kind}`) });
+  return (
+    <span className={r.chips}>
+      {chips.map((c) => (
+        <span key={c.text} className={c.cls}>
+          {c.text}
+        </span>
+      ))}
+    </span>
+  );
+}
+
+function Ticket({
+  seg,
+  country,
+  info,
+  onOpen,
+}: {
+  seg: Segment;
+  country: string;
+  info: TicketInfo;
+  onOpen: () => void;
+}) {
   const { t } = useTranslation();
   const lang = useLang();
   const night = isNightTrain(seg);
@@ -47,6 +104,7 @@ function Ticket({ seg, country, onOpen }: { seg: Segment; country: string; onOpe
       data-line
       style={lineStyle(country)}
       onClick={onOpen}
+      aria-label={`${seg.trainNumber || t('route.train')}, ${seg.depTime}–${seg.arrTime}, ${seg.from} → ${seg.to}`}
     >
       <span className={r.tRow}>
         <span className={r.train}>
@@ -61,17 +119,17 @@ function Ticket({ seg, country, onOpen }: { seg: Segment; country: string; onOpe
         </span>
         <span className={r.dur}>{formatDuration(segmentMinutes(seg), lang)}</span>
       </span>
-      <span className={r.tRow}>
-        <span className={r.stations}>
-          {seg.from && seg.to ? `${seg.from} → ${seg.to}` : t('route.noStations')}
-        </span>
-        {seg.price && (
+      <span className={`${r.tRow} ${r.wrap}`}>
+        <TicketChips info={info} />
+        {seg.price ? (
           <span className={r.price}>
             <b>{eurRange(seg.price.min, seg.price.max)}</b>
             <span className={seg.price.source === 'user' ? ui.badgeUser : ui.badge}>
               {t(`source.${seg.price.source}`)}
             </span>
           </span>
+        ) : (
+          <span className={r.noPrice}>{t('route.addPrice')}</span>
         )}
       </span>
     </button>
@@ -84,7 +142,7 @@ type SheetState =
 export function RoutePage() {
   const { t } = useTranslation();
   const lang = useLang();
-  const { trip, update } = useTripContext();
+  const { trip, update, plan, analysis } = useTripContext();
   const [edit, setEdit] = useState(false);
   const [sheet, setSheet] = useState<SheetState>(null);
   const sched = schedule(trip);
@@ -93,52 +151,50 @@ export function RoutePage() {
   const last = trip.stops[trip.stops.length - 1]!;
   const returnsHome = trip.stops.length > 2 && last.place.id === origin.place.id;
   const insertAt = returnsHome ? trip.stops.length - 1 : trip.stops.length;
+  const infoBySeg = new Map<string, TicketInfo>();
+  for (const d of plan?.days ?? analysis.days) {
+    for (const item of d.items)
+      infoBySeg.set(item.seg.id, {
+        item,
+        choice: 'choice' in d ? (d.choice as DayChoice) : undefined,
+      });
+  }
 
   return (
     <>
-      <section className={`${ui.card} ${r.summary}`} aria-label={t('route.summary')}>
-        <div className={r.sumDates}>
-          {formatDate(range.start, lang, { weekday: true })} –{' '}
-          {formatDate(range.end, lang, { weekday: true })}
-        </div>
-        <div className={r.sumStats}>
-          <span>
-            <b>{range.days}</b> {t('route.daysLabel', { count: range.days })}
-          </span>
-          <span>
-            <b>{destinationCount(trip)}</b> {t('home.cities', { count: destinationCount(trip) })}
-          </span>
-          <span>
-            <b>{segmentCount(trip)}</b> {t('home.trains', { count: segmentCount(trip) })}
-          </span>
-        </div>
-        {edit && (
-          <div className={ui.grid2}>
-            <label className={ui.field}>
-              {t('wizard.tripName')}
-              <input
-                defaultValue={trip.name}
-                maxLength={120}
-                onBlur={(e) =>
-                  e.target.value.trim() !== trip.name &&
-                  update((x) => renameTrip(x, e.target.value))
-                }
-              />
-            </label>
-            <label className={ui.field}>
-              {t('wizard.startDate')}
-              <input
-                type="date"
-                value={trip.startDate}
-                onChange={(e) => e.target.value && update((x) => setStartDate(x, e.target.value))}
-              />
-            </label>
-          </div>
-        )}
-      </section>
+      <PassBar
+        extra={`${t('route.daysCount', { count: range.days })} · ${t('route.citiesCount', { count: destinationCount(trip) })} · ${t('route.trainsCount', { count: segmentCount(trip) })}`}
+      />
+      {edit && (
+        <section className={`${ui.card} ${ui.grid2}`} aria-label={t('route.summary')}>
+          <label className={ui.field}>
+            {t('wizard.tripName')}
+            <input
+              defaultValue={trip.name}
+              maxLength={120}
+              onBlur={(e) =>
+                e.target.value.trim() !== trip.name && update((x) => renameTrip(x, e.target.value))
+              }
+            />
+          </label>
+          <label className={ui.field}>
+            {t('wizard.startDate')}
+            <input
+              type="date"
+              value={trip.startDate}
+              onChange={(e) => e.target.value && update((x) => setStartDate(x, e.target.value))}
+            />
+          </label>
+        </section>
+      )}
 
       <h2 className={`${ui.sectionTitle} ${ui.spread}`}>
-        {t('route.title')}
+        <span>
+          {t('route.title')}
+          <span className={r.range}>
+            {formatDate(range.start, lang)} – {formatDate(range.end, lang)}
+          </span>
+        </span>
         <button
           type="button"
           className={ui.btnGhost}
@@ -247,6 +303,7 @@ export function RoutePage() {
                         key={seg.id}
                         seg={seg}
                         country={stop.place.country}
+                        info={infoBySeg.get(seg.id) ?? {}}
                         onOpen={() => setSheet({ type: 'segment', fromStopId: stop.id, seg })}
                       />
                     ))}

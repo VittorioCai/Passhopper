@@ -8,10 +8,11 @@ import {
   SlidersHorizontalIcon,
   type Icon,
 } from '@phosphor-icons/react';
-import type { ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, NavLink, Outlet, useLocation, useParams } from 'react-router';
 import { saveTrip, useTrip } from '../db/trips';
+import { analyze, currentPlan } from '../engine/optimizer';
 import { setLanguage } from '../i18n';
 import type { Trip } from '../model/schema';
 import type { TripContext } from './TripContext';
@@ -188,6 +189,11 @@ export function TripLayout() {
   const { tripId = '' } = useParams();
   const { t } = useTranslation();
   const trip = useTrip(tripId);
+  const computed = useMemo(() => {
+    if (!trip) return null;
+    const analysis = analyze(trip);
+    return { analysis, plan: currentPlan(trip, analysis) };
+  }, [trip]);
   if (trip === undefined) return null;
   if (trip === null) {
     return (
@@ -207,6 +213,8 @@ export function TripLayout() {
   const ctx: TripContext = {
     trip,
     update: (fn: (x: Trip) => Trip) => void saveTrip(fn(trip)),
+    analysis: computed!.analysis,
+    plan: computed!.plan,
   };
   return (
     <Shell tripId={tripId} tripName={trip.name}>

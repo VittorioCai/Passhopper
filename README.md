@@ -6,7 +6,7 @@
 
 Passhopper is a mobile-first planner for Interrail passes. Build your route, see which days are worth a travel day, keep track of seat reservations, and find out whether the pass actually beats buying tickets. An optional AI assistant (bring your own DeepSeek, Claude or OpenAI-compatible key) can draft and edit your trip. You always see the change before it's applied.
 
-> 🚧 Early stage. You can create trips, build a route and enter trains by hand. Travel-day and savings calculations come next.
+> 🚧 Early stage. Trips, route planning, travel-day planning and seat reservations work. Pass prices and reservation rules are not yet verified against official sources.
 
 ## Status
 

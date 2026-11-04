@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { App } from './App';
@@ -48,7 +48,8 @@ describe('trip pages', () => {
     await saveTrip(trip);
     at(`/trip/${trip.id}/route`);
     expect(await screen.findByRole('heading', { name: 'Zurich' })).toBeInTheDocument();
-    expect(screen.getByText('Wed, Jul 14 – Mon, Aug 2')).toBeInTheDocument();
+    expect(screen.getByText('Jul 14 – Aug 2')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Flexi\. See savings/ })).toBeInTheDocument();
     expect(screen.getByText('NJ 294')).toBeInTheDocument();
     const tabs = screen.getByRole('navigation', { name: 'Trip pages' });
     for (const name of ['Route', 'Days', 'Seats', 'Savings']) expect(tabs).toHaveTextContent(name);
@@ -86,6 +87,41 @@ describe('trip pages', () => {
       depTime: '09:00',
       arrTime: '13:00',
     });
+  });
+});
+
+describe('travel days and seats', () => {
+  it('lets you switch a day between pass and ticket, and saves it', async () => {
+    const trip = makeSampleTrip('en');
+    await saveTrip(trip);
+    at(`/trip/${trip.id}/days`);
+    const switches = await screen.findAllByRole('switch');
+    const on = switches.find((s) => s.getAttribute('aria-checked') === 'true')!;
+    fireEvent.click(on);
+    await waitFor(async () => {
+      const saved = await db.trips.get(trip.id);
+      expect(Object.values(saved!.pass?.overrides ?? {})).toContain('ticket');
+    });
+    expect(await screen.findByRole('button', { name: /Back to best plan/ })).toBeInTheDocument();
+    // Berlin → Munich stays in Germany for a German resident, so it can't use the pass.
+    expect(screen.getByText(/Stays inside Germany/)).toBeInTheDocument();
+  });
+
+  it('records a seat reservation', async () => {
+    const trip = makeSampleTrip('en');
+    await saveTrip(trip);
+    at(`/trip/${trip.id}/reservations`);
+    const card = (await screen.findByText('Rome → Vienna')).closest('article')!;
+    expect(within(card).getByText('Popular')).toBeInTheDocument();
+    fireEvent.click(within(card).getByRole('button', { name: /Booked it/ }));
+    fireEvent.change(within(card).getByLabelText('Coach and seat'), {
+      target: { value: 'Car 3, 51' },
+    });
+    fireEvent.click(within(card).getByRole('button', { name: 'Save' }));
+    expect(await screen.findByText('Car 3, 51')).toBeInTheDocument();
+    const saved = await db.trips.get(trip.id);
+    const nj = saved!.journeys.flatMap((j) => j.segments).find((s) => s.trainNumber === 'NJ 294')!;
+    expect(nj.reservation).toMatchObject({ status: 'booked', seat: 'Car 3, 51' });
   });
 });
 

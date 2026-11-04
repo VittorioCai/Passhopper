@@ -112,7 +112,14 @@
     "addCity": "Add city",
     "nightTrain": "Night train",
     "train": "Train",
-    "noStations": "Stations not set"
+    "noStations": "Stations not set",
+    "addPrice": "Add price",
+    "daysCount_one": "{{count}} day",
+    "daysCount_other": "{{count}} days",
+    "citiesCount_one": "{{count}} city",
+    "citiesCount_other": "{{count}} cities",
+    "trainsCount_one": "{{count}} train",
+    "trainsCount_other": "{{count}} trains"
   },
   "source": {
     "user": "Yours",
@@ -140,11 +147,55 @@
   },
   "days": {
     "title": "Travel days",
-    "empty": "Once you add trains, we'll suggest which days to use your pass on."
+    "empty": "Once you add trains, we'll suggest which days to use your pass on.",
+    "whichPass": "Pass",
+    "cheapest": "cheapest",
+    "buyTicket": "Buy a ticket",
+    "flipHint": "Flip a switch and the total updates",
+    "reasonHome": "Stays inside {{country}}, your home country, so the pass doesn't cover it",
+    "reasonHomeSecond": "Your pass covers only one trip out of and one trip back into your home country",
+    "reasonOperator": "The pass isn't valid on this train",
+    "ticketPrice": "ticket {{price}}",
+    "addPrice": "Add a ticket price to compare",
+    "saves": "Saves {{save}} (ticket {{price}})",
+    "savesWithFee": "Saves {{save}} (ticket {{price}} − seat {{fee}})",
+    "ticketInstead": "Ticket {{price}}; the pass would save only {{save}}",
+    "errTooMany": "You picked {{used}} travel days, but this pass has {{allowed}}.",
+    "errValidity": "Your first and last travel days are {{span}} days apart, longer than the pass's {{allowed}}-day validity.",
+    "errNightLast": "A night train on {{date}} starts on the pass's last valid day, which isn't allowed.",
+    "lockedHint": "The pass can't be used on this day",
+    "useTravelDay": "Use a travel day on {{date}}",
+    "pass": "Pass",
+    "total": "Total for this plan",
+    "reset": "Back to best plan",
+    "best": "Cheapest plan"
   },
   "seats": {
     "title": "Seat reservations",
-    "empty": "Trains that need a seat reservation will be listed here."
+    "empty": "Trains that need a seat reservation will be listed here.",
+    "ref": "Booking reference",
+    "seat": "Coach and seat",
+    "seatExample": "Coach 8, 6A",
+    "paid": "Amount paid (€)",
+    "requiredVaries": "Seat required · price varies",
+    "summary_one": "{{count}} seat to reserve · {{total}}",
+    "summary_other": "{{count}} seats to reserve · {{total}}",
+    "notIncluded": "Reservations aren't included in the pass and cost extra.",
+    "notIncludedVaries": "Reservations aren't included in the pass. Some prices vary, so the total may be higher.",
+    "todo": "To do",
+    "popular": "Popular",
+    "bookOn": "Book on {{name}}",
+    "quotaNote": "Pass holders get a limited number of seats on this train. Book early.",
+    "bookedIt": "Booked it",
+    "buyInstead": "Buy a ticket instead",
+    "allBooked": "All the seats you need are booked.",
+    "booked": "Booked",
+    "undo": "Undo",
+    "other": "Other trains",
+    "otherNote": "no reservation needed",
+    "ticketIncl": "Ticket incl. seat",
+    "optional": "Optional",
+    "justBoard": "Just board"
   },
   "savings": {
     "title": "Savings",
@@ -176,5 +227,34 @@
     "deletedAll": "All trips deleted.",
     "about": "About",
     "source": "Source code"
+  },
+  "chip": {
+    "travelDay": "Travel day",
+    "ticket": "Ticket",
+    "notCovered": "Pass not valid",
+    "seatRequired": "Seat required",
+    "seatRequiredFee": "Seat required €{{fee}}",
+    "seatAdvised": "Seat advised",
+    "checkRules": "Check pass rules",
+    "outbound": "Outbound",
+    "inbound": "Inbound"
+  },
+  "pass": {
+    "flexi": "{{days}}-day Flexi",
+    "continuous": "{{days}} days in a row",
+    "inARow": "Consecutive days",
+    "within_one": "within {{count}} month",
+    "within_other": "within {{count}} months",
+    "save": "Save",
+    "costsMore": "Costs",
+    "seeSavings": "See savings",
+    "daysUsed": "{{used}}/{{total}} travel days",
+    "missingPrices_one": "Add the price for {{count}} train to make this more accurate",
+    "missingPrices_other": "Add prices for {{count}} trains to make this more accurate",
+    "noPrices": "We don't have pass prices for {{age}}, {{cls}} yet, so we can't plan travel days. Check interrail.eu for the price.",
+    "validRange": "valid {{from}}–{{to}}"
+  },
+  "rules": {
+    "unverified": "Pass prices and reservation rules haven't been checked against the official Interrail site yet. Confirm before you book."
   }
 }

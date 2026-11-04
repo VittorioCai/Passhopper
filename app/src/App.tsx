@@ -4,7 +4,9 @@ import { Home } from './pages/Home';
 import { NewTrip } from './pages/NewTrip';
 import { Settings } from './pages/Settings';
 import { RoutePage } from './pages/RoutePage';
-import { DaysPage, SavingsPage, SeatsPage } from './pages/TripPages';
+import { DaysPage } from './pages/DaysPage';
+import { SeatsPage } from './pages/SeatsPage';
+import { SavingsPage } from './pages/TripPages';
 
 export function App() {
   return (

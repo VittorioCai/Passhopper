@@ -106,7 +106,11 @@
     "addCity": "添加城市",
     "nightTrain": "夜车",
     "train": "火车",
-    "noStations": "还没填车站"
+    "noStations": "还没填车站",
+    "addPrice": "填票价",
+    "daysCount_other": "{{count}}天",
+    "citiesCount_other": "{{count}}城",
+    "trainsCount_other": "{{count}}段火车"
   },
   "source": {
     "user": "你填写",
@@ -134,11 +138,54 @@
   },
   "days": {
     "title": "旅行日",
-    "empty": "添加火车段后，我们会建议哪些天用通票。"
+    "empty": "添加火车段后，我们会建议哪些天用通票。",
+    "whichPass": "通票",
+    "cheapest": "最省",
+    "buyTicket": "单独买票",
+    "flipHint": "拨开关切换，总价实时更新",
+    "reasonHome": "在居住国{{country}}境内，通票不适用",
+    "reasonHomeSecond": "通票在居住国只能出境 1 次、入境 1 次",
+    "reasonOperator": "这趟车不能用通票",
+    "ticketPrice": "票价 {{price}}",
+    "addPrice": "填上票价才能比较",
+    "saves": "省 {{save}}（票价 {{price}}）",
+    "savesWithFee": "省 {{save}}（票价 {{price}} − 订座 {{fee}}）",
+    "ticketInstead": "买票 {{price}}，用通票只省 {{save}}",
+    "errTooMany": "选了 {{used}} 个旅行日，这张通票只有 {{allowed}} 天。",
+    "errValidity": "第一个和最后一个旅行日跨了 {{span}} 天，超过了通票 {{allowed}} 天的有效期。",
+    "errNightLast": "{{date}} 的夜车在通票有效期最后一天出发，不能用通票。",
+    "lockedHint": "这一天不能用通票",
+    "useTravelDay": "{{date}} 用旅行日",
+    "pass": "通票",
+    "total": "当前安排总花费",
+    "reset": "恢复推荐",
+    "best": "已是最省"
   },
   "seats": {
     "title": "订座",
-    "empty": "需要订座的火车段会列在这里。"
+    "empty": "需要订座的火车段会列在这里。",
+    "ref": "订座号",
+    "seat": "车厢和座位",
+    "seatExample": "8车 6A",
+    "paid": "实际花费（€）",
+    "requiredVaries": "必须订座 · 价格不定",
+    "summary_other": "{{count}} 段要订座 · {{total}}",
+    "notIncluded": "订座费不含在通票里，要另外付。",
+    "notIncludedVaries": "订座费不含在通票里。有些价格不固定，实际可能更高。",
+    "todo": "待处理",
+    "popular": "抢手",
+    "bookOn": "去 {{name}} 订",
+    "quotaNote": "这趟车给通票的座位有限，建议尽早订。",
+    "bookedIt": "已订好",
+    "buyInstead": "改为买票",
+    "allBooked": "需要订座的都订好了。",
+    "booked": "已订",
+    "undo": "撤销",
+    "other": "其他车次",
+    "otherNote": "不用订座",
+    "ticketIncl": "买票含座",
+    "optional": "可选",
+    "justBoard": "直接上车"
   },
   "savings": {
     "title": "回本",
@@ -168,5 +215,32 @@
     "deletedAll": "已删除全部行程。",
     "about": "关于",
     "source": "开源地址"
+  },
+  "chip": {
+    "travelDay": "旅行日",
+    "ticket": "买票",
+    "notCovered": "通票不适用",
+    "seatRequired": "必须订座",
+    "seatRequiredFee": "必须订座 €{{fee}}",
+    "seatAdvised": "建议订座",
+    "checkRules": "需核实规则",
+    "outbound": "出境",
+    "inbound": "入境"
+  },
+  "pass": {
+    "flexi": "{{days}}天 Flexi",
+    "continuous": "{{days}}天连续",
+    "inARow": "连续使用",
+    "within_other": "{{count}}个月内",
+    "save": "省",
+    "costsMore": "多花",
+    "seeSavings": "查看回本详情",
+    "daysUsed": "{{used}}/{{total}} 旅行日",
+    "missingPrices_other": "再填 {{count}} 段票价，结果会更准",
+    "noPrices": "我们还没有{{age}}、{{cls}}的通票价格，暂时无法规划旅行日。请到 interrail.eu 查看价格。",
+    "validRange": "有效期 {{from}}–{{to}}"
+  },
+  "rules": {
+    "unverified": "通票价格和订座规则还没有和 Interrail 官网逐条核对，预订前请再确认一下。"
   }
 }
