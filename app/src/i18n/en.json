@@ -388,5 +388,15 @@
     "manyChanges_other": "{{count}} changes on this journey. Look for a more direct train.",
     "longDay": "{{time}} of travel in one day. Consider a night train or a stop on the way.",
     "missed": "You pass through {{name}} without staying, but the next train leaves before this one arrives."
+  },
+  "draft": {
+    "title": "Describe your trip",
+    "placeholder": "3 weeks from Berlin in July, Italy and Switzerland, not too rushed",
+    "go": "Plan with AI",
+    "working": "Planning… (tap to stop)",
+    "or": "or add cities below",
+    "done": "Here's a first route. Change anything below.",
+    "nothing": "The AI didn't suggest a route. Try describing it differently.",
+    "noKey": "Want to describe your trip in one sentence? Add an AI key first."
   }
 }

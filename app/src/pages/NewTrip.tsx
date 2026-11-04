@@ -2,6 +2,7 @@ import { ArrowDownIcon, ArrowUpIcon, InfoIcon, XIcon } from '@phosphor-icons/rea
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
+import { AiDraftBox } from '../components/AiDraftBox';
 import { CityPicker } from '../components/CityPicker';
 import { Stepper } from '../components/Stepper';
 import ui from '../components/ui.module.css';
@@ -158,6 +159,14 @@ export function NewTrip() {
 
       {step === 2 && (
         <div className={`${ui.card} ${ui.stack}`} style={{ gap: 16 }}>
+          <AiDraftBox
+            onDraft={(d) => {
+              setOrigin(d.origin);
+              setStops(d.stops);
+              setReturnToStart(d.returnToStart);
+              if (d.startDate) setStartDate(d.startDate);
+            }}
+          />
           <div className={ui.stack}>
             <span className={ui.label}>{t('wizard.startFrom')}</span>
             {origin ? (

@@ -37,7 +37,7 @@ export async function runOpenAITurn(
   onText: (delta: string) => void,
 ) {
   const withSearch = !!ctx.searchKey;
-  const tools = toolsFor(withSearch).map((t) => ({
+  const tools = (ctx.toolset?.defs ?? toolsFor(withSearch)).map((t) => ({
     type: 'function' as const,
     function: { name: t.name, description: t.description, parameters: t.parameters },
   }));
@@ -64,7 +64,9 @@ export async function runOpenAITurn(
         });
         continue;
       }
-      const result = await runTool(call.function.name, input, ctx);
+      const result = ctx.toolset
+        ? await ctx.toolset.run(call.function.name, input)
+        : await runTool(call.function.name, input, ctx);
       history.messages.push({
         role: 'tool',
         tool_call_id: call.id,

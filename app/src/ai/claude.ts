@@ -5,7 +5,7 @@
  */
 import Anthropic from '@anthropic-ai/sdk';
 import type { ActiveProvider } from './settings';
-import { runTool, toolsFor, type ToolContext } from './tools';
+import { runTool, toolsFor, type ToolContext, type ToolDef } from './tools';
 
 type MessageParam = Anthropic.Beta.BetaMessageParam;
 
@@ -25,18 +25,26 @@ const isCurrent = (model: string) =>
 /** Models that accept the server-side refusal fallback. */
 const hasFallback = (model: string) => /^claude-(fable-5-1|opus-5|sonnet-5-5)/.test(model);
 
-function requestFor(p: ActiveProvider, system: string, messages: MessageParam[]) {
+function requestFor(
+  p: ActiveProvider,
+  system: string,
+  messages: MessageParam[],
+  defs: ToolDef[] | undefined,
+) {
   const tools: Anthropic.Beta.BetaToolUnion[] = [
-    ...toolsFor(false).map((t) => ({
+    ...(defs ?? toolsFor(false)).map((t) => ({
       name: t.name,
       description: t.description,
       input_schema: t.parameters as Anthropic.Beta.BetaTool.InputSchema,
       eager_input_streaming: true,
     })),
-    isCurrent(p.model)
-      ? { type: 'web_search_20260209' as const, name: 'web_search' as const, max_uses: 5 }
-      : { type: 'web_search_20250305' as const, name: 'web_search' as const, max_uses: 5 },
   ];
+  if (!defs)
+    tools.push(
+      isCurrent(p.model)
+        ? { type: 'web_search_20260209', name: 'web_search', max_uses: 5 }
+        : { type: 'web_search_20250305', name: 'web_search', max_uses: 5 },
+    );
   const betas: Anthropic.Beta.AnthropicBeta[] = hasFallback(p.model)
     ? ['server-side-fallback-2026-07-01']
     : [];
@@ -65,9 +73,12 @@ export async function runClaudeTurn(
   const api = client(p);
   history.messages.push({ role: 'user', content: userText });
   for (let step = 0; step < MAX_STEPS; step++) {
-    const stream = api.beta.messages.stream(requestFor(p, system, history.messages), {
-      signal: ctx.signal,
-    });
+    const stream = api.beta.messages.stream(
+      requestFor(p, system, history.messages, ctx.toolset?.defs),
+      {
+        signal: ctx.signal,
+      },
+    );
     stream.on('text', onText);
     stream.on('contentBlock', (block) => {
       if (block.type === 'server_tool_use' && block.name === 'web_search') {
@@ -92,7 +103,9 @@ export async function runClaudeTurn(
     if (message.stop_reason !== 'tool_use' || !calls.length) return;
     const results: Anthropic.Beta.BetaToolResultBlockParam[] = [];
     for (const call of calls) {
-      const r = await runTool(call.name, call.input, ctx);
+      const r = ctx.toolset
+        ? await ctx.toolset.run(call.name, call.input)
+        : await runTool(call.name, call.input, ctx);
       results.push({
         type: 'tool_result',
         tool_use_id: call.id,

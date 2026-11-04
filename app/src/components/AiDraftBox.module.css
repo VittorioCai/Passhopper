@@ -1,0 +1,78 @@
+.box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border-radius: var(--r-md);
+  background: var(--primary-soft);
+}
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+.label svg,
+.hint svg {
+  color: var(--primary);
+  flex: none;
+}
+.box textarea {
+  width: 100%;
+  min-height: 64px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  resize: vertical;
+}
+.box textarea:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: -1px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.btn {
+  min-height: 42px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 0;
+  background: var(--primary);
+  color: var(--primary-ink);
+  font-weight: 700;
+}
+.btn:disabled {
+  opacity: 0.5;
+}
+.or {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.ok,
+.err {
+  margin: 0;
+  font-size: 14px;
+}
+.ok {
+  color: var(--mint);
+}
+.err {
+  color: var(--ink-2);
+}
+.hint {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.hint a {
+  color: var(--primary);
+  font-weight: 600;
+}

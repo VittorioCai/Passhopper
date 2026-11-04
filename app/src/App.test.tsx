@@ -222,6 +222,57 @@ describe('new trip wizard', () => {
       ageGroup: 'youth',
     });
   });
+
+  it('drafts the route from one sentence with AI', async () => {
+    await saveAiSettings({ provider: 'deepseek', keys: { deepseek: 'sk-test' }, models: {} });
+    const args = JSON.stringify({
+      origin: { city: 'Berlin', country: 'DE' },
+      stops: [
+        { city: 'Prague', country: 'CZ', nights: 2 },
+        { city: 'Vienna', country: 'AT', nights: 3 },
+      ],
+      return_to_start: false,
+      start_date: '2030-07-01',
+      summary: 'Berlin to Vienna via Prague',
+    });
+    const sse = (chunks: unknown[]) =>
+      new Response(
+        chunks.map((c) => `data: ${JSON.stringify(c)}\n\n`).join('') + 'data: [DONE]\n\n',
+      );
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        sse([
+          {
+            choices: [
+              {
+                delta: {
+                  tool_calls: [
+                    { index: 0, id: 'c1', function: { name: 'propose_route', arguments: args } },
+                  ],
+                },
+              },
+            ],
+          },
+        ]),
+      )
+      .mockResolvedValueOnce(sse([{ choices: [{ delta: { content: '' } }] }]));
+    vi.stubGlobal('fetch', fetchMock);
+    at('/new');
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+    fireEvent.change(await screen.findByLabelText('Describe your trip'), {
+      target: { value: 'Berlin to Vienna, 5 nights' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Plan with AI' }));
+    expect(await screen.findByText('Berlin to Vienna via Prague')).toBeInTheDocument();
+    expect(screen.getByText('Vienna')).toBeInTheDocument();
+    const body = JSON.parse(fetchMock.mock.calls[0]![1].body as string);
+    expect(body.tools.map((t: { function: { name: string } }) => t.function.name)).toEqual([
+      'propose_route',
+    ]);
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+    expect(screen.getByLabelText('Departure date')).toHaveValue('2030-07-01');
+  });
 });
 
 describe('AI assistant', () => {
