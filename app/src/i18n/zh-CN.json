@@ -44,7 +44,8 @@
     "duplicate": "复制行程",
     "copyName": "{{name}}（副本）",
     "delete": "删除行程",
-    "deleteConfirm": "删除“{{name}}”？删除后不能恢复。"
+    "deleteConfirm": "删除“{{name}}”？删除后不能恢复。",
+    "past": "已结束的行程"
   },
   "trip": {
     "notFound": "找不到这个行程",

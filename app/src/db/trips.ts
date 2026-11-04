@@ -4,7 +4,7 @@ import { ExportFileSchema, TripSchema, type ExportFile, type Trip } from '../mod
 import { duplicateTrip } from '../model/trip';
 import { db, type PasshopperDB } from './db';
 
-/** All trips, newest first. `undefined` while loading. */
+/** All trips, last edited first (Home sorts them by date). `undefined` while loading. */
 export function useTrips() {
   return useLiveQuery(() => db.trips.orderBy('updatedAt').reverse().toArray(), []);
 }

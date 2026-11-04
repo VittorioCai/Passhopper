@@ -48,7 +48,8 @@
     "duplicate": "Duplicate",
     "copyName": "{{name}} (copy)",
     "delete": "Delete trip",
-    "deleteConfirm": "Delete “{{name}}”? This can't be undone."
+    "deleteConfirm": "Delete “{{name}}”? This can't be undone.",
+    "past": "Past trips"
   },
   "trip": {
     "notFound": "Trip not found",

@@ -13,7 +13,7 @@ import ui from '../components/ui.module.css';
 import { copyTrip, deleteTrip, useTrips } from '../db/trips';
 import { daysBetween, formatDate, todayLocal } from '../model/dates';
 import type { Trip } from '../model/schema';
-import { destinationCount, segmentCount, tripRange } from '../model/trip';
+import { destinationCount, segmentCount, sortTrips, tripRange } from '../model/trip';
 import { lineStyle, placeName, useLang } from '../lib';
 import h from './Home.module.css';
 
@@ -79,6 +79,7 @@ export function Home() {
   const navigate = useNavigate();
   const [menu, setMenu] = useState<Trip | null>(null);
   const [confirm, setConfirm] = useState(false);
+  const sorted = trips && sortTrips(trips, todayLocal());
   const next = trips
     ?.map((x) => x.startDate)
     .filter((d) => d >= todayLocal())
@@ -113,9 +114,17 @@ export function Home() {
           <p className={ui.muted}>{t('home.emptyBody')}</p>
         </div>
       )}
-      {trips?.map((trip) => (
+      {sorted?.upcoming.map((trip) => (
         <TripCard key={trip.id} trip={trip} onMore={() => setMenu(trip)} />
       ))}
+      {sorted && sorted.past.length > 0 && (
+        <>
+          <h2 className={ui.sectionTitle}>{t('home.past')}</h2>
+          {sorted.past.map((trip) => (
+            <TripCard key={trip.id} trip={trip} onMore={() => setMenu(trip)} />
+          ))}
+        </>
+      )}
       <Link to="/new" className={`${ui.btnPrimary} ${ui.block}`}>
         <PlusIcon size={20} weight="bold" />
         {t('home.newTrip')}

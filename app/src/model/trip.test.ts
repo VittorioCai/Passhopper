@@ -10,6 +10,7 @@ import {
   duplicateTrip,
   journeyFrom,
   moveStop,
+  sortTrips,
   newId,
   removeSegment,
   removeStop,
@@ -186,5 +187,24 @@ describe('formatting', () => {
     expect(formatDate('2027-07-14', 'zh-CN')).toBe('7月14日');
     expect(formatDuration(241, 'en')).toBe('4h 01m');
     expect(formatDuration(241, 'zh-CN')).toBe('4小时01分');
+  });
+});
+
+describe('sortTrips', () => {
+  it('lists trips ahead by start date, then past trips newest first', () => {
+    const mk = (start: string, name: string) => ({
+      ...makeSampleTrip('en'),
+      startDate: start,
+      name,
+    });
+    const trips = [
+      mk('2027-08-01', 'b'),
+      mk('2025-05-01', 'old'),
+      mk('2027-07-01', 'a'),
+      mk('2026-06-01', 'last'),
+    ];
+    const r = sortTrips(trips, '2026-11-04');
+    expect(r.upcoming.map((t) => t.name)).toEqual(['a', 'b']);
+    expect(r.past.map((t) => t.name)).toEqual(['last', 'old']);
   });
 });

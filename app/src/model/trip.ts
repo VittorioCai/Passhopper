@@ -219,3 +219,16 @@ export function segmentMinutes(s: Segment) {
 }
 
 export const isNightTrain = (s: Segment) => s.arrDay > s.depDay;
+
+/**
+ * Trips in the order people look for them (F0.1): trips still ahead or under way by start date,
+ * soonest first, then past trips, most recent first.
+ */
+export function sortTrips(trips: Trip[], today: string) {
+  const ahead = (t: Trip) => tripRange(t).end >= today;
+  const upcoming = trips.filter(ahead).sort((a, b) => a.startDate.localeCompare(b.startDate));
+  const past = trips
+    .filter((t) => !ahead(t))
+    .sort((a, b) => b.startDate.localeCompare(a.startDate));
+  return { upcoming, past };
+}
