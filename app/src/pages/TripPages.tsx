@@ -1,10 +1,4 @@
-import {
-  ArmchairIcon,
-  CalendarDotsIcon,
-  PathIcon,
-  PiggyBankIcon,
-  type Icon,
-} from '@phosphor-icons/react';
+import { ArmchairIcon, CalendarDotsIcon, PiggyBankIcon, type Icon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { EmptyState } from '../components/EmptyState';
 import ui from '../components/ui.module.css';
@@ -27,9 +21,6 @@ function Placeholder({
   );
 }
 
-export const RoutePage = () => (
-  <Placeholder titleKey="route.title" bodyKey="route.empty" icon={PathIcon} />
-);
 export const DaysPage = () => (
   <Placeholder titleKey="days.title" bodyKey="days.empty" icon={CalendarDotsIcon} />
 );

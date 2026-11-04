@@ -6,7 +6,12 @@
   },
   "common": {
     "back": "返回",
-    "comingSoon": "下一个阶段上线"
+    "close": "关闭",
+    "save": "保存",
+    "delete": "删除",
+    "cancel": "取消",
+    "example": "示例",
+    "comingSoon": "后续阶段上线"
   },
   "nav": {
     "myTrips": "我的行程",
@@ -27,17 +32,105 @@
   "home": {
     "greeting": "嗨，旅行者",
     "title": "下一站去哪？",
+    "daysToGoNum_other": "{{count}} 天",
+    "daysToGoRest": "后出发",
     "emptyTitle": "还没有行程",
     "emptyBody": "新建一个行程，排好路线，看看哪些天值得用旅行日，算算通票能不能回本。",
-    "newTrip": "新建行程"
+    "newTrip": "新建行程",
+    "moreFor": "{{name}} 的更多操作",
+    "days_other": "共 {{count}} 天",
+    "cities_other": "座城市",
+    "trains_other": "段火车",
+    "duplicate": "复制行程",
+    "copyName": "{{name}}（副本）",
+    "delete": "删除行程",
+    "deleteConfirm": "删除“{{name}}”？删除后不能恢复。"
   },
-  "newTrip": {
-    "title": "新建行程",
-    "body": "新建行程向导会在 M1 阶段上线。"
+  "trip": {
+    "notFound": "找不到这个行程",
+    "notFoundBody": "这台设备上没有这个行程，可能已经被删除了。"
+  },
+  "wizard": {
+    "step": "第 {{step}} 步 / 共 {{total}} 步",
+    "aboutYou": "先认识一下你",
+    "whereTo": "想去哪里？",
+    "when": "什么时候出发？",
+    "residence": "住在哪里",
+    "inEurope": "欧洲",
+    "outsideEurope": "欧洲以外",
+    "country": "居住国家",
+    "homeRule": "欧洲居民在居住国内只能用通票出境 1 次、入境 1 次。我们会自动帮你判断。",
+    "noHomeRule": "欧洲以外的居民不受居住国规则限制。",
+    "age": "年龄段",
+    "youth": "青年 12–27",
+    "adult": "成人 28–59",
+    "senior": "老人 60+",
+    "class": "舱等",
+    "second": "二等座",
+    "first": "一等座",
+    "travellers": "人数",
+    "startFrom": "从哪里出发",
+    "change": "更换",
+    "stops": "依次去这些城市",
+    "returnTo": "最后回到{{name}}",
+    "needStop": "至少添加一个要去的城市。",
+    "startDate": "出发日期",
+    "nightsEach": "每个城市住几晚",
+    "tripName": "行程名称",
+    "next": "下一步",
+    "create": "创建行程"
+  },
+  "city": {
+    "search": "搜索城市",
+    "results": "匹配的城市",
+    "notListed": "列表里没有？把“{{name}}”添加到：",
+    "country": "国家",
+    "addCustom": "添加"
   },
   "route": {
     "title": "路线",
-    "empty": "你的路线会以地铁线路图的样子显示在这里，一个城市一站。"
+    "empty": "你的路线会以地铁线路图的样子显示在这里，一个城市一站。",
+    "summary": "行程概况",
+    "daysLabel_other": "天",
+    "edit": "编辑",
+    "done": "完成",
+    "start": "从这里出发",
+    "end": "行程在这里结束",
+    "nights_other": "{{count}}晚",
+    "nightsIn": "在{{name}}住几晚",
+    "moveUp": "上移{{name}}",
+    "moveDown": "下移{{name}}",
+    "remove": "删除{{name}}",
+    "addTrain": "添加{{from}}到{{to}}的火车",
+    "addConnection": "添加换乘车次",
+    "addCity": "添加城市",
+    "nightTrain": "夜车",
+    "train": "火车",
+    "noStations": "还没填车站"
+  },
+  "source": {
+    "user": "你填写",
+    "ai_estimate": "AI估算",
+    "ai_search": "AI联网",
+    "official": "官方"
+  },
+  "segment": {
+    "addTitle": "添加火车",
+    "editTitle": "修改火车",
+    "manualNote": "填写你查到的车次。接入实时数据后会加上时刻表搜索。",
+    "train": "车次",
+    "from": "出发车站",
+    "to": "到达车站",
+    "departs": "出发时间",
+    "arrives": "到达时间",
+    "arrivesNextDay": "第二天到达（夜车）",
+    "departsNextDay": "午夜后出发（行程开始的第二天）",
+    "price": "你查到的票价（欧元，可不填）",
+    "badPrice": "票价要大于等于 0，或者留空。",
+    "needTimes": "请填写出发和到达时间。",
+    "arriveAfter": "到达时间必须晚于出发时间。夜车请勾选“第二天到达”。",
+    "delete": "删除这趟车",
+    "deleteConfirm": "从这段行程里删除这趟车？"
   },
   "days": {
     "title": "旅行日",
@@ -51,6 +144,9 @@
     "title": "回本",
     "empty": "我们会把每种通票和单独买票比一比，告诉你能省多少。"
   },
+  "newTrip": {
+    "title": "新建行程"
+  },
   "settings": {
     "title": "设置",
     "language": "语言",
@@ -58,6 +154,18 @@
     "themeSystem": "跟随系统",
     "themeLight": "浅色",
     "themeDark": "深色",
+    "data": "数据",
+    "dataNote": "你的行程只保存在这台设备的浏览器里。导出文件可以备份，或者转到另一台设备。",
+    "export": "导出行程",
+    "import": "导入",
+    "exported_other": "已导出 {{count}} 个行程。",
+    "imported_other": "已导入 {{count}} 个行程。",
+    "importNotJson": "这个文件不是有效的 JSON。请选择从 Passhopper 导出的文件。",
+    "importInvalid": "这个文件不是 Passhopper 导出的，或者来自更新的版本。",
+    "deleteAll": "清除全部数据",
+    "deleteAllConfirm": "会删除这台设备上的全部行程，不能恢复。如果以后可能用到，请先导出。",
+    "deleteAllYes": "确认清除",
+    "deletedAll": "已删除全部行程。",
     "about": "关于",
     "source": "开源地址"
   }

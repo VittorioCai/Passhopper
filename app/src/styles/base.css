@@ -78,3 +78,16 @@ img {
     transition: none !important;
   }
 }
+
+/* Country line colour: components set --lc-l / --lc-d with lineStyle() and read var(--lc). */
+[data-line] {
+  --lc: var(--lc-l);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-line] {
+    --lc: var(--lc-d);
+  }
+}
+:root[data-theme='dark'] [data-line] {
+  --lc: var(--lc-d);
+}

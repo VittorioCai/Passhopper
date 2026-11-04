@@ -6,7 +6,12 @@
   },
   "common": {
     "back": "Back",
-    "comingSoon": "Coming in the next milestone"
+    "close": "Close",
+    "save": "Save",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "example": "Example",
+    "comingSoon": "Coming in a later milestone"
   },
   "nav": {
     "myTrips": "My trips",
@@ -27,17 +32,111 @@
   "home": {
     "greeting": "Hi, traveller",
     "title": "Where are you hopping next?",
+    "daysToGoNum_one": "{{count}} day",
+    "daysToGoNum_other": "{{count}} days",
+    "daysToGoRest": " to go",
     "emptyTitle": "No trips yet",
     "emptyBody": "Create a trip to plan your route, see which days are worth a travel day, and find out if the pass pays off.",
-    "newTrip": "New trip"
+    "newTrip": "New trip",
+    "moreFor": "More options for {{name}}",
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days",
+    "cities_one": "city",
+    "cities_other": "cities",
+    "trains_one": "train",
+    "trains_other": "trains",
+    "duplicate": "Duplicate",
+    "copyName": "{{name}} (copy)",
+    "delete": "Delete trip",
+    "deleteConfirm": "Delete “{{name}}”? This can't be undone."
   },
-  "newTrip": {
-    "title": "New trip",
-    "body": "The trip wizard arrives in milestone M1."
+  "trip": {
+    "notFound": "Trip not found",
+    "notFoundBody": "This trip doesn't exist on this device. It may have been deleted."
+  },
+  "wizard": {
+    "step": "Step {{step}} of {{total}}",
+    "aboutYou": "About you",
+    "whereTo": "Where to?",
+    "when": "When do you leave?",
+    "residence": "Where do you live?",
+    "inEurope": "In Europe",
+    "outsideEurope": "Outside Europe",
+    "country": "Country of residence",
+    "homeRule": "In your home country, the pass covers one trip out and one trip back. We work this out for you.",
+    "noHomeRule": "If you live outside Europe, the home-country limit doesn't apply.",
+    "age": "Age",
+    "youth": "Youth 12–27",
+    "adult": "Adult 28–59",
+    "senior": "Senior 60+",
+    "class": "Class",
+    "second": "2nd class",
+    "first": "1st class",
+    "travellers": "Travellers",
+    "startFrom": "Starting from",
+    "change": "Change",
+    "stops": "Then visit",
+    "returnTo": "Come back to {{name}} at the end",
+    "needStop": "Add at least one city to visit.",
+    "startDate": "Departure date",
+    "nightsEach": "Nights in each city",
+    "tripName": "Trip name",
+    "next": "Next",
+    "create": "Create trip"
+  },
+  "city": {
+    "search": "Search for a city",
+    "results": "Matching cities",
+    "notListed": "Not listed? Add “{{name}}” in:",
+    "country": "Country",
+    "addCustom": "Add"
   },
   "route": {
     "title": "Route",
-    "empty": "Your route will appear here as a metro-style line, one stop per city."
+    "empty": "Your route will appear here as a metro-style line, one stop per city.",
+    "summary": "Trip summary",
+    "daysLabel_one": "day",
+    "daysLabel_other": "days",
+    "edit": "Edit",
+    "done": "Done",
+    "start": "Trip starts here",
+    "end": "Trip ends here",
+    "nights_one": "{{count}} night",
+    "nights_other": "{{count}} nights",
+    "nightsIn": "Nights in {{name}}",
+    "moveUp": "Move {{name}} up",
+    "moveDown": "Move {{name}} down",
+    "remove": "Remove {{name}}",
+    "addTrain": "Add a train from {{from}} to {{to}}",
+    "addConnection": "Add a connecting train",
+    "addCity": "Add city",
+    "nightTrain": "Night train",
+    "train": "Train",
+    "noStations": "Stations not set"
+  },
+  "source": {
+    "user": "Yours",
+    "ai_estimate": "AI est.",
+    "ai_search": "AI web",
+    "official": "Official"
+  },
+  "segment": {
+    "addTitle": "Add a train",
+    "editTitle": "Edit train",
+    "manualNote": "Enter the train you found. Timetable search will be added once live data is connected.",
+    "train": "Train number",
+    "from": "From station",
+    "to": "To station",
+    "departs": "Departs",
+    "arrives": "Arrives",
+    "arrivesNextDay": "Arrives the next day (night train)",
+    "departsNextDay": "Leaves after midnight (the day after this journey starts)",
+    "price": "Ticket price you found (€, optional)",
+    "badPrice": "Enter a price of 0 or more, or leave it empty.",
+    "needTimes": "Enter both the departure and arrival time.",
+    "arriveAfter": "The arrival must be after the departure. For a night train, tick “Arrives the next day”.",
+    "delete": "Delete this train",
+    "deleteConfirm": "Delete this train from the journey?"
   },
   "days": {
     "title": "Travel days",
@@ -51,6 +150,9 @@
     "title": "Savings",
     "empty": "We'll compare every pass option with buying tickets, and show what you save."
   },
+  "newTrip": {
+    "title": "New trip"
+  },
   "settings": {
     "title": "Settings",
     "language": "Language",
@@ -58,6 +160,20 @@
     "themeSystem": "System",
     "themeLight": "Light",
     "themeDark": "Dark",
+    "data": "Your data",
+    "dataNote": "Your trips are saved in this browser on this device only. Export a file to back them up or move them to another device.",
+    "export": "Export trips",
+    "import": "Import",
+    "exported_one": "Exported {{count}} trip.",
+    "exported_other": "Exported {{count}} trips.",
+    "imported_one": "Imported {{count}} trip.",
+    "imported_other": "Imported {{count}} trips.",
+    "importNotJson": "That file isn't valid JSON. Choose a file exported from Passhopper.",
+    "importInvalid": "That file isn't a Passhopper export, or it's from a newer version.",
+    "deleteAll": "Delete all data",
+    "deleteAllConfirm": "This deletes every trip on this device. You can't undo it, so export first if you might need them.",
+    "deleteAllYes": "Delete everything",
+    "deletedAll": "All trips deleted.",
     "about": "About",
     "source": "Source code"
   }

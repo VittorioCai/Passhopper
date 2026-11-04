@@ -10,8 +10,23 @@ function keys(obj: object, prefix = ''): string[] {
 }
 
 describe('translations', () => {
+  // Plural forms differ by language (English: _one/_other, Chinese: _other), so compare base keys.
+  const base = (o: object) =>
+    [...new Set(keys(o).map((k) => k.replace(/_(zero|one|two|few|many|other)$/, '')))].sort();
+
   it('Chinese has exactly the same keys as English', () => {
-    expect(keys(zhCN).sort()).toEqual(keys(en).sort());
+    expect(base(zhCN)).toEqual(base(en));
+  });
+
+  it('every English plural has both one and other forms', () => {
+    const ks = keys(en);
+    const plural = ks
+      .filter((k) => /_(one|other)$/.test(k))
+      .map((k) => k.replace(/_(one|other)$/, ''));
+    for (const b of new Set(plural)) {
+      expect(ks).toContain(`${b}_one`);
+      expect(ks).toContain(`${b}_other`);
+    }
   });
 
   it('has no empty strings', () => {

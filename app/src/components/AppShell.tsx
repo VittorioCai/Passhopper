@@ -11,7 +11,11 @@ import {
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, NavLink, Outlet, useLocation, useParams } from 'react-router';
+import { saveTrip, useTrip } from '../db/trips';
 import { setLanguage } from '../i18n';
+import type { Trip } from '../model/schema';
+import type { TripContext } from './TripContext';
+import ui from './ui.module.css';
 import s from './AppShell.module.css';
 import { Logo } from './Logo';
 
@@ -52,7 +56,7 @@ function TopBar({ title, back, right }: { title?: ReactNode; back?: string; righ
   );
 }
 
-function SideNav({ tripId }: { tripId?: string }) {
+function SideNav({ tripId, tripName }: { tripId?: string; tripName?: string }) {
   const { t } = useTranslation();
   const { pathname } = useLocation();
   return (
@@ -71,7 +75,7 @@ function SideNav({ tripId }: { tripId?: string }) {
       </NavLink>
       {tripId && (
         <>
-          <div className={s.navLabel}>{t('nav.currentTrip')}</div>
+          <div className={s.navLabel}>{tripName ?? t('nav.currentTrip')}</div>
           {TRIP_TABS.map(({ path, long, icon: I }) => {
             const to = `/trip/${tripId}/${path}`;
             const active = pathname === to;
@@ -112,7 +116,15 @@ function TabBar({ tripId }: { tripId: string }) {
   );
 }
 
-function Shell({ children, tripId }: { children: ReactNode; tripId?: string }) {
+function Shell({
+  children,
+  tripId,
+  tripName,
+}: {
+  children: ReactNode;
+  tripId?: string;
+  tripName?: string;
+}) {
   const { t } = useTranslation();
   return (
     <div className={s.app}>
@@ -121,7 +133,7 @@ function Shell({ children, tripId }: { children: ReactNode; tripId?: string }) {
         <i />
         <i />
       </div>
-      <SideNav tripId={tripId} />
+      <SideNav tripId={tripId} tripName={tripName} />
       <div className={s.main}>
         {children}
         {tripId && <TabBar tripId={tripId} />}
@@ -175,11 +187,32 @@ export function SubpageLayout({ titleKey }: { titleKey: string }) {
 export function TripLayout() {
   const { tripId = '' } = useParams();
   const { t } = useTranslation();
+  const trip = useTrip(tripId);
+  if (trip === undefined) return null;
+  if (trip === null) {
+    return (
+      <Shell>
+        <TopBar back="/" title={t('trip.notFound')} />
+        <main className={s.view}>
+          <div className={ui.card}>
+            <p className={ui.muted}>{t('trip.notFoundBody')}</p>
+          </div>
+          <Link to="/" className={ui.btnPrimary}>
+            {t('nav.myTrips')}
+          </Link>
+        </main>
+      </Shell>
+    );
+  }
+  const ctx: TripContext = {
+    trip,
+    update: (fn: (x: Trip) => Trip) => void saveTrip(fn(trip)),
+  };
   return (
-    <Shell tripId={tripId}>
-      <TopBar back="/" title={t('nav.currentTrip')} />
+    <Shell tripId={tripId} tripName={trip.name}>
+      <TopBar back="/" title={trip.name} />
       <main className={`${s.view} ${s.withTabs}`}>
-        <Outlet />
+        <Outlet context={ctx} />
       </main>
     </Shell>
   );

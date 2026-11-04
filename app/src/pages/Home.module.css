@@ -1,0 +1,88 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+.card > * {
+  width: 100%;
+}
+.card > span:last-child {
+  width: auto;
+}
+.name {
+  font-family: var(--f-display);
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  min-width: 0;
+}
+.name::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+.card {
+  position: relative;
+}
+.card button {
+  position: relative;
+  z-index: 1;
+}
+.mini {
+  display: flex;
+  align-items: center;
+}
+.seg {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+.ln {
+  height: 5px;
+  flex: 1;
+  background: var(--lc);
+}
+.st {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 3px solid var(--ink);
+  flex: none;
+}
+.cities {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.stats div {
+  background: var(--surface-2);
+  border-radius: 14px;
+  padding: 9px 12px;
+  min-width: 0;
+}
+.stats b {
+  display: block;
+  font-family: var(--f-display);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.stats span {
+  font-size: 12px;
+  color: var(--ink-2);
+}
+.em {
+  font-style: normal;
+  background: var(--hl-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
