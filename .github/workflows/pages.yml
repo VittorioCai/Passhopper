@@ -9,6 +9,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  deployments: read
 
 concurrency:
   group: pages
@@ -43,8 +44,16 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      # A deploy that timed out can stay "in progress" on GitHub's side and block every later deploy.
+      - name: Cancel stuck Pages deployments
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for sha in $(gh api "repos/${{ github.repository }}/deployments?environment=github-pages&per_page=10" --jq '.[].sha' | sort -u); do
+            [ "$sha" = "${{ github.sha }}" ] && continue
+            if gh api -X POST "repos/${{ github.repository }}/pages/deployments/$sha/cancel" >/dev/null 2>&1; then
+              echo "Cancelled deployment $sha"
+            fi
+          done
       - id: deployment
         uses: actions/deploy-pages@v5
-        with:
-          # The first deploy of a new Pages site can take longer than the default 10 minutes.
-          timeout: 1200000
