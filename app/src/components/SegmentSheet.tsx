@@ -5,9 +5,10 @@ import { SegmentSchema, type Segment, type Trip } from '../model/schema';
 import { journeyFrom, newId, removeSegment, upsertSegment } from '../model/trip';
 import { placeName, useLang } from '../lib';
 import { Sheet } from './Sheet';
+import { TrainSearch } from './TrainSearch';
 import ui from './ui.module.css';
 
-/** Add or edit one train by hand. Timetable search plugs in here once Transitous is reachable. */
+/** Add trains from the timetable search, or add and edit one train by hand. */
 export function SegmentSheet({
   trip,
   fromStopId,
@@ -37,6 +38,8 @@ export function SegmentSheet({
   const [price, setPrice] = useState(segment?.price ? String(segment.price.max) : '');
   const [error, setError] = useState('');
   const [confirm, setConfirm] = useState(false);
+  const existing = journeyFrom(trip, fromStopId)?.segments ?? [];
+  const [mode, setMode] = useState<'search' | 'manual'>(segment ? 'manual' : 'search');
 
   const save = () => {
     const depDay = depNext ? 1 : 0;
@@ -78,94 +81,127 @@ export function SegmentSheet({
       subtitle={segment ? t('segment.editTitle') : t('segment.addTitle')}
       onClose={onClose}
     >
-      <p className={ui.muted} style={{ fontSize: 14 }}>
-        {t('segment.manualNote')}
-      </p>
-      <form
-        className={ui.stack}
-        style={{ gap: 12 }}
-        onSubmit={(e) => {
-          e.preventDefault();
-          save();
-        }}
-      >
-        <label className={ui.field}>
-          {t('segment.train')}
-          <input
-            value={trainNumber}
-            onChange={(e) => setTrainNumber(e.target.value)}
-            placeholder="ICE 1005"
-            maxLength={40}
-          />
-        </label>
-        <div className={ui.grid2}>
-          <label className={ui.field}>
-            {t('segment.from')}
-            <input value={fromSt} onChange={(e) => setFromSt(e.target.value)} maxLength={80} />
-          </label>
-          <label className={ui.field}>
-            {t('segment.to')}
-            <input value={toSt} onChange={(e) => setToSt(e.target.value)} maxLength={80} />
-          </label>
-          <label className={ui.field}>
-            {t('segment.departs')}
-            <input
-              type="time"
-              value={depTime}
-              onChange={(e) => setDepTime(e.target.value)}
-              required
-            />
-          </label>
-          <label className={ui.field}>
-            {t('segment.arrives')}
-            <input
-              type="time"
-              value={arrTime}
-              onChange={(e) => setArrTime(e.target.value)}
-              required
-            />
-          </label>
+      {!segment && (
+        <div className={ui.segCtl} role="group" aria-label={t('segment.how')}>
+          <button type="button" aria-pressed={mode === 'search'} onClick={() => setMode('search')}>
+            {t('segment.searchTab')}
+          </button>
+          <button type="button" aria-pressed={mode === 'manual'} onClick={() => setMode('manual')}>
+            {t('segment.manualTab')}
+          </button>
         </div>
-        <label className={ui.check}>
-          <input type="checkbox" checked={arrNext} onChange={(e) => setArrNext(e.target.checked)} />
-          {t('segment.arrivesNextDay')}
-        </label>
-        {(prev || depNext) && (
-          <label className={ui.check}>
-            <input
-              type="checkbox"
-              checked={depNext}
-              onChange={(e) => setDepNext(e.target.checked)}
-            />
-            {t('segment.departsNextDay')}
-          </label>
-        )}
-        <label className={ui.field}>
-          {t('segment.price')}
-          <input
-            type="number"
-            inputMode="decimal"
-            min="0"
-            step="1"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            placeholder="€"
-          />
-        </label>
-        {error && (
-          <p className={ui.fieldError} role="alert">
-            {error}
+      )}
+      {mode === 'search' ? (
+        <TrainSearch
+          trip={trip}
+          fromStopId={fromStopId}
+          replacing={existing.length > 0}
+          onPick={(segs) =>
+            onSave((x) => ({
+              ...x,
+              updatedAt: new Date().toISOString(),
+              journeys: x.journeys.map((j) =>
+                j.fromStopId === fromStopId ? { ...j, segments: segs } : j,
+              ),
+            }))
+          }
+        />
+      ) : (
+        <>
+          <p className={ui.muted} style={{ fontSize: 14 }}>
+            {t('segment.manualNote')}
           </p>
-        )}
-        <div className={ui.row}>
-          <button type="submit" className={ui.btnPrimary}>
-            {t('common.save')}
-          </button>
-          <button type="button" className={ui.btn} onClick={onClose}>
-            {t('common.cancel')}
-          </button>
-        </div>
-      </form>
+          <form
+            className={ui.stack}
+            style={{ gap: 12 }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              save();
+            }}
+          >
+            <label className={ui.field}>
+              {t('segment.train')}
+              <input
+                value={trainNumber}
+                onChange={(e) => setTrainNumber(e.target.value)}
+                placeholder="ICE 1005"
+                maxLength={40}
+              />
+            </label>
+            <div className={ui.grid2}>
+              <label className={ui.field}>
+                {t('segment.from')}
+                <input value={fromSt} onChange={(e) => setFromSt(e.target.value)} maxLength={80} />
+              </label>
+              <label className={ui.field}>
+                {t('segment.to')}
+                <input value={toSt} onChange={(e) => setToSt(e.target.value)} maxLength={80} />
+              </label>
+              <label className={ui.field}>
+                {t('segment.departs')}
+                <input
+                  type="time"
+                  value={depTime}
+                  onChange={(e) => setDepTime(e.target.value)}
+                  required
+                />
+              </label>
+              <label className={ui.field}>
+                {t('segment.arrives')}
+                <input
+                  type="time"
+                  value={arrTime}
+                  onChange={(e) => setArrTime(e.target.value)}
+                  required
+                />
+              </label>
+            </div>
+            <label className={ui.check}>
+              <input
+                type="checkbox"
+                checked={arrNext}
+                onChange={(e) => setArrNext(e.target.checked)}
+              />
+              {t('segment.arrivesNextDay')}
+            </label>
+            {(prev || depNext) && (
+              <label className={ui.check}>
+                <input
+                  type="checkbox"
+                  checked={depNext}
+                  onChange={(e) => setDepNext(e.target.checked)}
+                />
+                {t('segment.departsNextDay')}
+              </label>
+            )}
+            <label className={ui.field}>
+              {t('segment.price')}
+              <input
+                type="number"
+                inputMode="decimal"
+                min="0"
+                step="1"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                placeholder="€"
+              />
+            </label>
+            {error && (
+              <p className={ui.fieldError} role="alert">
+                {error}
+              </p>
+            )}
+            <div className={ui.row}>
+              <button type="submit" className={ui.btnPrimary}>
+                {t('common.save')}
+              </button>
+              <button type="button" className={ui.btn} onClick={onClose}>
+                {t('common.cancel')}
+              </button>
+            </div>
+          </form>
+        </>
+      )}
       {segment &&
         (confirm ? (
           <div className={ui.danger}>

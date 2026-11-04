@@ -130,7 +130,7 @@
   "segment": {
     "addTitle": "Add a train",
     "editTitle": "Edit train",
-    "manualNote": "Enter the train you found. Timetable search will be added once live data is connected.",
+    "manualNote": "Enter a train you found yourself.",
     "train": "Train number",
     "from": "From station",
     "to": "To station",
@@ -143,7 +143,10 @@
     "needTimes": "Enter both the departure and arrival time.",
     "arriveAfter": "The arrival must be after the departure. For a night train, tick “Arrives the next day”.",
     "delete": "Delete this train",
-    "deleteConfirm": "Delete this train from the journey?"
+    "deleteConfirm": "Delete this train from the journey?",
+    "how": "How to add trains",
+    "searchTab": "Search timetable",
+    "manualTab": "Enter by hand"
   },
   "days": {
     "title": "Travel days",
@@ -358,5 +361,23 @@
     "testOk": "Connected. The assistant is ready.",
     "clearKeys": "Remove all keys",
     "keyNote": "Your key is stored only in this browser and sent only to your provider, directly from this device. Passhopper has no server. Don't save a key on a shared computer."
+  },
+  "search": {
+    "departAfter": "Leave after",
+    "morning": "Morning",
+    "midday": "Midday",
+    "afternoon": "Afternoon",
+    "evening": "Evening",
+    "loading": "Searching trains…",
+    "failed": "Couldn't load the timetable. Check your connection and try again, or enter the train by hand.",
+    "noPlace": "We couldn't find a station for this city. Enter the train by hand.",
+    "none": "No trains found for this time. Try a different time of day.",
+    "sample": "The timetable for your date isn't published yet, so these are the trains on {{date}}. Times rarely change much; check again closer to your trip.",
+    "direct": "Direct",
+    "changes_one": "{{count}} change",
+    "changes_other": "{{count}} changes",
+    "useOption": "Use {{trains}}, leaving {{dep}}",
+    "replaces": "Picking an option replaces the trains already on this leg.",
+    "credit": "Timetables from"
   }
 }

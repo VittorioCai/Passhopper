@@ -121,7 +121,7 @@
   "segment": {
     "addTitle": "添加火车",
     "editTitle": "修改火车",
-    "manualNote": "填写你查到的车次。接入实时数据后会加上时刻表搜索。",
+    "manualNote": "填写你自己查到的车次。",
     "train": "车次",
     "from": "出发车站",
     "to": "到达车站",
@@ -134,7 +134,10 @@
     "needTimes": "请填写出发和到达时间。",
     "arriveAfter": "到达时间必须晚于出发时间。夜车请勾选“第二天到达”。",
     "delete": "删除这趟车",
-    "deleteConfirm": "从这段行程里删除这趟车？"
+    "deleteConfirm": "从这段行程里删除这趟车？",
+    "how": "添加方式",
+    "searchTab": "查时刻表",
+    "manualTab": "手动填写"
   },
   "days": {
     "title": "旅行日",
@@ -338,5 +341,22 @@
     "testOk": "连接成功，AI 助手可以用了。",
     "clearKeys": "清除所有 key",
     "keyNote": "key 只保存在这个浏览器里，只从这台设备直接发给你选的服务商。Passhopper 没有服务器。共享电脑上不要保存 key。"
+  },
+  "search": {
+    "departAfter": "出发时段",
+    "morning": "早上",
+    "midday": "中午",
+    "afternoon": "下午",
+    "evening": "晚上",
+    "loading": "正在查车次…",
+    "failed": "时刻表加载失败。请检查网络后重试，或手动填写车次。",
+    "noPlace": "找不到这个城市的车站，请手动填写车次。",
+    "none": "这个时段没有找到车次，换个时段试试。",
+    "sample": "你选的日期时刻表还没发布，下面是 {{date}} 的车次。时刻一般变化不大，临近出发时再确认一下。",
+    "direct": "直达",
+    "changes_other": "换乘 {{count}} 次",
+    "useOption": "选择 {{trains}}，{{dep}} 出发",
+    "replaces": "选择后会替换这一段已有的车次。",
+    "credit": "时刻表数据来自"
   }
 }

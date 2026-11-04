@@ -21,6 +21,8 @@ beforeEach(async () => {
   await i18n.changeLanguage('en');
 });
 
+afterEach(() => vi.unstubAllGlobals());
+
 describe('home', () => {
   it('shows an empty state and a New trip button', async () => {
     at('/');
@@ -62,7 +64,55 @@ describe('trip pages', () => {
     expect(await screen.findByText('Trip not found')).toBeInTheDocument();
   });
 
+  it('adds trains from the timetable search', async () => {
+    const place = (name: string, lat: number, lon: number) => ({
+      name,
+      lat,
+      lon,
+      tz: 'Europe/Berlin',
+    });
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          itineraries: [
+            {
+              legs: [
+                {
+                  mode: 'HIGHSPEED_RAIL',
+                  displayName: 'ICE 503',
+                  startTime: '2026-11-11T08:29:00Z',
+                  endTime: '2026-11-11T12:31:00Z',
+                  from: place('Berlin Hbf', 52.5251, 13.3694),
+                  to: place('München Hbf', 48.1402, 11.5586),
+                },
+              ],
+            },
+          ],
+        }),
+      ),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+    const trip = makeSampleTrip('en');
+    trip.journeys[0]!.segments = [];
+    await saveTrip(trip);
+    at(`/trip/${trip.id}/route`);
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Add a train from Berlin to Munich' }),
+    );
+    const option = await screen.findByRole('button', { name: /Use ICE 503, leaving 09:29/ });
+    fireEvent.click(option);
+    await waitFor(async () =>
+      expect((await db.trips.get(trip.id))!.journeys[0]!.segments[0]).toMatchObject({
+        trainNumber: 'ICE 503',
+        depTime: '09:29',
+        arrTime: '13:31',
+        source: 'transitous',
+      }),
+    );
+  });
+
   it('adds a train by hand', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('{"itineraries":[]}')));
     const trip = makeSampleTrip('en');
     trip.journeys[0]!.segments = [];
     await saveTrip(trip);
@@ -71,6 +121,7 @@ describe('trip pages', () => {
       await screen.findByRole('button', { name: 'Add a train from Berlin to Munich' }),
     );
     const dialog = screen.getByRole('dialog');
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Enter by hand' }));
     fireEvent.change(within(dialog).getByLabelText('Train number'), {
       target: { value: 'ICE 501' },
     });
