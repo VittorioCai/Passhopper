@@ -398,5 +398,9 @@
     "done": "Here's a first route. Change anything below.",
     "nothing": "The AI didn't suggest a route. Try describing it differently.",
     "noKey": "Want to describe your trip in one sentence? Add an AI key first."
+  },
+  "map": {
+    "title": "Map",
+    "loading": "Loading map…"
   }
 }

@@ -22,3 +22,12 @@ export function applyTheme(theme: Theme) {
     // Storage unavailable: the theme still applies for this visit.
   }
 }
+
+/** The theme actually showing: the saved choice, or the system setting. */
+export function resolvedTheme(): 'light' | 'dark' {
+  const t = readTheme();
+  if (t !== 'system') return t;
+  return typeof matchMedia === 'function' && matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'light';
+}

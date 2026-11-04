@@ -144,6 +144,7 @@
 - 在显眼位置链接 Transitous 数据来源页，并在网站上提供联系方式。
 - 正式地址 `https://api.transitous.org/api/`；测试环境不得用于正式应用。
 - **已验证（2026-11-04）**：接口返回 `Access-Control-Allow-Origin: *`，浏览器可直接调用。
+- **使用方式**：每次搜索只发一次 `/api/v5/plan` 请求（`detailedLegs=false` 减小体积），手动自定义城市才额外调用一次地理编码；不批量抓取。搜索结果下方链接到 Transitous 数据来源页，项目地址在 GitHub 上公开，满足其署名和联系方式要求。
 - **来源**：[Transitous API 使用政策](https://transitous.org/api/)、[MOTIS 项目](https://github.com/motis-project/motis)
 
 ### E2 DeepSeek Search 与 Fetch API　🟡
@@ -157,6 +158,10 @@
   - [DeepSeek launches web search and page-fetching APIs – TechNode (2026-10-19)](https://technode.com/2026/10/19/deepseek-launches-web-search-and-page-fetching-apis-for-ai-agents/)
   - [DeepSeek undercutting search API rivals – The New Stack](https://thenewstack.io/deepseek-web-search-api/)
   - [DeepSeek Search/Fetch 说明 – APIYI 文档](https://docs.apiyi.com/en/api-capabilities/deepseek-search-fetch/overview)
+
+### E4 OpenFreeMap　🟡
+- 免费矢量地图瓦片，不需要 key，不需要注册。必须显示 OpenStreetMap 署名（地图右下角的 (i) 按钮里）。
+- **已验证（2026-11-04）**：`tiles.openfreemap.org/styles/positron` 和 `/styles/dark` 可访问，允许跨域。使用条款以 openfreemap.org 为准（开发环境打不开该网站，未逐条核对）。
 
 ### E3 db-rest（备选）　⚠️
 - 社区维护的德铁数据接口，有用户报告 `v6.db.transport.rest` 连续数天返回 503。只作备选。

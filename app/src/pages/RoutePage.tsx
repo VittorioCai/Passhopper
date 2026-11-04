@@ -11,6 +11,7 @@ import {
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CityPicker } from '../components/CityPicker';
+import { MapCard } from '../components/MapCard';
 import { PassBar } from '../components/PassBar';
 import { SegmentSheet } from '../components/SegmentSheet';
 import { Sheet } from '../components/Sheet';
@@ -208,6 +209,8 @@ export function RoutePage() {
           </label>
         </section>
       )}
+
+      <MapCard trip={trip} lang={lang} />
 
       <h2 className={`${ui.sectionTitle} ${ui.spread}`}>
         <span>
