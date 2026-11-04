@@ -3,6 +3,8 @@ import { VitePWA } from 'vite-plugin-pwa';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+  // GitHub Pages serves the app from /Passhopper/; local dev and other hosts use the root.
+  base: process.env.BASE_PATH ?? '/',
   plugins: [
     react(),
     VitePWA({
@@ -15,7 +17,8 @@ export default defineConfig({
         theme_color: '#00A37A',
         background_color: '#F3F5F8',
         display: 'standalone',
-        start_url: '/',
+        start_url: '.',
+        scope: '.',
         icons: [
           { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'icon-512.png', sizes: '512x512', type: 'image/png' },
