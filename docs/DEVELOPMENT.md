@@ -1,4 +1,4 @@
-# PassPlan 开发文档
+# Passhopper 开发文档
 
 版本 v0.1（草案） · 2026-11-04 · 状态：待评审
 
@@ -300,7 +300,7 @@ interface PlanPatch {
 
 ### 5.3 目录结构
 ```
-passplan/
+passhopper/
 ├── app/                      前端
 │   ├── src/
 │   │   ├── engine/           规则引擎（纯函数，无 UI 依赖）
