@@ -18,9 +18,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v5
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -31,8 +31,8 @@ jobs:
           BASE_PATH: /${{ github.event.repository.name }}/
       # Single-page app: unknown paths should load the app instead of GitHub's 404 page.
       - run: cp app/dist/index.html app/dist/404.html
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: app/dist
 
@@ -44,4 +44,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
+        with:
+          # The first deploy of a new Pages site can take longer than the default 10 minutes.
+          timeout: 1200000
