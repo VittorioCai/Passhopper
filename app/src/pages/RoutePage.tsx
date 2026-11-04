@@ -36,7 +36,7 @@ import {
   setStartDate,
   tripRange,
 } from '../model/trip';
-import { eurRange, lineStyle, placeName, useLang } from '../lib';
+import { eurRange, feeText, lineStyle, placeName, useLang } from '../lib';
 import r from './RoutePage.module.css';
 
 export interface TicketInfo {
@@ -63,9 +63,11 @@ function TicketChips({ info }: { info: TicketInfo }) {
   if (onPass && item.rule.reservation === 'mandatory')
     chips.push({
       cls: ui.chipMust,
-      text: item.rule.fee
-        ? t('chip.seatRequiredFee', { fee: item.rule.fee })
-        : t('chip.seatRequired'),
+      text: !item.rule.feeKnown
+        ? t('chip.seatRequired')
+        : item.rule.fee
+          ? t('chip.seatRequiredFee', { fee: feeText(item.rule.fee, item.rule.feeMax) })
+          : t('chip.seatRequiredFree'),
     });
   if (onPass && item.rule.reservation === 'recommended')
     chips.push({ cls: ui.chipRec, text: t('chip.seatAdvised') });

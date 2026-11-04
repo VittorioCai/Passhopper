@@ -68,20 +68,38 @@ describe('trainType and rules', () => {
     expect(trainType('Nightjet 40294')).toBe('NJ');
     expect(trainType('TGV INOUI 6201')).toBe('TGV');
     expect(trainType('9709')).toBe('');
+    expect(trainType('Eurostar 9014')).toBe('ES');
+    expect(trainType('Intercités 3631')).toBe('IC');
   });
 
   it('picks the most specific rule', () => {
-    expect(ruleFor('EC', 'CH', 'IT', 2).reservation).toBe('recommended');
-    expect(ruleFor('EC', 'CH', 'DE', 2).reservation).toBe('none');
+    expect(ruleFor('EC', 'CH', 'IT', 2)).toMatchObject({
+      reservation: 'mandatory',
+      fee: 13,
+      feeMax: 17,
+      verified: true,
+    });
+    expect(ruleFor('EC', 'CH', 'DE', 2).reservation).toBe('optional');
+    expect(ruleFor('ICE', 'DE', 'DE', 2)).toMatchObject({ reservation: 'optional', fee: 0 });
+    expect(ruleFor('ICE', 'DE', 'NL', 2).reservation).toBe('recommended');
+    expect(ruleFor('FB', 'IT', 'IT', 2).fee).toBe(10);
+    expect(ruleFor('OUIGO', 'FR', 'FR', 2)).toMatchObject({ coverage: 'covered', fee: 10 });
+    expect(ruleFor('ES', 'GB', 'FR', 1).fee).toBe(40);
+    expect(ruleFor('LE', 'CZ', 'CZ', 2)).toMatchObject({ fee: 0, feeKnown: true });
     expect(ruleFor('FR', 'IT', 'IT', 2)).toMatchObject({
       reservation: 'mandatory',
       fee: 13,
       feeKnown: true,
     });
-    expect(ruleFor('TGV', 'FR', 'FR', 1)).toMatchObject({ fee: 20, quota: true });
+    expect(ruleFor('TGV', 'FR', 'FR', 1)).toMatchObject({ fee: 10, feeMax: 20, quota: true });
+    expect(ruleFor('TGV', 'FR', 'ES', 2)).toMatchObject({ fee: 25, feeMax: 35 });
     expect(ruleFor('NJ', 'IT', 'AT', 2)).toMatchObject({
       reservation: 'mandatory',
-      fee: 0,
+      fee: 19.9,
+      feeKnown: true,
+    });
+    expect(ruleFor('EN', 'HU', 'RO', 2)).toMatchObject({
+      reservation: 'mandatory',
       feeKnown: false,
     });
     expect(ruleFor('ITA', 'IT', 'IT', 2).coverage).toBe('not_covered');
@@ -246,7 +264,7 @@ describe('optimizer', () => {
     expect(days.map((d) => d.date)).toEqual(['2027-07-01', '2027-07-31']);
     const b = bestDays(flexi4, days, 'mid');
     expect(b.chosen).toEqual(['2027-07-31']);
-    expect(b.savings).toBe(200);
+    expect(b.savings).toBeCloseTo(180.1);
   });
 
   it('shows when cheap advance fares would flip the answer', () => {

@@ -206,7 +206,7 @@
 ### 4.2 服务商
 | 服务商 | 对话接口 | 联网搜索 | 浏览器直连 | 说明 |
 |---|---|---|---|---|
-| **DeepSeek** | 兼容 OpenAI 格式的 Chat Completions，支持函数调用 | 官方 Search API（`POST /v1/tools/search`）和 Fetch API（`POST /v1/tools/fetch`），2026-10-17 上线 | 待验证 CORS（S2） | 便宜；国内可直接访问 |
+| **DeepSeek** | 兼容 OpenAI 格式的 Chat Completions，支持函数调用 | 官方 Search API（`POST /v1/tools/search`）和 Fetch API（`POST /v1/tools/fetch`），2026-10-17 上线 | 已验证：允许浏览器直连（S2） | 便宜；国内可直接访问 |
 | **Claude** | Anthropic Messages API | API 自带网页搜索工具 | 支持（需加浏览器直连请求头） | 规划质量较好 |
 | **自定义** | 任意兼容 OpenAI 格式的接口（用户填地址、模型名、key） | 可选：额外填一个 DeepSeek key 用于搜索 | 取决于对方 | 覆盖通义、Kimi、GPT 等 |
 
@@ -477,7 +477,7 @@ interface ReservationRule {
 - Cloudflare 的默认域名（`*.pages.dev`、`*.workers.dev`）在大陆经常打不开，必须绑定自定义域名。
 - 即使绑定了自定义域名，大陆访问 Cloudflare 的速度和稳定性也不保证。
 - Google Fonts 在大陆不可用，字体必须自托管（UI 设计文档 §3.2）。
-- DeepSeek 在大陆可直接访问，浏览器直连可行（取决于 S2 的结果）。
+- DeepSeek 在大陆可直接访问，浏览器直连可行（S2 已验证）。
 - **届时的建议**：先观察大陆用户的访问情况；如有需要，在香港或新加坡增加镜像。在大陆境内部署需要 ICP 备案，暂不考虑。
 
 ---
@@ -485,9 +485,9 @@ interface ReservationRule {
 ## 10. 里程碑
 
 **当前进度（2026-11-04）**
-- M0：项目骨架、CI、设计令牌、多语言框架、页面路由和 PWA 已完成；技术验证 S1、S2、S4 和官方规则核实需要放行外部网站后进行（见 §12.1）。
+- M0：项目骨架、CI、设计令牌、多语言框架、页面路由和 PWA 已完成；S2 已验证（DeepSeek 和 Transitous 都允许浏览器直连，不需要中转服务器）；订座规则、居住国规则和夜车规则已对照官网核实（见 RULES-AND-SOURCES.md）。S1（Transitous 覆盖）和 S4（地图）放到接入时刻表和地图时做。
 - M1：数据模型、本地存储、首次打开的示例行程、新建行程向导、路线页（地铁线路图、编辑城市和晚数、手动填写车次）、行程复制和删除、导出和导入已完成。Transitous 时刻表查询（F1.3）等网络放行后接入；地图（F1.7）和冲突提示（F1.8）放到 M2 之后。
-- M2：规则引擎（`app/src/engine/`）已完成：通票覆盖与订座规则匹配、居住国出境和入境规则、夜车计费日和有效期最后一天规则、旅行日优化（Flexi 和连续通票，按最低、常见、最高票价各算一次）。界面上有路线页的通票条和车次标签、旅行日页（选通票、手动切换、规则冲突提示）、订座页（待处理、已订、订座号和座位）。价格和订座规则数据放在 `app/src/data/passes.ts` 和 `reservationRules.ts`，目前全部标为"未核实"，界面上有提示。
+- M2：规则引擎（`app/src/engine/`）已完成：通票覆盖与订座规则匹配、居住国出境和入境规则、夜车计费日和有效期最后一天规则、旅行日优化（Flexi 和连续通票，按最低、常见、最高票价各算一次）。界面上有路线页的通票条和车次标签、旅行日页（选通票、手动切换、规则冲突提示）、订座页（待处理、已订、订座号和座位）。价格和订座规则数据放在 `app/src/data/passes.ts` 和 `reservationRules.ts`，订座规则已对照官网核实（2026-11-04）；通票价格在官网由内部接口动态加载，仍标为"未核实"，界面上有提示。
 - M3：回本页已完成：钱包式通票卡（省多少）、最低价特价票下结论会不会反转的提示、哪一段票价最影响结论（敏感度）、全部方案和全部买票的条形图（点击切换通票）、费用明细（订座费和单独买票可展开到每段车）、未填票价的提醒。
 
 | 里程碑 | 内容 | 验收标准 |
@@ -516,7 +516,7 @@ interface ReservationRule {
 | 编号 | 要验证的问题 | 不成立时的方案 |
 |---|---|---|
 | S1 | （待网络放行 `api.transitous.org`）Transitous 对欧洲主要铁路（DB、SNCF、Trenitalia、Renfe、ÖBB、SBB、NS、SNCB、ČD、PKP）的覆盖程度，是否支持跨境长途，响应速度如何 | 覆盖不足的国家只提供手动填写和官网链接 |
-| S2 | （待网络放行 `api.deepseek.com`）DeepSeek 对话接口和 Search / Fetch 接口是否允许浏览器跨域直连 | 全部经 Worker 转发 |
+| S2 | ✅ 2026-11-04 已验证：DeepSeek 对话接口和 Search 接口允许浏览器跨域直连，Transitous 返回 `Access-Control-Allow-Origin: *` | 不需要 Worker 中转 |
 | S3 | DeepSeek 对话接口是否有内置的服务端搜索工具，和独立 Search API 的区别 | 统一用独立 Search API 作为函数调用工具 |
 | S4 | （待网络放行 `tiles.openfreemap.org`）OpenFreeMap 的使用条款和可用性 | 换用其他免费矢量瓦片，或第一版不做地图 |
 

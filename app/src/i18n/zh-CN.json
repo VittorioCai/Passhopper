@@ -245,7 +245,8 @@
     "ticket": "买票",
     "notCovered": "通票不适用",
     "seatRequired": "必须订座",
-    "seatRequiredFee": "必须订座 €{{fee}}",
+    "seatRequiredFree": "必须订座（免费）",
+    "seatRequiredFee": "必须订座 {{fee}}",
     "seatAdvised": "建议订座",
     "checkRules": "需核实规则",
     "outbound": "出境",
@@ -265,6 +266,6 @@
     "validRange": "有效期 {{from}}–{{to}}"
   },
   "rules": {
-    "unverified": "通票价格和订座规则还没有和 Interrail 官网逐条核对，预订前请再确认一下。"
+    "unverified": "订座费已于 2026-11-04 对照 interrail.com 核实；通票价格为估计值。订票前请再确认。"
   }
 }

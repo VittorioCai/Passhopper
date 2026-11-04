@@ -19,6 +19,12 @@ const ALIASES: Record<string, string> = {
   EUROCITYEXPRESS: 'ECE',
   INTERCITYEXPRESS: 'ICE',
   ITALO: 'ITA',
+  INTERCITES: 'IC',
+  REGIOJET: 'REGIOJET',
+  LEOEXPRESS: 'LE',
+  SUPERCITY: 'SC',
+  EUROSTAR: 'ES',
+  EST: 'ES',
 };
 
 /** The train type from a train number, e.g. "FR" from "FR 9709" or "TGV" from "TGV INOUI 6201". */
@@ -26,8 +32,10 @@ export function trainType(trainNumber: string): string {
   const first =
     trainNumber
       .trim()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
       .toUpperCase()
-      .match(/^[A-ZÀ-Ž]+/)?.[0] ?? '';
+      .match(/^[A-Z]+/)?.[0] ?? '';
   return ALIASES[first] ?? first;
 }
 
@@ -37,8 +45,11 @@ export interface SegmentRule {
   reservation: ReservationNeed | 'unknown';
   /** Reservation fee in EUR counted in the cost; 0 when not needed or unknown. */
   fee: number;
+  /** Highest fee when it varies (for display); equal to fee otherwise. */
+  feeMax: number;
   /** False when a reservation is needed but we don't know its price. */
   feeKnown: boolean;
+  verified: boolean;
   feeNote?: ReservationRule['feeNote'];
   quota: boolean;
   channel?: Channel;
@@ -54,15 +65,26 @@ export function ruleFor(type: string, from: string, to: string, travelClass: 1 |
   const score = (r: ReservationRule) => (r.toCountries ? 2 : 0) + (r.country ? 1 : 0);
   const rule = matches.sort((a, b) => score(b) - score(a))[0];
   if (!rule)
-    return { coverage: 'unknown', reservation: 'unknown', fee: 0, feeKnown: false, quota: false };
+    return {
+      coverage: 'unknown',
+      reservation: 'unknown',
+      fee: 0,
+      feeMax: 0,
+      feeKnown: false,
+      verified: false,
+      quota: false,
+    };
   const needsFee = rule.reservation === 'mandatory';
   const fee = travelClass === 1 ? rule.fee?.first : rule.fee?.second;
+  const max = travelClass === 1 ? rule.feeMax?.first : rule.feeMax?.second;
   return {
     rule,
     coverage: rule.coverage,
     reservation: rule.reservation,
     fee: needsFee ? (fee ?? 0) : 0,
+    feeMax: needsFee ? (max ?? fee ?? 0) : 0,
     feeKnown: !needsFee || fee !== undefined,
+    verified: rule.verified,
     feeNote: rule.feeNote,
     quota: !!rule.quota,
     channel: rule.channel,

@@ -1,15 +1,19 @@
 import type { CountryCode } from './countries';
 
 /**
- * Seat reservation and pass coverage by train type.
- * Status: NOT YET VERIFIED against interrail.eu. Based on docs/RULES-AND-SOURCES.md R6 and
- * operator practice; fees are indicative. Anything we have no rule for is reported as "unknown"
- * so the traveller checks it, rather than being guessed.
+ * Seat reservations and pass coverage by train type, from the official Interrail fee pages
+ * (domestic, international and night trains), read on 2026-11-04:
+ *   https://www.interrail.com/en/book-reservations/reservation-fees/domestic-train-reservation-fees
+ *   https://www.interrail.com/en/book-reservations/reservation-fees/international-train-reservation-fees
+ *   https://www.interrail.com/en/book-reservations/reservation-fees/night-train-reservation-fees
+ * Rules marked `verified: false` come from secondary sources (docs/RULES-AND-SOURCES.md R6).
+ * Anything with no rule is reported as "unknown" so the traveller checks it.
  */
 export type Coverage = 'covered' | 'not_covered';
 export type ReservationNeed = 'mandatory' | 'recommended' | 'optional' | 'none';
 export type Channel =
   'db' | 'sbb' | 'oebb' | 'trenitalia' | 'sncf' | 'renfe' | 'eurostar' | 'cd' | 'ns' | 'sncb';
+type Fee = { second?: number; first?: number };
 
 export interface ReservationRule {
   id: string;
@@ -17,116 +21,363 @@ export interface ReservationRule {
   types: string[];
   /** Country the train departs from. Omit for rules that apply everywhere. */
   country?: CountryCode;
-  /** Only when the train continues into one of these countries. */
+  /** Only when the train goes to one of these countries. */
   toCountries?: CountryCode[];
   coverage: Coverage;
   reservation: ReservationNeed;
-  /** Indicative reservation fee in EUR for 2nd and 1st class. Missing = varies or unknown. */
-  fee?: { second?: number; first?: number };
-  /** Note shown with the fee, as a translation key. */
-  feeNote?: 'varies' | 'range_10_20' | 'range_10_13';
+  /** Lowest reservation fee in EUR; this is what the cost calculation uses. */
+  fee?: Fee;
+  /** Highest fee when the price varies, shown as a range. */
+  feeMax?: Fee;
+  feeNote?: 'varies' | 'nightjet' | 'some_routes_mandatory' | 'seasonal';
   /** Pass holders get a limited number of seats on this train. */
   quota?: boolean;
   channel?: Channel;
+  verified: boolean;
 }
 
-export const RESERVATION_DATA_VERIFIED = false;
-export const RESERVATION_DATA_SOURCE = 'docs/RULES-AND-SOURCES.md R6 (secondary sources, 2026)';
+export const RESERVATION_DATA_CHECKED = '2026-11-04';
+export const RESERVATION_DATA_SOURCE =
+  'interrail.com reservation fee pages (domestic, international, night trains)';
 
-/** Most specific rules first: a rule with toCountries beats one without; country beats no country. */
+const both = (second: number, first = second): Fee => ({ second, first });
+const R = (r: ReservationRule) => r;
+/** The same rule in both directions between two countries. */
+const between = (
+  id: string,
+  a: CountryCode,
+  b: CountryCode,
+  rest: Omit<ReservationRule, 'id' | 'country' | 'toCountries'>,
+) => [
+  R({ id: `${id}-${a}`, country: a, toCountries: [b], ...rest }),
+  R({ id: `${id}-${b}`, country: b, toCountries: [a], ...rest }),
+];
+
+/** Most specific match wins: a rule with toCountries beats one with only a country, which beats a general rule. */
 export const RESERVATION_RULES: ReservationRule[] = [
-  // Night trains and Eurostar, wherever they depart.
-  {
+  // Night trains (always compulsory). Nightjet: seat €4.90–24.90, 6-berth couchette €19.90–64.90 (June 2026).
+  R({
     id: 'nightjet',
-    types: ['NJ', 'EN'],
+    types: ['NJ'],
     coverage: 'covered',
     reservation: 'mandatory',
-    feeNote: 'varies',
+    fee: both(19.9),
+    feeMax: both(64.9),
+    feeNote: 'nightjet',
     quota: true,
     channel: 'oebb',
-  },
-  {
-    id: 'eurostar',
-    types: ['EST', 'EUROSTAR', 'ES'],
+    verified: true,
+  }),
+  R({
+    id: 'euronight',
+    types: ['EN', 'NT'],
     coverage: 'covered',
     reservation: 'mandatory',
     feeNote: 'varies',
     quota: true,
-    channel: 'eurostar',
-  },
-  // Switzerland to Italy
-  {
-    id: 'ch-it-ec',
-    types: ['EC'],
-    country: 'CH',
-    toCountries: ['IT'],
+    verified: true,
+  }),
+  // Eurostar (2nd class pass: Standard; 1st class pass: Plus)
+  ...between('eurostar-london-paris', 'GB', 'FR', {
+    types: ['ES', 'EST', 'EUROSTAR'],
     coverage: 'covered',
-    reservation: 'recommended',
-    fee: { second: 10, first: 10 },
+    reservation: 'mandatory',
+    fee: both(35, 40),
+    quota: true,
+    channel: 'eurostar',
+    verified: true,
+  }),
+  ...between('eurostar-london-brussels', 'GB', 'BE', {
+    types: ['ES', 'EST', 'EUROSTAR'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(35, 40),
+    quota: true,
+    channel: 'eurostar',
+    verified: true,
+  }),
+  ...between('eurostar-london-ams', 'GB', 'NL', {
+    types: ['ES', 'EST', 'EUROSTAR'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(35, 43),
+    quota: true,
+    channel: 'eurostar',
+    verified: true,
+  }),
+  ...between('eurostar-paris-brussels', 'FR', 'BE', {
+    types: ['ES', 'EST', 'EUROSTAR'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(27, 32),
+    quota: true,
+    channel: 'eurostar',
+    verified: true,
+  }),
+  ...between('eurostar-paris-ams', 'FR', 'NL', {
+    types: ['ES', 'EST', 'EUROSTAR'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(32, 37),
+    quota: true,
+    channel: 'eurostar',
+    verified: true,
+  }),
+  ...between('eurostar-paris-de', 'FR', 'DE', {
+    types: ['ES', 'EST', 'EUROSTAR'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(32, 37),
+    quota: true,
+    channel: 'eurostar',
+    verified: true,
+  }),
+  ...between('eurostar-be-nl', 'BE', 'NL', {
+    types: ['ES', 'EST', 'EUROSTAR'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(22, 27),
+    quota: true,
+    channel: 'eurostar',
+    verified: true,
+  }),
+  ...between('eurostar-be-de', 'BE', 'DE', {
+    types: ['ES', 'EST', 'EUROSTAR'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(27, 32),
+    quota: true,
+    channel: 'eurostar',
+    verified: true,
+  }),
+  // International high-speed from France
+  // Paris: €35; Lyon/Montpellier/Perpignan: €25
+  ...between('tgv-fr-es', 'FR', 'ES', {
+    types: ['TGV', 'INOUI'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(25),
+    feeMax: both(35),
+    quota: true,
+    channel: 'sncf',
+    verified: true,
+  }),
+  ...between('ave-fr-es', 'FR', 'ES', {
+    types: ['AVE'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(25, 28),
+    channel: 'renfe',
+    verified: true,
+  }),
+  ...between('tgv-fr-be', 'FR', 'BE', {
+    types: ['TGV', 'INOUI'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(20, 30),
+    feeMax: both(35, 45),
+    quota: true,
+    channel: 'sncf',
+    verified: true,
+  }),
+  ...between('otc-fr-be', 'FR', 'BE', {
+    types: ['OTC'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(10, 15),
+    channel: 'sncf',
+    verified: true,
+  }),
+  ...between('tgv-fr-de', 'FR', 'DE', {
+    types: ['TGV', 'INOUI', 'ICE'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(19),
+    quota: true,
+    channel: 'sncf',
+    verified: true,
+  }),
+  ...between('tgv-fr-it', 'FR', 'IT', {
+    types: ['TGV', 'INOUI'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(31, 45),
+    quota: true,
+    channel: 'sncf',
+    verified: true,
+  }),
+  ...between('fr-fr-it', 'FR', 'IT', {
+    types: ['FR'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(13),
+    channel: 'trenitalia',
+    verified: true,
+  }),
+  ...between('lyria', 'FR', 'CH', {
+    types: ['TGV', 'LYRIA', 'INOUI'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(29, 39),
+    quota: true,
+    channel: 'sncf',
+    verified: true,
+  }),
+  // Switzerland ↔ Italy and Austria/Germany ↔ Italy
+  ...between('ec-ch-it', 'CH', 'IT', {
+    types: ['EC'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(13),
+    feeMax: both(17),
     channel: 'sbb',
-  },
-  // Germany
-  {
+    verified: true,
+  }),
+  ...between('rj-brenner-at', 'AT', 'IT', {
+    types: ['RJ', 'RJX'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(10, 15),
+    channel: 'oebb',
+    verified: true,
+  }),
+  ...between('rj-brenner-de', 'DE', 'IT', {
+    types: ['RJ', 'RJX'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(10, 15),
+    channel: 'oebb',
+    verified: true,
+  }),
+  // Germany: optional €5.50 / €6.90; to the Netherlands and Denmark compulsory in summer
+  ...['NL', 'DK'].map((to) =>
+    R({
+      id: `de-${to}`,
+      types: ['ICE', 'IC', 'EC', 'ECE', 'RJ'],
+      country: 'DE',
+      toCountries: [to as CountryCode],
+      coverage: 'covered',
+      reservation: 'recommended',
+      fee: both(5.5, 6.9),
+      feeNote: 'seasonal',
+      channel: 'db',
+      verified: true,
+    }),
+  ),
+  R({
     id: 'de-long',
     types: ['ICE', 'IC', 'EC', 'ECE'],
     country: 'DE',
     coverage: 'covered',
     reservation: 'optional',
+    fee: both(5.5, 6.9),
     channel: 'db',
-  },
-  {
+    verified: true,
+  }),
+  R({
     id: 'de-regional',
     types: ['RE', 'RB', 'S', 'IRE'],
     country: 'DE',
     coverage: 'covered',
     reservation: 'none',
-  },
-  { id: 'de-flix', types: ['FLX'], country: 'DE', coverage: 'not_covered', reservation: 'none' },
+    verified: false,
+  }),
+  R({
+    id: 'de-flix',
+    types: ['FLX'],
+    country: 'DE',
+    coverage: 'not_covered',
+    reservation: 'none',
+    verified: false,
+  }),
   // Austria
-  {
+  R({
     id: 'at-long',
     types: ['RJ', 'RJX', 'IC', 'EC', 'ICE'],
     country: 'AT',
     coverage: 'covered',
     reservation: 'optional',
+    fee: both(3),
     channel: 'oebb',
-  },
-  {
+    verified: true,
+  }),
+  R({
+    id: 'at-westbahn',
+    types: ['WB', 'WESTBAHN'],
+    country: 'AT',
+    coverage: 'covered',
+    reservation: 'optional',
+    verified: true,
+  }),
+  R({
     id: 'at-regional',
     types: ['REX', 'R', 'S', 'CJX'],
     country: 'AT',
     coverage: 'covered',
     reservation: 'none',
-  },
+    verified: false,
+  }),
   // Switzerland
-  {
-    id: 'ch-all',
-    types: ['IC', 'ICN', 'IR', 'EC', 'RE', 'R', 'S', 'PE'],
+  R({
+    id: 'ch-ic',
+    types: ['IC', 'ICN', 'EC'],
+    country: 'CH',
+    coverage: 'covered',
+    reservation: 'optional',
+    fee: both(4.4),
+    channel: 'sbb',
+    verified: true,
+  }),
+  R({
+    id: 'ch-scenic',
+    types: ['PE', 'GEX', 'BEX'],
+    country: 'CH',
+    coverage: 'covered',
+    reservation: 'mandatory',
+    feeNote: 'varies',
+    channel: 'sbb',
+    verified: true,
+  }),
+  R({
+    id: 'ch-regional',
+    types: ['IR', 'RE', 'R', 'S'],
     country: 'CH',
     coverage: 'covered',
     reservation: 'none',
-  },
+    verified: false,
+  }),
   // Italy
-  {
-    id: 'it-frecce',
-    types: ['FR', 'FA', 'FB'],
+  R({
+    id: 'it-fr-fa',
+    types: ['FR', 'FA'],
     country: 'IT',
     coverage: 'covered',
     reservation: 'mandatory',
-    fee: { second: 13, first: 13 },
-    feeNote: 'range_10_13',
+    fee: both(13),
     channel: 'trenitalia',
-  },
-  {
+    verified: true,
+  }),
+  R({
+    id: 'it-fb',
+    types: ['FB'],
+    country: 'IT',
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(10),
+    channel: 'trenitalia',
+    verified: true,
+  }),
+  R({
     id: 'it-ic',
     types: ['IC'],
     country: 'IT',
     coverage: 'covered',
     reservation: 'mandatory',
-    fee: { second: 3, first: 3 },
+    fee: both(3),
     channel: 'trenitalia',
-  },
-  {
+    verified: true,
+  }),
+  R({
     id: 'it-icn',
     types: ['ICN'],
     country: 'IT',
@@ -134,106 +385,277 @@ export const RESERVATION_RULES: ReservationRule[] = [
     reservation: 'mandatory',
     feeNote: 'varies',
     channel: 'trenitalia',
-  },
-  {
-    id: 'it-ec',
-    types: ['EC'],
-    country: 'IT',
-    coverage: 'covered',
-    reservation: 'recommended',
-    channel: 'trenitalia',
-  },
-  {
+    verified: false,
+  }),
+  R({
     id: 'it-regional',
     types: ['R', 'RV', 'REG'],
     country: 'IT',
     coverage: 'covered',
     reservation: 'none',
-  },
-  {
+    verified: false,
+  }),
+  R({
     id: 'it-italo',
-    types: ['ITA', 'ITALO', 'NTV'],
+    types: ['ITA', 'NTV'],
     country: 'IT',
     coverage: 'not_covered',
     reservation: 'none',
-  },
+    verified: false,
+  }),
   // France
-  {
+  R({
     id: 'fr-tgv',
     types: ['TGV', 'INOUI'],
     country: 'FR',
     coverage: 'covered',
     reservation: 'mandatory',
-    fee: { second: 10, first: 20 },
-    feeNote: 'range_10_20',
+    fee: both(10),
+    feeMax: both(20),
     quota: true,
     channel: 'sncf',
-  },
-  {
-    id: 'fr-ouigo',
+    verified: true,
+  }),
+  R({
+    id: 'fr-ouigo-hs',
     types: ['OUIGO', 'OGV'],
     country: 'FR',
-    coverage: 'not_covered',
-    reservation: 'none',
-  },
-  {
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(10),
+    feeMax: both(20),
+    quota: true,
+    channel: 'sncf',
+    verified: true,
+  }),
+  R({
+    id: 'fr-ouigo-classic',
+    types: ['OTC'],
+    country: 'FR',
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(5),
+    feeMax: both(10),
+    channel: 'sncf',
+    verified: true,
+  }),
+  R({
     id: 'fr-ic',
     types: ['IC', 'INTERCITES'],
     country: 'FR',
     coverage: 'covered',
     reservation: 'recommended',
+    fee: both(1.6),
+    feeNote: 'some_routes_mandatory',
     channel: 'sncf',
-  },
-  { id: 'fr-ter', types: ['TER'], country: 'FR', coverage: 'covered', reservation: 'none' },
+    verified: true,
+  }),
+  R({
+    id: 'fr-ter',
+    types: ['TER'],
+    country: 'FR',
+    coverage: 'covered',
+    reservation: 'none',
+    feeNote: 'some_routes_mandatory',
+    verified: true,
+  }),
   // Spain
-  {
+  R({
     id: 'es-ave',
     types: ['AVE'],
     country: 'ES',
     coverage: 'covered',
     reservation: 'mandatory',
-    fee: { second: 10, first: 13 },
+    fee: both(10, 13),
     channel: 'renfe',
-  },
-  {
-    id: 'es-alvia',
-    types: ['ALVIA', 'AVANT', 'EUROMED'],
+    verified: true,
+  }),
+  R({
+    id: 'es-iryo',
+    types: ['IRYO'],
     country: 'ES',
     coverage: 'covered',
     reservation: 'mandatory',
-    feeNote: 'varies',
-    channel: 'renfe',
-  },
-  {
-    id: 'es-lowcost',
-    types: ['AVLO', 'IRYO', 'OUIGO'],
+    fee: both(10, 13),
+    verified: true,
+  }),
+  R({
+    id: 'es-mid',
+    types: ['ALVIA', 'IC', 'EUROMED'],
     country: 'ES',
-    coverage: 'not_covered',
-    reservation: 'none',
-  },
-  // Czechia
-  {
-    id: 'cz-cd',
-    types: ['EC', 'IC', 'EX', 'EN', 'R', 'OS', 'RJ'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(6.5, 10),
+    channel: 'renfe',
+    verified: true,
+  }),
+  R({
+    id: 'es-regional',
+    types: ['AVANT', 'MD'],
+    country: 'ES',
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(4),
+    channel: 'renfe',
+    verified: true,
+  }),
+  // Czechia, Slovakia, Poland, Hungary
+  R({
+    id: 'cz-long',
+    types: ['IC', 'EC', 'RJ', 'EX'],
     country: 'CZ',
     coverage: 'covered',
     reservation: 'optional',
+    fee: both(3.6),
     channel: 'cd',
-  },
-  {
-    id: 'cz-private',
-    types: ['LE', 'REGIOJET', 'RGJ'],
+    verified: true,
+  }),
+  R({
+    id: 'cz-sc',
+    types: ['SC'],
     country: 'CZ',
-    coverage: 'not_covered',
-    reservation: 'none',
-  },
-  // Netherlands and Belgium
-  {
-    id: 'nl-be',
-    types: ['IC', 'SPR', 'ICD', 'L', 'P', 'S'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(2.9, 5.15),
+    channel: 'cd',
+    verified: true,
+  }),
+  R({
+    id: 'regiojet',
+    types: ['REGIOJET', 'RGJ'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(1.3),
+    feeMax: both(2.8),
+    verified: true,
+  }),
+  R({
+    id: 'leo',
+    types: ['LE'],
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(0),
+    verified: true,
+  }),
+  R({
+    id: 'sk-ic',
+    types: ['IC', 'EC'],
+    country: 'SK',
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(5, 11),
+    feeMax: both(10, 16),
+    verified: true,
+  }),
+  R({
+    id: 'pl-eip',
+    types: ['EIP'],
+    country: 'PL',
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(10),
+    verified: true,
+  }),
+  R({
+    id: 'pl-long',
+    types: ['EIC', 'IC', 'TLK'],
+    country: 'PL',
+    coverage: 'covered',
+    reservation: 'recommended',
+    fee: both(0.7),
+    verified: true,
+  }),
+  R({
+    id: 'hu-ic',
+    types: ['IC'],
+    country: 'HU',
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(1.7, 3),
+    feeMax: both(2.6, 5),
+    verified: true,
+  }),
+  // Benelux, Nordics, others
+  R({
+    id: 'nl-icd',
+    types: ['ICD', 'ECD'],
+    country: 'NL',
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(3),
+    verified: true,
+  }),
+  R({
+    id: 'benelux-ic',
+    types: ['IC', 'SPR', 'L', 'P', 'S'],
     coverage: 'covered',
     reservation: 'none',
-  },
+    verified: false,
+  }),
+  R({
+    id: 'se-hst',
+    types: ['SJ', 'X2000', 'X2', 'HST'],
+    country: 'SE',
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(6.5, 14.4),
+    verified: true,
+  }),
+  R({
+    id: 'se-ic',
+    types: ['IC', 'RE'],
+    country: 'SE',
+    coverage: 'covered',
+    reservation: 'optional',
+    fee: both(3.5, 8.3),
+    verified: true,
+  }),
+  R({
+    id: 'dk-ic',
+    types: ['IC', 'ICL'],
+    country: 'DK',
+    coverage: 'covered',
+    reservation: 'recommended',
+    fee: both(4),
+    verified: true,
+  }),
+  R({
+    id: 'pt-ap',
+    types: ['AP', 'IC'],
+    country: 'PT',
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(5),
+    verified: true,
+  }),
+  R({
+    id: 'si-ic',
+    types: ['IC', 'ICS', 'PEN'],
+    country: 'SI',
+    coverage: 'covered',
+    reservation: 'recommended',
+    fee: both(2),
+    feeMax: both(4),
+    verified: true,
+  }),
+  R({
+    id: 'ro-ic',
+    types: ['IR', 'IC'],
+    country: 'RO',
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(1.2),
+    verified: true,
+  }),
+  R({
+    id: 'gr-ic',
+    types: ['IC'],
+    country: 'GR',
+    coverage: 'covered',
+    reservation: 'mandatory',
+    fee: both(0),
+    verified: true,
+  }),
 ];
 
 export const CHANNEL_LINKS: Record<Channel, { name: string; url: string }> = {

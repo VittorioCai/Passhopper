@@ -10,7 +10,7 @@ import type { Plan } from '../engine/optimizer';
 import { formatDate } from '../model/dates';
 import type { Trip } from '../model/schema';
 import { upsertSegment } from '../model/trip';
-import { eur, lineStyle, placeName, useLang } from '../lib';
+import { eur, feeText, lineStyle, placeName, useLang } from '../lib';
 import r from './RoutePage.module.css';
 import s from './SeatsPage.module.css';
 
@@ -69,6 +69,7 @@ function BookForm({ row, onDone }: { row: Row; onDone: () => void }) {
           <input
             type="number"
             min="0"
+            step="0.01"
             inputMode="decimal"
             value={paid}
             onChange={(e) => setPaid(e.target.value)}
@@ -131,9 +132,11 @@ export function SeatsPage() {
   );
   const need = (i: DayItem) =>
     i.rule.reservation === 'mandatory'
-      ? i.rule.fee
-        ? t('chip.seatRequiredFee', { fee: i.rule.fee })
-        : t('seats.requiredVaries')
+      ? !i.rule.feeKnown
+        ? t('seats.requiredVaries')
+        : i.rule.fee
+          ? t('chip.seatRequiredFee', { fee: feeText(i.rule.fee, i.rule.feeMax) })
+          : t('chip.seatRequiredFree')
       : t('chip.seatAdvised');
 
   if (!plan) {

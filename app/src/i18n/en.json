@@ -261,7 +261,8 @@
     "ticket": "Ticket",
     "notCovered": "Pass not valid",
     "seatRequired": "Seat required",
-    "seatRequiredFee": "Seat required €{{fee}}",
+    "seatRequiredFree": "Seat required (free)",
+    "seatRequiredFee": "Seat required {{fee}}",
     "seatAdvised": "Seat advised",
     "checkRules": "Check pass rules",
     "outbound": "Outbound",
@@ -283,6 +284,6 @@
     "validRange": "valid {{from}}–{{to}}"
   },
   "rules": {
-    "unverified": "Pass prices and reservation rules haven't been checked against the official Interrail site yet. Confirm before you book."
+    "unverified": "Reservation fees were checked against interrail.com on 4 Nov 2026. Pass prices are estimates. Confirm both before you book."
   }
 }

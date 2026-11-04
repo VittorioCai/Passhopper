@@ -12,9 +12,9 @@ export interface JourneyClass {
 }
 
 /**
- * Home-country rule (RULES-AND-SOURCES R4): a European resident's Global Pass covers one journey
- * out of the home country and one journey back in. Journeys that stay inside the home country are
- * not covered. People living outside Europe have no such limit.
+ * Home-country rule (RULES-AND-SOURCES R4, confirmed on interrail.com): someone living in a Pass
+ * Network country gets one journey out of it and one journey back in. Journeys that stay inside the
+ * home country are not covered. People living elsewhere have no such limit.
  */
 export function classifyJourneys(trip: Trip): JourneyClass[] {
   const res = trip.traveller.residence;

@@ -25,3 +25,9 @@ export function lineStyle(cc: string): CSSProperties {
 export const eur = (n: number) => `€${Math.round(n)}`;
 export const eurRange = (min: number, max: number) =>
   Math.round(min) === Math.round(max) ? eur(min) : `€${Math.round(min)}–${Math.round(max)}`;
+
+/** A reservation fee as "€13", "€5.50" or "€13–17". */
+export function feeText(min: number, max = min) {
+  const f = (n: number) => (Number.isInteger(n) ? String(n) : n.toFixed(2));
+  return max > min ? `€${f(min)}–${f(max)}` : `€${f(min)}`;
+}
