@@ -170,6 +170,10 @@ export function setNote(trip: Trip, stopId: string, note: string): Trip {
   });
 }
 
+/** Changes who is travelling; day choices made by hand are kept. */
+export const setTraveller = (trip: Trip, change: Partial<Traveller>): Trip =>
+  touch({ ...trip, traveller: { ...trip.traveller, ...change } });
+
 export const setStartDate = (trip: Trip, startDate: string): Trip => touch({ ...trip, startDate });
 export const renameTrip = (trip: Trip, name: string): Trip =>
   touch({ ...trip, name: name.trim() || trip.name });

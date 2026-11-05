@@ -42,10 +42,12 @@ import {
   segmentMinutes,
   setNights,
   setNote,
+  setTraveller,
   setStartDate,
   tripRange,
 } from '../model/trip';
-import { eurRange, feeText, lineStyle, placeName, useLang } from '../lib';
+import { countryName, eurRange, feeText, lineStyle, placeName, useLang } from '../lib';
+import { COUNTRY_CODES, type CountryCode } from '../data/countries';
 import r from './RoutePage.module.css';
 
 export interface TicketInfo {
@@ -220,6 +222,60 @@ export function RoutePage() {
               value={trip.startDate}
               onChange={(e) => e.target.value && update((x) => setStartDate(x, e.target.value))}
             />
+          </label>
+          <label className={ui.field}>
+            {t('wizard.residence')}
+            <select
+              value={
+                trip.traveller.residence.type === 'europe'
+                  ? trip.traveller.residence.country
+                  : 'non_europe'
+              }
+              onChange={(e) =>
+                update((x) =>
+                  setTraveller(x, {
+                    residence:
+                      e.target.value === 'non_europe'
+                        ? { type: 'non_europe' }
+                        : { type: 'europe', country: e.target.value as CountryCode },
+                  }),
+                )
+              }
+            >
+              <option value="non_europe">{t('wizard.outsideEurope')}</option>
+              {COUNTRY_CODES.map((cc) => (
+                <option key={cc} value={cc}>
+                  {countryName(cc, lang)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className={ui.field}>
+            {t('wizard.age')}
+            <select
+              value={trip.traveller.ageGroup}
+              onChange={(e) =>
+                update((x) =>
+                  setTraveller(x, { ageGroup: e.target.value as Trip['traveller']['ageGroup'] }),
+                )
+              }
+            >
+              <option value="youth">{t('wizard.youth')}</option>
+              <option value="adult">{t('wizard.adult')}</option>
+              <option value="senior">{t('wizard.senior')}</option>
+            </select>
+          </label>
+          <label className={ui.field}>
+            {t('wizard.class')}
+            <select
+              value={trip.traveller.travelClass}
+              onChange={(e) =>
+                update((x) => setTraveller(x, { travelClass: Number(e.target.value) as 1 | 2 }))
+              }
+            >
+              <option value={2}>{t('wizard.second')}</option>
+              <option value={1}>{t('wizard.first')}</option>
+            </select>
           </label>
         </section>
       )}

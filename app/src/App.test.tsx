@@ -94,6 +94,21 @@ describe('trip pages', () => {
     setCurrency(null);
   });
 
+  it('changes the traveller after the trip is made', async () => {
+    const trip = makeSampleTrip('en');
+    await saveTrip(trip);
+    at(`/trip/${trip.id}/route`);
+    fireEvent.click(await screen.findByRole('button', { name: 'Edit' }));
+    fireEvent.change(screen.getByLabelText('Age'), { target: { value: 'adult' } });
+    fireEvent.change(screen.getByLabelText('Where do you live?'), { target: { value: 'non_europe' } });
+    await waitFor(async () =>
+      expect((await db.trips.get(trip.id))!.traveller).toMatchObject({
+        ageGroup: 'adult',
+        residence: { type: 'non_europe' },
+      }),
+    );
+  });
+
   it('adds a note to a city', async () => {
     const trip = makeSampleTrip('en');
     await saveTrip(trip);
