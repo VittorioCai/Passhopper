@@ -8,6 +8,8 @@ import { DaysPage } from './pages/DaysPage';
 import { SeatsPage } from './pages/SeatsPage';
 import { SavingsPage } from './pages/SavingsPage';
 import { SharePage } from './pages/SharePage';
+import { RouteIdeas } from './pages/RouteIdeas';
+import { RouteIdea } from './pages/RouteIdea';
 
 export function App() {
   return (
@@ -17,6 +19,12 @@ export function App() {
       </Route>
       <Route element={<SubpageLayout titleKey="newTrip.title" />}>
         <Route path="new" element={<NewTrip />} />
+      </Route>
+      <Route element={<SubpageLayout titleKey="ideas.title" />}>
+        <Route path="ideas" element={<RouteIdeas />} />
+      </Route>
+      <Route element={<SubpageLayout titleKey="ideas.title" back="/ideas" />}>
+        <Route path="ideas/:id" element={<RouteIdea />} />
       </Route>
       <Route element={<SubpageLayout titleKey="share.title" />}>
         <Route path="share" element={<SharePage />} />

@@ -7,13 +7,14 @@ import {
 } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { AiDraftBox } from '../components/AiDraftBox';
 import { CityPicker } from '../components/CityPicker';
 import { Stepper } from '../components/Stepper';
 import ui from '../components/ui.module.css';
 import { COUNTRY_CODES, type CountryCode } from '../data/countries';
 import { saveTrip } from '../db/trips';
+import { cityPlace, ideaById } from '../data/routeIdeas';
 import { useDragSort } from '../hooks/useDragSort';
 import { addDays, todayLocal } from '../model/dates';
 import type { Place, Traveller } from '../model/schema';
@@ -33,11 +34,21 @@ export function NewTrip() {
   const [age, setAge] = useState<Age>('youth');
   const [cls, setCls] = useState<1 | 2>(2);
   const [count, setCount] = useState(1);
-  const [origin, setOrigin] = useState<Place | null>(null);
-  const [stops, setStops] = useState<{ place: Place; nights: number }[]>([]);
-  const [returnToStart, setReturnToStart] = useState(true);
+  const idea = ideaById((useLocation().state as { idea?: string } | null)?.idea);
+  const zh = lang.startsWith('zh');
+  const [origin, setOrigin] = useState<Place | null>(idea ? cityPlace(idea.origin) : null);
+  const [stops, setStops] = useState<{ place: Place; nights: number; note?: string }[]>(
+    idea
+      ? idea.stops.map((x) => ({
+          place: cityPlace(x.city),
+          nights: x.nights,
+          note: zh ? x.note.zh : x.note.en,
+        }))
+      : [],
+  );
+  const [returnToStart, setReturnToStart] = useState(!idea);
   const [startDate, setStartDate] = useState(addDays(todayLocal(), 30));
-  const [name, setName] = useState('');
+  const [name, setName] = useState(idea ? (zh ? idea.title.zh : idea.title.en) : '');
 
   const autoName =
     origin && stops.length
@@ -77,6 +88,10 @@ export function NewTrip() {
       places: [origin, ...stops.map((s) => s.place)],
       nights: stops.map((s) => s.nights),
       returnToStart,
+    });
+    // Notes from a route idea go with their cities.
+    stops.forEach((x, i) => {
+      if (x.note) trip.stops[i + 1]!.note = x.note.slice(0, 500);
     });
     await saveTrip(trip);
     navigate(`/trip/${trip.id}/route`, { replace: true });
@@ -178,6 +193,9 @@ export function NewTrip() {
 
       {step === 2 && (
         <div className={`${ui.card} ${ui.stack}`} style={{ gap: 16 }}>
+          <p className={ui.muted} style={{ margin: 0, fontSize: 14 }}>
+            {t('ideas.browseHint')} <Link to="/ideas">{t('ideas.browse')}</Link>
+          </p>
           <AiDraftBox
             onDraft={(d) => {
               setOrigin(d.origin);

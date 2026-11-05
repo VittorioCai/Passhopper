@@ -334,6 +334,35 @@ describe('shared trips', () => {
   });
 });
 
+describe('route ideas', () => {
+  it('starts a trip from a route idea, with notes for each city', async () => {
+    at('/');
+    fireEvent.click(await screen.findByRole('link', { name: /Route ideas/ }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Scenic' }));
+    fireEvent.click(screen.getByRole('link', { name: /Across the Alps/ }));
+    expect(await screen.findByText(/Nordkette cable car/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Use this route' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Next' }));
+    expect(screen.getByText('Interlaken')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+    fireEvent.change(screen.getByLabelText('Departure date'), { target: { value: '2027-06-01' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Create trip' }));
+    expect(await screen.findByRole('heading', { name: 'Lucerne' })).toBeInTheDocument();
+    const [saved] = await db.trips.toArray();
+    expect(saved!.name).toBe('Across the Alps');
+    expect(saved!.stops.map((x) => x.place.id)).toEqual([
+      'munich',
+      'salzburg',
+      'innsbruck',
+      'zurich',
+      'lucerne',
+      'interlaken',
+      'milan',
+    ]);
+    expect(saved!.stops[2]!.note).toMatch(/Nordkette/);
+  });
+});
+
 describe('new trip wizard', () => {
   it('creates a trip and opens its route', async () => {
     at('/new');

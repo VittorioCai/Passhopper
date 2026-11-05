@@ -468,5 +468,27 @@
     "action": "Share link",
     "copied": "Link copied. It contains the whole trip, but no booking references or seats.",
     "shareText": "My Interrail trip on Passhopper"
+  },
+  "ideas": {
+    "title": "Route ideas",
+    "intro": "Ready-made routes to learn from or use as they are. Each one lists what to see in every city and what to know about the trains.",
+    "filter": "Filter routes",
+    "all": "All",
+    "tag": {
+      "first": "First trip",
+      "scenic": "Scenic",
+      "budget": "On a budget",
+      "food": "Food",
+      "nature": "Nature",
+      "long": "3 weeks"
+    },
+    "stats": "{{days}} days · {{cities}} cities · {{trains}} train days",
+    "start": "Start here",
+    "best": "Best time:",
+    "use": "Use this route",
+    "useNote": "You'll set your own dates and details next, and can change anything afterwards.",
+    "more": "See other routes",
+    "browse": "Route ideas",
+    "browseHint": "Not sure where to go? Start from a route idea."
   }
 }

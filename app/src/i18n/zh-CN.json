@@ -444,5 +444,27 @@
     "action": "分享链接",
     "copied": "链接已复制。链接里包含整个行程，但不含订座号和座位。",
     "shareText": "我在 Passhopper 上的 Interrail 行程"
+  },
+  "ideas": {
+    "title": "路线推荐",
+    "intro": "现成的路线，可以参考学习，也可以直接拿来用。每条都写了每个城市玩什么、坐车要注意什么。",
+    "filter": "筛选路线",
+    "all": "全部",
+    "tag": {
+      "first": "第一次",
+      "scenic": "风景",
+      "budget": "省钱",
+      "food": "美食",
+      "nature": "自然",
+      "long": "三周"
+    },
+    "stats": "{{days}} 天 · {{cities}} 座城市 · {{trains}} 个旅行日",
+    "start": "从这里出发",
+    "best": "最佳季节：",
+    "use": "用这条路线",
+    "useNote": "下一步填写你自己的日期和信息，之后也可以随意修改。",
+    "more": "看看其他路线",
+    "browse": "路线推荐",
+    "browseHint": "不知道去哪？从推荐路线开始。"
   }
 }

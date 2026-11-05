@@ -175,11 +175,11 @@ export function HomeLayout() {
 }
 
 /** Layout for pages reached from home, such as Settings and New trip. */
-export function SubpageLayout({ titleKey }: { titleKey: string }) {
+export function SubpageLayout({ titleKey, back = '/' }: { titleKey: string; back?: string }) {
   const { t } = useTranslation();
   return (
     <Shell>
-      <TopBar back="/" title={t(titleKey)} />
+      <TopBar back={back} title={t(titleKey)} />
       <main className={s.view}>
         <Outlet />
       </main>

@@ -1,4 +1,5 @@
 import {
+  CompassIcon,
   CopyIcon,
   DotsThreeIcon,
   PlusIcon,
@@ -132,6 +133,10 @@ export function Home() {
       <Link to="/new" className={`${ui.btnPrimary} ${ui.block}`}>
         <PlusIcon size={20} weight="bold" />
         {t('home.newTrip')}
+      </Link>
+      <Link to="/ideas" className={`${ui.btn} ${ui.block}`}>
+        <CompassIcon size={20} weight="bold" />
+        {t('ideas.browse')}
       </Link>
       {menu && (
         <Sheet
