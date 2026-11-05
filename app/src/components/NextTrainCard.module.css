@@ -1,0 +1,68 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border-radius: var(--r-lg);
+  background: var(--ink);
+  color: var(--on-ink);
+  text-decoration: none;
+  box-shadow: var(--shadow-lg);
+}
+.top {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  opacity: 0.8;
+}
+.trip {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.day {
+  flex: none;
+  font-weight: 700;
+}
+.when {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 14px;
+}
+.times {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--f-display);
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.arrow {
+  opacity: 0.5;
+  font-size: 22px;
+}
+.line {
+  font-size: 14px;
+  opacity: 0.9;
+}
+.seat,
+.tonight {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  opacity: 0.85;
+}
+.seat {
+  align-self: flex-start;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  font-family: var(--f-mono);
+}

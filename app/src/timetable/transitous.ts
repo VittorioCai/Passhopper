@@ -12,7 +12,7 @@ const API = 'https://api.transitous.org/api';
 export const TRANSITOUS_SOURCES_URL = 'https://transitous.org/sources/';
 
 /** Time zone of each country, used to turn the traveller's local time into the request time. */
-const COUNTRY_TZ: Partial<Record<CountryCode, string>> & Record<string, string> = {
+export const COUNTRY_TZ: Partial<Record<CountryCode, string>> & Record<string, string> = {
   AT: 'Europe/Vienna',
   BE: 'Europe/Brussels',
   BG: 'Europe/Sofia',

@@ -401,6 +401,33 @@ describe('shared trips', () => {
   });
 });
 
+describe('travel mode', () => {
+  it('shows the next train on Home when it leaves within two days', async () => {
+    const { addDays, todayLocal } = await import('./model/dates');
+    const trip = {
+      ...makeSampleTrip('en'),
+      sample: undefined,
+      name: 'Summer trip',
+      startDate: addDays(todayLocal(), 1),
+    };
+    await saveTrip(trip);
+    at('/');
+    expect(
+      await screen.findByRole('link', { name: /Summer trip.*08:34.*ICE 1005/s }),
+    ).toBeInTheDocument();
+  });
+
+  it('prints the itinerary', async () => {
+    const trip = makeSampleTrip('en');
+    await saveTrip(trip);
+    window.print = vi.fn();
+    at(`/trip/${trip.id}/print`);
+    expect(await screen.findByText('NJ 294')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Print or save as PDF' }));
+    expect(window.print).toHaveBeenCalled();
+  });
+});
+
 describe('route ideas', () => {
   it('starts a trip from a route idea, with notes for each city', async () => {
     at('/');

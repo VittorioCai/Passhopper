@@ -10,6 +10,7 @@ import {
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router';
+import { NextTrainCard } from '../components/NextTrainCard';
 import { Sheet } from '../components/Sheet';
 import ui from '../components/ui.module.css';
 import { copyTrip, deleteTrip, useTrips } from '../db/trips';
@@ -84,9 +85,14 @@ export function Home() {
   const [confirm, setConfirm] = useState(false);
   const [shared, setShared] = useState('');
   const sorted = trips && sortTrips(trips, todayLocal());
+  const today = todayLocal();
+  const underWay = trips?.some(
+    (x) => !x.sample && x.startDate <= today && tripRange(x).end >= today,
+  );
   const next = trips
-    ?.map((x) => x.startDate)
-    .filter((d) => d >= todayLocal())
+    ?.filter((x) => !x.sample)
+    .map((x) => x.startDate)
+    .filter((d) => d >= today)
     .sort()[0];
   const close = () => {
     setMenu(null);
@@ -98,7 +104,9 @@ export function Home() {
       <div className={ui.hello}>
         <span>{t('home.greeting')}</span>
         <h1>
-          {next ? (
+          {underWay ? (
+            t('home.underWay')
+          ) : next ? (
             <>
               <em className={h.em}>
                 {t('home.daysToGoNum', { count: daysBetween(todayLocal(), next) })}
@@ -119,6 +127,7 @@ export function Home() {
           <p className={ui.muted}>{t('home.emptyBody')}</p>
         </div>
       )}
+      {trips && <NextTrainCard trips={trips} />}
       {sorted?.upcoming.map((trip) => (
         <TripCard key={trip.id} trip={trip} onMore={() => setMenu(trip)} />
       ))}

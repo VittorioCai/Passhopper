@@ -49,7 +49,8 @@
     "copyName": "{{name}} (copy)",
     "delete": "Delete trip",
     "deleteConfirm": "Delete “{{name}}”? This can't be undone.",
-    "past": "Past trips"
+    "past": "Past trips",
+    "underWay": "Have a good trip!"
   },
   "trip": {
     "notFound": "Trip not found",
@@ -512,5 +513,26 @@
     "overnight": "Overnight: the next city moves to the day after.",
     "add_one": "Add trains for {{count}} leg",
     "add_other": "Add trains for {{count}} legs"
+  },
+  "travel": {
+    "onBoard": "On board now",
+    "inMinutes_one": "Leaves in {{count}} minute",
+    "inMinutes_other": "Leaves in {{count}} minutes",
+    "inHours_one": "Leaves in about {{count}} hour",
+    "inHours_other": "Leaves in about {{count}} hours",
+    "day": "Day {{day}} of {{days}}",
+    "noMoreTrains": "No more trains on this trip.",
+    "tonight": "Tonight: {{name}}",
+    "calendar": "Add to calendar",
+    "print": "Print or save as PDF",
+    "icsStay_one": "{{city}} · {{count}} night",
+    "icsStay_other": "{{city}} · {{count}} nights",
+    "icsSeat": "Seat: {{value}}"
+  },
+  "print": {
+    "back": "Back to the trip",
+    "print": "Print or save as PDF",
+    "booked": "Booked",
+    "foot": "Made with Passhopper. Times are local. Check trains and reservations with the operator before you travel."
   }
 }

@@ -1,6 +1,7 @@
 import {
   ArrowDownIcon,
   ArrowUpIcon,
+  CalendarPlusIcon,
   CheckIcon,
   MagicWandIcon,
   DotsSixVerticalIcon,
@@ -8,11 +9,14 @@ import {
   PencilSimpleIcon,
   NotePencilIcon,
   PlusIcon,
+  PrinterIcon,
   TrashIcon,
   WarningIcon,
 } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router';
+import { downloadIcs, tripToIcs } from '../model/ics';
 import { BulkTrainSheet } from '../components/BulkTrainSheet';
 import { CityPicker } from '../components/CityPicker';
 import { MapCard } from '../components/MapCard';
@@ -496,6 +500,31 @@ export function RoutePage() {
         })}
       </ol>
 
+      {segmentCount(trip) > 0 && !edit && (
+        <div className={ui.row} style={{ justifyContent: 'center' }}>
+          <button
+            type="button"
+            className={ui.btnSm}
+            onClick={() =>
+              downloadIcs(
+                trip.name,
+                tripToIcs(trip, (p) => placeName(p, lang), {
+                  stay: (city, n) => t('travel.icsStay', { city, count: n }),
+                  reservation: (ref, seat) =>
+                    t('travel.icsSeat', { value: [seat, ref].filter(Boolean).join(' · ') }),
+                }),
+              )
+            }
+          >
+            <CalendarPlusIcon size={16} weight="bold" />
+            {t('travel.calendar')}
+          </button>
+          <Link to={`/trip/${trip.id}/print`} className={ui.btnSm}>
+            <PrinterIcon size={16} weight="bold" />
+            {t('travel.print')}
+          </Link>
+        </div>
+      )}
       {edit && (
         <button
           type="button"

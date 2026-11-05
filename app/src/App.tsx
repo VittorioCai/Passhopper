@@ -10,6 +10,7 @@ import { SavingsPage } from './pages/SavingsPage';
 import { SharePage } from './pages/SharePage';
 import { RouteIdeas } from './pages/RouteIdeas';
 import { RouteIdea } from './pages/RouteIdea';
+import { PrintPage } from './pages/PrintPage';
 
 export function App() {
   return (
@@ -32,6 +33,7 @@ export function App() {
       <Route element={<SubpageLayout titleKey="settings.title" />}>
         <Route path="settings" element={<Settings />} />
       </Route>
+      <Route path="trip/:tripId/print" element={<PrintPage />} />
       <Route path="trip/:tripId" element={<TripLayout />}>
         <Route index element={<Navigate to="route" replace />} />
         <Route path="route" element={<RoutePage />} />

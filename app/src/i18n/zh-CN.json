@@ -45,7 +45,8 @@
     "copyName": "{{name}}（副本）",
     "delete": "删除行程",
     "deleteConfirm": "删除“{{name}}”？删除后不能恢复。",
-    "past": "已结束的行程"
+    "past": "已结束的行程",
+    "underWay": "旅途愉快！"
   },
   "trip": {
     "notFound": "找不到这个行程",
@@ -485,5 +486,23 @@
     "pickFor": "{{route}} 的车次",
     "overnight": "跨夜车：下一个城市会顺延到第二天。",
     "add_other": "添加 {{count}} 段车次"
+  },
+  "travel": {
+    "onBoard": "正在车上",
+    "inMinutes_other": "{{count}} 分钟后出发",
+    "inHours_other": "约 {{count}} 小时后出发",
+    "day": "第 {{day}} 天 / 共 {{days}} 天",
+    "noMoreTrains": "这趟行程的车都坐完了。",
+    "tonight": "今晚住：{{name}}",
+    "calendar": "导入日历",
+    "print": "打印或存为 PDF",
+    "icsStay_other": "{{city}} · {{count}} 晚",
+    "icsSeat": "座位：{{value}}"
+  },
+  "print": {
+    "back": "返回行程",
+    "print": "打印或存为 PDF",
+    "booked": "已订",
+    "foot": "由 Passhopper 生成。时间均为当地时间。出发前请向运营商核实车次和订座。"
   }
 }
