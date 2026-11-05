@@ -380,6 +380,100 @@ export const ROUTE_IDEAS: RouteIdea[] = [
     ],
   },
   {
+    id: 'norway',
+    title: { en: 'Norway: fjords and the Arctic', zh: '挪威：峡湾与北极圈' },
+    summary: {
+      en: 'Nature first: the Flåm railway and Nærøyfjord, the Rauma line, the Arctic Circle by train, Lofoten, and the Ofoten line to Sweden.',
+      zh: '以自然为主：弗洛姆铁路和纳柔依峡湾、劳马铁路、坐火车穿越北极圈、罗弗敦群岛，再走奥福腾铁路进瑞典。',
+    },
+    origin: 'oslo',
+    stops: [
+      {
+        city: 'flam',
+        nights: 2,
+        note: {
+          en: 'Bergen line over the Hardangervidda plateau to Myrdal, then the Flåm railway down the valley (pass holders get a discount, not a free ride). Cruise or kayak the Nærøyfjord; Stegastein viewpoint.',
+          zh: '卑尔根铁路翻越哈当厄高原到米达尔，再坐弗洛姆铁路下到峡谷（通票只打折，不免费）。乘船或划皮艇游纳柔依峡湾；斯泰加斯泰因观景台。',
+        },
+      },
+      {
+        city: 'oslo',
+        nights: 1,
+        note: {
+          en: 'The "Norway in a Nutshell" way back: ferry through the Nærøyfjord to Gudvangen, bus to Voss (ferry and bus not covered), then train to Oslo. A long, beautiful day.',
+          zh: '走"挪威缩影"回程：渡轮穿过纳柔依峡湾到古德旺恩，巴士到沃斯（渡轮和巴士通票不适用），再坐火车回奥斯陆。漫长但很美的一天。',
+        },
+      },
+      {
+        city: 'andalsnes',
+        nights: 2,
+        note: {
+          en: 'The Rauma line from Dombås runs past the Trollveggen rock wall. In summer, buses go up the Trollstigen road towards Geiranger (not covered); or hike Romsdalseggen.',
+          zh: '从多姆巴斯出发的劳马铁路经过巨人墙峭壁。夏季有巴士上精灵之路、前往盖朗厄尔峡湾（通票不适用）；也可以徒步罗姆斯达尔山脊。',
+        },
+      },
+      {
+        city: 'trondheim',
+        nights: 1,
+        note: {
+          en: 'Back to Dombås and over the Dovre mountains. Nidaros Cathedral and the old wharves; a quiet stop before the long ride north.',
+          zh: '回到多姆巴斯，翻越多夫勒山。尼达罗斯大教堂和老码头仓库，北上长途前在这里歇一晚。',
+        },
+      },
+      {
+        city: 'bodo',
+        nights: 1,
+        note: {
+          en: 'The Nordland line takes about 10 hours and crosses the Arctic Circle on the Saltfjellet plateau. Near Bodø, the Saltstraumen maelstrom.',
+          zh: '北方线全程约 10 小时，在萨尔特山高原穿越北极圈。博德附近有萨尔特斯特劳门大漩涡。',
+        },
+      },
+      {
+        city: 'lofoten',
+        nights: 3,
+        note: {
+          en: 'Ferry from Bodø to Moskenes (not covered). Red fishing cabins in Reine and Hamnøy, Reinebringen and Kvalvika beach hikes; midnight sun from early June to mid-July.',
+          zh: '从博德坐渡轮到莫斯克内斯（通票不适用）。雷讷、哈姆诺伊的红色渔屋，雷讷布林根和克瓦尔维卡海滩徒步；6 月初到 7 月中旬有午夜阳光。',
+        },
+      },
+      {
+        city: 'narvik',
+        nights: 1,
+        note: {
+          en: 'Bus from Lofoten to Narvik (not covered). Next day the Ofoten line climbs from the fjord into Swedish Lapland, with a night train from Kiruna to Stockholm (reservation required).',
+          zh: '从罗弗敦坐巴士到纳尔维克（通票不适用）。第二天坐奥福腾铁路从峡湾爬升进入瑞典拉普兰，再从基律纳坐夜车到斯德哥尔摩（必须订座）。',
+        },
+      },
+      {
+        city: 'stockholm',
+        nights: 1,
+        note: {
+          en: 'About 19 hours from Narvik, arriving in the morning. From here, trains run south to Copenhagen and Germany.',
+          zh: '从纳尔维克出发约 19 小时，早上到达。从这里可以坐火车南下哥本哈根和德国。',
+        },
+      },
+    ],
+    tags: ['scenic', 'nature', 'long'],
+    best: {
+      en: 'Mid-June to August: mountain roads and summer buses are open, and the north has the midnight sun.',
+      zh: '6 月中到 8 月：山路和夏季巴士都开通了，北部还有午夜阳光。',
+    },
+    tips: [
+      {
+        en: 'Norwegian long-distance trains fill up in summer: reserve seats as soon as your dates are fixed.',
+        zh: '挪威长途车夏天很满，日期一定就订座。',
+      },
+      {
+        en: 'Ferries and buses fill the gaps that railways can’t reach. They are not covered, so budget for them.',
+        zh: '铁路到不了的地方要靠渡轮和巴士衔接，这些通票不适用，要单独留预算。',
+      },
+      {
+        en: 'Norway is expensive: cabins and hostels with kitchens save a lot.',
+        zh: '挪威物价高，住带厨房的小木屋或青旅能省很多。',
+      },
+    ],
+  },
+  {
     id: 'balkans',
     title: { en: 'Vienna to the Adriatic', zh: '维也纳到亚得里亚海' },
     summary: {
