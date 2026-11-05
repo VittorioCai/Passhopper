@@ -100,7 +100,9 @@ describe('trip pages', () => {
     at(`/trip/${trip.id}/route`);
     fireEvent.click(await screen.findByRole('button', { name: 'Edit' }));
     fireEvent.change(screen.getByLabelText('Age'), { target: { value: 'adult' } });
-    fireEvent.change(screen.getByLabelText('Where do you live?'), { target: { value: 'non_europe' } });
+    fireEvent.change(screen.getByLabelText('Where do you live?'), {
+      target: { value: 'non_europe' },
+    });
     await waitFor(async () =>
       expect((await db.trips.get(trip.id))!.traveller).toMatchObject({
         ageGroup: 'adult',

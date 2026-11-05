@@ -18,6 +18,14 @@ export async function saveTrip(trip: Trip, store: PasshopperDB = db) {
   await store.trips.put(TripSchema.parse(trip));
 }
 
+/** Applies a change to the latest saved version, so quick edits in a row never undo each other. */
+export async function updateTrip(id: string, fn: (t: Trip) => Trip, store: PasshopperDB = db) {
+  await store.transaction('rw', store.trips, async () => {
+    const current = await store.trips.get(id);
+    if (current) await store.trips.put(TripSchema.parse(fn(current)));
+  });
+}
+
 export const deleteTrip = (id: string, store: PasshopperDB = db) => store.trips.delete(id);
 
 export async function copyTrip(trip: Trip, name: string, store: PasshopperDB = db) {

@@ -12,7 +12,7 @@ import {
 import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, NavLink, Outlet, useLocation, useParams } from 'react-router';
-import { saveTrip, useTrip } from '../db/trips';
+import { saveTrip, updateTrip, useTrip } from '../db/trips';
 import { analyze, currentPlan } from '../engine/optimizer';
 import { setLanguage } from '../i18n';
 import type { Trip } from '../model/schema';
@@ -234,7 +234,7 @@ export function TripLayout() {
   }
   const ctx: TripContext = {
     trip,
-    update: (fn: (x: Trip) => Trip) => void saveTrip(fn(trip)),
+    update: (fn: (x: Trip) => Trip) => void updateTrip(trip.id, fn),
     analysis: computed!.analysis,
     plan: computed!.plan,
   };

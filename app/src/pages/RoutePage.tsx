@@ -210,9 +210,10 @@ export function RoutePage() {
             <input
               defaultValue={trip.name}
               maxLength={120}
-              onBlur={(e) =>
-                e.target.value.trim() !== trip.name && update((x) => renameTrip(x, e.target.value))
-              }
+              onBlur={(e) => {
+                const name = e.target.value;
+                if (name.trim() !== trip.name) update((x) => renameTrip(x, name));
+              }}
             />
           </label>
           <label className={ui.field}>
@@ -220,7 +221,10 @@ export function RoutePage() {
             <input
               type="date"
               value={trip.startDate}
-              onChange={(e) => e.target.value && update((x) => setStartDate(x, e.target.value))}
+              onChange={(e) => {
+                const date = e.target.value;
+                if (date) update((x) => setStartDate(x, date));
+              }}
             />
           </label>
           <label className={ui.field}>
@@ -231,16 +235,17 @@ export function RoutePage() {
                   ? trip.traveller.residence.country
                   : 'non_europe'
               }
-              onChange={(e) =>
+              onChange={(e) => {
+                const v = e.target.value;
                 update((x) =>
                   setTraveller(x, {
                     residence:
-                      e.target.value === 'non_europe'
+                      v === 'non_europe'
                         ? { type: 'non_europe' }
-                        : { type: 'europe', country: e.target.value as CountryCode },
+                        : { type: 'europe', country: v as CountryCode },
                   }),
-                )
-              }
+                );
+              }}
             >
               <option value="non_europe">{t('wizard.outsideEurope')}</option>
               {COUNTRY_CODES.map((cc) => (
@@ -254,11 +259,10 @@ export function RoutePage() {
             {t('wizard.age')}
             <select
               value={trip.traveller.ageGroup}
-              onChange={(e) =>
-                update((x) =>
-                  setTraveller(x, { ageGroup: e.target.value as Trip['traveller']['ageGroup'] }),
-                )
-              }
+              onChange={(e) => {
+                const ageGroup = e.target.value as Trip['traveller']['ageGroup'];
+                update((x) => setTraveller(x, { ageGroup }));
+              }}
             >
               <option value="youth">{t('wizard.youth')}</option>
               <option value="adult">{t('wizard.adult')}</option>
@@ -269,9 +273,10 @@ export function RoutePage() {
             {t('wizard.class')}
             <select
               value={trip.traveller.travelClass}
-              onChange={(e) =>
-                update((x) => setTraveller(x, { travelClass: Number(e.target.value) as 1 | 2 }))
-              }
+              onChange={(e) => {
+                const travelClass = Number(e.target.value) as 1 | 2;
+                update((x) => setTraveller(x, { travelClass }));
+              }}
             >
               <option value={2}>{t('wizard.second')}</option>
               <option value={1}>{t('wizard.first')}</option>
