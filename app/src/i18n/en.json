@@ -286,7 +286,9 @@
     "missingPrices_one": "Add the price for {{count}} train to make this more accurate",
     "missingPrices_other": "Add prices for {{count}} trains to make this more accurate",
     "noPrices": "We don't have pass prices for {{age}}, {{cls}} yet, so we can't plan travel days. Check interrail.eu for the price.",
-    "validRange": "valid {{from}}–{{to}}"
+    "validRange": "valid {{from}}–{{to}}",
+    "title": "Interrail pass",
+    "addTrains": "Add trains to see which pass fits and which days to use it."
   },
   "rules": {
     "unverified": "Reservation fees were checked against interrail.com on 4 Nov 2026. Pass prices are estimates. Confirm both before you book."

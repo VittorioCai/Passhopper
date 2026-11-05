@@ -268,7 +268,9 @@
     "daysUsed": "{{used}}/{{total}} 旅行日",
     "missingPrices_other": "再填 {{count}} 段票价，结果会更准",
     "noPrices": "我们还没有{{age}}、{{cls}}的通票价格，暂时无法规划旅行日。请到 interrail.eu 查看价格。",
-    "validRange": "有效期 {{from}}–{{to}}"
+    "validRange": "有效期 {{from}}–{{to}}",
+    "title": "Interrail 通票",
+    "addTrains": "添加火车后，这里会推荐合适的通票和用旅行日的日子。"
   },
   "rules": {
     "unverified": "订座费已于 2026-11-04 对照 interrail.com 核实；通票价格为估计值。订票前请再确认。"

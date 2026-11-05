@@ -25,6 +25,15 @@ export function PassBar({ extra }: { extra?: string }) {
   }
   const product = plan.result.product;
   const saving = analysis.tickets.mid - plan.total;
+  // Savings are a bonus: show them only once there are ticket prices to compare with.
+  const priced = analysis.days.some((d) => d.items.some((i) => i.price));
+  if (!analysis.days.length)
+    return (
+      <div className={p.bar} role="note">
+        <span className={p.name}>{t('pass.title')}</span>
+        <span className={p.meta}>{t('pass.addTrains')}</span>
+      </div>
+    );
   const used = plan.passDays.length;
   return (
     <Link
@@ -33,11 +42,17 @@ export function PassBar({ extra }: { extra?: string }) {
       aria-label={`${passName(product, t)}. ${t('pass.seeSavings')}`}
     >
       <span className={p.name}>{passName(product, t)}</span>
-      <span className={p.save}>
-        <small>{saving >= 0 ? t('pass.save') : t('pass.costsMore')}</small>
-        {eur(Math.abs(saving))}
-        <CaretRightIcon size={16} weight="bold" />
-      </span>
+      {priced ? (
+        <span className={p.save}>
+          <small>{saving >= 0 ? t('pass.save') : t('pass.costsMore')}</small>
+          {eur(Math.abs(saving))}
+          <CaretRightIcon size={16} weight="bold" />
+        </span>
+      ) : (
+        <span className={p.save}>
+          <CaretRightIcon size={16} weight="bold" />
+        </span>
+      )}
       <span className={p.meta}>
         {product.kind === 'flexi' && (
           <span className={p.dots} aria-hidden="true">
@@ -53,7 +68,7 @@ export function PassBar({ extra }: { extra?: string }) {
         </span>
         {extra && <span>· {extra}</span>}
       </span>
-      {analysis.missingPrices > 0 && (
+      {priced && analysis.missingPrices > 0 && (
         <span className={p.hint}>{t('pass.missingPrices', { count: analysis.missingPrices })}</span>
       )}
     </Link>
