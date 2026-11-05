@@ -118,6 +118,7 @@ export function TrainSearch({
               })}
             </p>
           )}
+          {state.result.laterDay && <p className={s.sample}>{t('search.laterDay')}</p>}
           {state.result.options.length === 0 ? (
             <p className={ui.muted}>{t('search.none')}</p>
           ) : (

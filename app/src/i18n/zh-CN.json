@@ -164,7 +164,9 @@
     "pass": "通票",
     "total": "当前安排总花费",
     "reset": "恢复推荐",
-    "best": "已是最省"
+    "best": "已是最省",
+    "estPass": "车程较长，值得用一个旅行日。填上票价可以比较得更准。",
+    "estTicket": "车程较短，单独买票，把旅行日留给长途。填上票价可以比较得更准。"
   },
   "seats": {
     "title": "订座",
@@ -218,7 +220,10 @@
     "tickets_other": "单独买票 · {{count}} 段",
     "total": "合计",
     "winnerTickets": "全部单独买票",
-    "winnerPass": "{{name}}"
+    "winnerPass": "{{name}}",
+    "noPricesTitle": "通票划不划算？",
+    "noPricesBody": "给车次填上票价（自己填，或在车次里用 AI 估算），这里就会把通票和全部单独买票做比较。旅行日已经按车程长短帮你排好了。",
+    "toRoute": "去路线页"
   },
   "newTrip": {
     "title": "新建行程"
@@ -361,7 +366,8 @@
     "changes_other": "换乘 {{count}} 次",
     "useOption": "选择 {{trains}}，{{dep}} 出发",
     "replaces": "选择后会替换这一段已有的车次。",
-    "credit": "时刻表数据来自"
+    "credit": "时刻表数据来自",
+    "laterDay": "这一天没有车。下面是之后最早的几班，选了的话后面的行程会顺延。"
   },
   "conflict": {
     "overlap": "{{next}} 在 {{prev}} 到达之前就开了，请检查时间。",
@@ -468,5 +474,16 @@
     "more": "看看其他路线",
     "browse": "路线推荐",
     "browseHint": "不知道去哪？从推荐路线开始。"
+  },
+  "bulk": {
+    "open_other": "一键给 {{count}} 段没车次的路段找车",
+    "title": "一键找车",
+    "subtitle_other": "{{count}} 段还没有车次",
+    "sample": "有些日期的时刻表还没发布，这些路段显示的是下周同一星期几的车次，临近出发再确认一下。",
+    "failed": "这一段的车次加载失败，稍后可以手动添加。",
+    "none": "没找到火车，可能是渡轮或巴士路段。可以跳过，或者手动填写。",
+    "pickFor": "{{route}} 的车次",
+    "overnight": "跨夜车：下一个城市会顺延到第二天。",
+    "add_other": "添加 {{count}} 段车次"
   }
 }

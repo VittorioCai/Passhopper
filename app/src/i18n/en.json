@@ -173,7 +173,9 @@
     "pass": "Pass",
     "total": "Total for this plan",
     "reset": "Back to best plan",
-    "best": "Cheapest plan"
+    "best": "Cheapest plan",
+    "estPass": "A long journey, so worth a travel day. Add a ticket price to compare properly.",
+    "estTicket": "A shorter journey: buying a ticket keeps travel days for longer ones. Add a price to compare."
   },
   "seats": {
     "title": "Seat reservations",
@@ -232,7 +234,10 @@
     "tickets_other": "Tickets · {{count}}",
     "total": "Total",
     "winnerTickets": "buying every ticket",
-    "winnerPass": "the {{name}}"
+    "winnerPass": "the {{name}}",
+    "noPricesTitle": "Is the pass worth it?",
+    "noPricesBody": "Add ticket prices to your trains (your own, or an AI estimate in each train) and this page compares the pass with buying every ticket. Your travel days are already planned by journey time.",
+    "toRoute": "Go to the route"
   },
   "newTrip": {
     "title": "New trip"
@@ -382,7 +387,8 @@
     "changes_other": "{{count}} changes",
     "useOption": "Use {{trains}}, leaving {{dep}}",
     "replaces": "Picking an option replaces the trains already on this leg.",
-    "credit": "Timetables from"
+    "credit": "Timetables from",
+    "laterDay": "No train leaves on this day. These are the next ones; picking one moves the rest of the trip."
   },
   "conflict": {
     "overlap": "{{next}} leaves before {{prev}} arrives. Check the times.",
@@ -492,5 +498,19 @@
     "more": "See other routes",
     "browse": "Route ideas",
     "browseHint": "Not sure where to go? Start from a route idea."
+  },
+  "bulk": {
+    "open_one": "Find a train for the {{count}} leg without one",
+    "open_other": "Find trains for the {{count}} legs without one",
+    "title": "Find trains",
+    "subtitle_one": "{{count}} leg without trains",
+    "subtitle_other": "{{count}} legs without trains",
+    "sample": "Some timetables aren't published yet, so those legs show next week's trains on the same weekday. Check again closer to your trip.",
+    "failed": "Couldn't load trains for this leg. Add it by hand later.",
+    "none": "No trains found, maybe a ferry or bus leg. Skip it or add it by hand.",
+    "pickFor": "Train for {{route}}",
+    "overnight": "Overnight: the next city moves to the day after.",
+    "add_one": "Add trains for {{count}} leg",
+    "add_other": "Add trains for {{count}} legs"
   }
 }

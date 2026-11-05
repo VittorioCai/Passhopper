@@ -61,6 +61,8 @@ export interface SearchResult {
   options: TrainOption[];
   /** Set when the timetable for the asked date isn't published yet and we searched this date instead. */
   sampleDate?: string;
+  /** No train leaves on the day itself; these are the next ones, within two days. */
+  laterDay?: boolean;
 }
 
 export class TimetableError extends Error {
@@ -162,7 +164,13 @@ export function trainName(l: Pick<ApiLeg, 'displayName' | 'routeShortName' | 'tr
   if (inner) return inner;
   if (/\d/.test(name)) return name;
   const num = l.tripShortName?.match(/^0*(\d{1,6})$/)?.[1];
-  return num ? `${name} ${num}`.trim() : name || (l.tripShortName ?? '');
+  // Some operators put the whole route in the name ("Ø Göteborg-Halmstad-…"): keep it short.
+  const short = name.startsWith('Ø ')
+    ? 'Øresundståg'
+    : name.length > 14
+      ? name.split(/\s/)[0]!
+      : name;
+  return num ? `${short} ${num}`.trim() : short || (l.tripShortName ?? '');
 }
 
 /** "ROMA TERMINI" → "Roma Termini"; names already in mixed case stay as they are. */
@@ -289,12 +297,18 @@ export async function searchTrains(
   const tz = COUNTRY_TZ[from.country] ?? 'Europe/Berlin';
   const onDay = (opts: TrainOption[], d: string) =>
     opts.filter((o) => daysBetween(d, o.legs[0]!.depDate) <= 0);
+  const soon = (opts: TrainOption[], d: string) =>
+    opts.filter((o) => daysBetween(d, o.legs[0]!.depDate) <= 2);
   const today = todayLocal();
   if (daysBetween(today, date) <= 180) {
-    const opts = onDay(await plan(fc, tc, zonedToUtc(date, time, tz), signal), date);
-    if (opts.length) return { options: opts };
+    const all = await plan(fc, tc, zonedToUtc(date, time, tz), signal);
+    if (onDay(all, date).length) return { options: onDay(all, date) };
+    // Real trains a day or two later beat a sample week.
+    if (soon(all, date).length) return { options: soon(all, date), laterDay: true };
   }
   const sample = sampleDateFor(date, today);
-  const opts = onDay(await plan(fc, tc, zonedToUtc(sample, time, tz), signal), sample);
-  return { options: opts, sampleDate: sample };
+  const all = await plan(fc, tc, zonedToUtc(sample, time, tz), signal);
+  if (onDay(all, sample).length) return { options: onDay(all, sample), sampleDate: sample };
+  const later = soon(all, sample);
+  return { options: later, sampleDate: sample, laterDay: later.length > 0 };
 }

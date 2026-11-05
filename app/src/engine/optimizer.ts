@@ -29,9 +29,10 @@ export interface Analysis {
  * choice is simply the most valuable days (DEVELOPMENT.md §3.5). We try every window start.
  */
 export function bestDays(product: PassProduct, days: TravelDay[], k: PriceKey) {
-  const usable = days.filter((d) => d.coverable && d.value[k] > 0);
+  // Days are chosen by `rank` (which estimates missing prices); savings count real prices only.
+  const usable = days.filter((d) => d.coverable && d.rank[k] > 0);
   if (!usable.length) return { savings: 0, chosen: [] as string[] };
-  let best = { savings: 0, chosen: [] as string[] };
+  let best = { rank: 0, savings: 0, chosen: [] as string[] };
   for (const startDay of usable) {
     const start = startDay.date;
     const end = addDays(start, product.validityDays - 1);
@@ -41,12 +42,13 @@ export function bestDays(product: PassProduct, days: TravelDay[], k: PriceKey) {
     );
     const chosen =
       product.kind === 'flexi'
-        ? [...inWindow].sort((a, b) => b.value[k] - a.value[k]).slice(0, product.days)
+        ? [...inWindow].sort((a, b) => b.rank[k] - a.rank[k]).slice(0, product.days)
         : inWindow;
+    const rank = chosen.reduce((s, d) => s + d.rank[k], 0);
     const savings = chosen.reduce((s, d) => s + d.value[k], 0);
-    if (savings > best.savings) best = { savings, chosen: chosen.map((d) => d.date).sort() };
+    if (rank > best.rank) best = { rank, savings, chosen: chosen.map((d) => d.date).sort() };
   }
-  return best;
+  return { savings: best.savings, chosen: best.chosen };
 }
 
 export function analyze(trip: Trip): Analysis {
@@ -71,7 +73,15 @@ export function analyze(trip: Trip): Analysis {
     }
     options.push({ product, price, cost, chosen });
   }
-  options.sort((a, b) => a.cost.mid - b.cost.mid || a.price - b.price);
+  // With no prices yet, cost says nothing: suggest the cheapest pass that covers every train day.
+  const noPrices = days.length > 0 && days.every((d) => d.missingPrices === d.items.length);
+  const needed = days.filter((d) => d.coverable).length;
+  const covers = (o: PassResult) => (o.chosen.length >= needed ? 0 : 1);
+  options.sort((a, b) =>
+    noPrices
+      ? covers(a) - covers(b) || a.price - b.price
+      : a.cost.mid - b.cost.mid || a.price - b.price,
+  );
   return {
     days,
     tickets,

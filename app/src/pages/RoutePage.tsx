@@ -2,6 +2,7 @@ import {
   ArrowDownIcon,
   ArrowUpIcon,
   CheckIcon,
+  MagicWandIcon,
   DotsSixVerticalIcon,
   MoonIcon,
   PencilSimpleIcon,
@@ -12,6 +13,7 @@ import {
 } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { BulkTrainSheet } from '../components/BulkTrainSheet';
 import { CityPicker } from '../components/CityPicker';
 import { MapCard } from '../components/MapCard';
 import { PassBar } from '../components/PassBar';
@@ -151,6 +153,7 @@ function Ticket({
 
 type SheetState =
   | { type: 'segment'; fromStopId: string; seg?: Segment }
+  | { type: 'bulk' }
   | { type: 'addCity' }
   | { type: 'note'; stopId: string }
   | null;
@@ -168,6 +171,7 @@ export function RoutePage() {
   const returnsHome = trip.stops.length > 2 && last.place.id === origin.place.id;
   const insertAt = returnsHome ? trip.stops.length - 1 : trip.stops.length;
   const conflicts = findConflicts(trip);
+  const emptyLegs = trip.journeys.filter((j) => j.segments.length === 0).length;
   const {
     bindList,
     handle: dragHandle,
@@ -286,6 +290,17 @@ export function RoutePage() {
       )}
 
       <MapCard trip={trip} lang={lang} />
+
+      {emptyLegs > 0 && (
+        <button
+          type="button"
+          className={`${ui.btn} ${ui.block}`}
+          onClick={() => setSheet({ type: 'bulk' })}
+        >
+          <MagicWandIcon size={18} weight="bold" />
+          {t('bulk.open', { count: emptyLegs })}
+        </button>
+      )}
 
       <h2 className={`${ui.sectionTitle} ${ui.spread}`}>
         <span>
@@ -492,6 +507,16 @@ export function RoutePage() {
         </button>
       )}
 
+      {sheet?.type === 'bulk' && (
+        <BulkTrainSheet
+          trip={trip}
+          onClose={() => setSheet(null)}
+          onSave={(fn) => {
+            update(fn);
+            setSheet(null);
+          }}
+        />
+      )}
       {sheet?.type === 'note' && (
         <NoteSheet
           trip={trip}

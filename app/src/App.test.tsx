@@ -205,6 +205,56 @@ describe('trip pages', () => {
     expect(await screen.findByText(/You pass through Munich without staying/)).toBeInTheDocument();
   });
 
+  it('finds trains for every empty leg at once', async () => {
+    const fetchMock = vi.fn().mockImplementation(async (url: string) => {
+      const q = new URL(url).searchParams;
+      const [fla, flo] = q.get('fromPlace')!.split(',').map(Number);
+      const [tla, tlo] = q.get('toPlace')!.split(',').map(Number);
+      const start = new Date(q.get('time')!);
+      const end = new Date(start.getTime() + 4 * 3600 * 1000);
+      return new Response(
+        JSON.stringify({
+          itineraries: [
+            {
+              legs: [
+                {
+                  mode: 'LONG_DISTANCE',
+                  displayName: 'IC 100',
+                  startTime: start.toISOString(),
+                  endTime: end.toISOString(),
+                  from: { name: 'Start', lat: fla, lon: flo, tz: 'Europe/Berlin' },
+                  to: { name: 'End', lat: tla, lon: tlo, tz: 'Europe/Berlin' },
+                },
+              ],
+            },
+          ],
+        }),
+      );
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    const trip = makeSampleTrip('en');
+    trip.journeys.forEach((j) => (j.segments = []));
+    await saveTrip(trip);
+    at(`/trip/${trip.id}/route`);
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Find trains for the 9 legs without one' }),
+    );
+    const add = await screen.findByRole(
+      'button',
+      { name: 'Add trains for 9 legs' },
+      { timeout: 5000 },
+    );
+    expect(fetchMock).toHaveBeenCalledTimes(9);
+    fireEvent.click(add);
+    await waitFor(async () =>
+      expect(
+        (await db.trips.get(trip.id))!.journeys.every(
+          (j) => j.segments[0]?.trainNumber === 'IC 100',
+        ),
+      ).toBe(true),
+    );
+  });
+
   it('adds trains from the timetable search', async () => {
     const place = (name: string, lat: number, lon: number) => ({
       name,

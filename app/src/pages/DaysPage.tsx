@@ -60,7 +60,8 @@ export function DaysPage() {
             : t('days.reasonOperator');
       return day.missingPrices ? base : `${base} · ${t('days.ticketPrice', { price: eur(price) })}`;
     }
-    if (day.missingPrices === day.items.length) return t('days.addPrice');
+    if (day.missingPrices === day.items.length)
+      return day.choice === 'pass' ? t('days.estPass') : t('days.estTicket');
     const fee = covered.reduce((s, i) => s + i.rule.fee, 0);
     const kind = covered.find((i) => i.kind === 'outbound' || i.kind === 'inbound')?.kind;
     const suffix = kind ? ` · ${t(`chip.${kind}`)}` : '';

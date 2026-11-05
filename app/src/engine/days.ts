@@ -1,6 +1,6 @@
 import { addDays } from '../model/dates';
 import type { Segment, Trip } from '../model/schema';
-import { isNightTrain, schedule } from '../model/trip';
+import { isNightTrain, schedule, segmentMinutes } from '../model/trip';
 import { ruleFor, trainType, type SegmentRule } from './coverage';
 import { classifyJourneys, type JourneyKind, type NotCoveredReason } from './residency';
 
@@ -28,6 +28,11 @@ export interface TravelDay {
   night: boolean;
   /** What a travel day saves: ticket prices of covered trains minus their reservation fees. */
   value: Record<PriceKey, number>;
+  /**
+   * `value`, with a rough estimate from travel time for trains without a price. Used only to
+   * choose which days to spend the pass on, so planning works before any price is entered.
+   */
+  rank: Record<PriceKey, number>;
   /** Ticket prices of every train that day. */
   tickets: Record<PriceKey, number>;
   /** Mandatory reservation fees of covered trains. */
@@ -36,6 +41,13 @@ export interface TravelDay {
 }
 
 const zero = (): Record<PriceKey, number> => ({ min: 0, mid: 0, max: 0 });
+
+/** A rough fare from travel time, for ranking days only. Never shown as a price. */
+export const estimateFare = (minutes: number): Record<PriceKey, number> => ({
+  min: 5 + 0.1 * minutes,
+  mid: 8 + 0.2 * minutes,
+  max: 10 + 0.35 * minutes,
+});
 const KEYS: PriceKey[] = ['min', 'mid', 'max'];
 
 /**
@@ -79,6 +91,7 @@ export function buildDays(trip: Trip): TravelDay[] {
         coverable: false,
         night: false,
         value: zero(),
+        rank: zero(),
         tickets: zero(),
         fees: 0,
         missingPrices: 0,
@@ -92,10 +105,14 @@ export function buildDays(trip: Trip): TravelDay[] {
     day.night = day.items.some((i) => i.coverable && isNightTrain(i.seg));
     for (const i of day.items) {
       if (!i.price) day.missingPrices++;
+      const est = estimateFare(segmentMinutes(i.seg));
       for (const k of KEYS) {
         const p = i.price?.[k] ?? 0;
         day.tickets[k] += p;
-        if (i.coverable) day.value[k] += p - i.rule.fee;
+        if (i.coverable) {
+          day.value[k] += p - i.rule.fee;
+          day.rank[k] += (i.price ? p : est[k]) - i.rule.fee;
+        }
       }
       if (i.coverable) day.fees += i.rule.fee;
     }

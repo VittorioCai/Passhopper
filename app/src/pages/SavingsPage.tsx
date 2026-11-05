@@ -1,6 +1,7 @@
 import { CaretRightIcon, InfoIcon, LightbulbIcon } from '@phosphor-icons/react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router';
 import { FxHint } from '../components/FxHint';
 import { passName, passValidity } from '../components/passText';
 import { useTripContext } from '../components/TripContext';
@@ -27,6 +28,17 @@ export function SavingsPage() {
     return (
       <div className={`${ui.card} ${ui.empty}`}>
         <p className={ui.muted}>{t('savings.empty')}</p>
+      </div>
+    );
+  }
+  if (a.days.every((d) => d.missingPrices === d.items.length)) {
+    return (
+      <div className={`${ui.card} ${ui.empty}`}>
+        <h2 className={ui.emptyTitle}>{t('savings.noPricesTitle')}</h2>
+        <p className={ui.muted}>{t('savings.noPricesBody')}</p>
+        <Link to={`/trip/${trip.id}/route`} className={ui.btnPrimary}>
+          {t('savings.toRoute')}
+        </Link>
       </div>
     );
   }

@@ -45,6 +45,9 @@ describe('timetable helpers', () => {
     expect(trainName({ displayName: 'Ex3 (EC 280)' })).toBe('EC 280');
     expect(trainName({ displayName: 'AVE INT', tripShortName: '09742' })).toBe('AVE INT 9742');
     expect(trainName({ displayName: 'C', tripShortName: '147102-147103' })).toBe('C');
+    expect(trainName({ displayName: 'Ø Göteborg-Halmstad-Helsingborg-Malmö-København' })).toBe(
+      'Øresundståg',
+    );
   });
 
   it('converts local times to UTC across daylight saving', () => {
@@ -150,6 +153,26 @@ describe('searchTrains', () => {
       arrDay: 1,
       source: 'transitous',
     });
+  });
+
+  it('offers the next day when no train leaves on the day', async () => {
+    const next = leg(
+      'NIGHT_RAIL',
+      'EN 294',
+      TERMINI,
+      '2026-11-11T18:00:00Z',
+      WIEN,
+      '2026-11-12T07:00:00Z',
+    );
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(new Response(JSON.stringify({ itineraries: [{ legs: [next] }] }))),
+    );
+    const r = await searchTrains(rome, vienna, '2026-11-10', '07:00');
+    expect(r.laterDay).toBe(true);
+    expect(r.options[0]!.legs[0]!.depDate).toBe('2026-11-11');
+    const segs = optionToSegments(r.options[0]!, '2026-11-10');
+    expect(segs[0]).toMatchObject({ depDay: 1, arrDay: 2 });
   });
 
   it('falls back to a nearby date when the timetable is not out yet', async () => {
