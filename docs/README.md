@@ -10,6 +10,7 @@
 | [DEVELOPMENT.md](./DEVELOPMENT.md) | 开发文档：产品定位、功能需求、规则引擎、AI 接入、技术架构、数据模型、里程碑 |
 | [UI-DESIGN.md](./UI-DESIGN.md) | UI 设计文档：设计原则、视觉规范、信息架构、页面线框、组件、状态与文案 |
 | [RULES-AND-SOURCES.md](./RULES-AND-SOURCES.md) | 规则与数据核实表：每条通票规则、价格、外部服务条款的来源、核实状态 |
+| [UI-OPTIMIZATION.md](./UI-OPTIMIZATION.md) | UI 优化方案：对线上版本的界面走查，按优先级排好的改进项、实施顺序和验收标准 |
 | [../prototype/](../prototype/README.md) | 可点击原型（v0.1） |
 
 ## 已确定的决策（2026-11-04）
