@@ -10,6 +10,7 @@ import {
   CheckIcon,
   MagicWandIcon,
   DotsSixVerticalIcon,
+  ImageIcon,
   MoonIcon,
   PencilSimpleIcon,
   NotePencilIcon,
@@ -30,6 +31,7 @@ import { BulkTrainSheet } from '../components/BulkTrainSheet';
 import { CityPicker } from '../components/CityPicker';
 import { MapCard } from '../components/MapCard';
 import { PassBar } from '../components/PassBar';
+import { PosterSheet } from '../components/PosterSheet';
 import { SegmentSheet } from '../components/SegmentSheet';
 import { Sheet } from '../components/Sheet';
 import { NoteSheet } from '../components/NoteSheet';
@@ -180,6 +182,7 @@ type SheetState =
   | { type: 'bulk' }
   | { type: 'addCity' }
   | { type: 'note'; stopId: string }
+  | { type: 'poster' }
   | null;
 
 export function RoutePage() {
@@ -570,6 +573,16 @@ export function RoutePage() {
           </Link>
         </div>
       )}
+      {!edit && (
+        <button
+          type="button"
+          className={`${ui.btnPrimary} ${ui.block}`}
+          onClick={() => setSheet({ type: 'poster' })}
+        >
+          <ImageIcon size={18} weight="bold" />
+          {t('poster.action')}
+        </button>
+      )}
       {edit && (
         <button
           type="button"
@@ -581,6 +594,9 @@ export function RoutePage() {
         </button>
       )}
 
+      {sheet?.type === 'poster' && (
+        <PosterSheet trip={trip} plan={plan} onClose={() => setSheet(null)} />
+      )}
       {sheet?.type === 'bulk' && (
         <BulkTrainSheet
           trip={trip}

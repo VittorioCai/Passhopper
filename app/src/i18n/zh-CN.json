@@ -519,5 +519,27 @@
     "print": "打印或存为 PDF",
     "booked": "已订",
     "foot": "由 Passhopper 生成。时间均为当地时间。出发前请向运营商核实车次和订座。"
+  },
+  "poster": {
+    "action": "保存为图片",
+    "title": "行程长图",
+    "kicker": "我的 INTERRAIL · {{year}}",
+    "days_other": "{{count}} 天",
+    "cities_other": "{{count}} 座城",
+    "countries_other": "{{count}} 国",
+    "trains_other": "{{count}} 段火车",
+    "nightTrains_other": "{{count}} 趟夜车",
+    "start": "出发",
+    "nightTo": "夜车去{{city}}",
+    "cost": "火车总花费约",
+    "costAtLeast": "火车花费至少",
+    "costParts": "通票 + 订座 + 车票",
+    "footer": "免费规划你的通票行程",
+    "share": "分享",
+    "download": "下载图片",
+    "hint": "图片里不含订座号和座位。在手机上也可以长按图片保存。",
+    "making": "正在生成图片…",
+    "failed": "这个浏览器没能生成图片。",
+    "alt": "行程“{{name}}”的长图"
   }
 }
