@@ -6,6 +6,7 @@ import {
   ArrowUpRightIcon,
   CalendarCheckIcon,
   CalendarPlusIcon,
+  CaretRightIcon,
   CheckIcon,
   MagicWandIcon,
   DotsSixVerticalIcon,
@@ -97,6 +98,8 @@ function TicketChips({ info }: { info: TicketInfo }) {
           ? t('chip.seatRequiredFee', { fee: feeText(item.rule.fee, item.rule.feeMax) })
           : t('chip.seatRequiredFree'),
     });
+  if (onPass && (item.rule.reservation === 'optional' || item.rule.reservation === 'none'))
+    chips.push({ cls: ui.chipOk, text: t('chip.noSeat'), icon: CheckIcon });
   if (onPass && item.rule.reservation === 'recommended')
     chips.push({ cls: ui.chipRec, text: t('chip.seatAdvised'), icon: ArmchairIcon });
   if (item.rule.coverage === 'unknown')
@@ -223,6 +226,16 @@ export function RoutePage() {
       });
   }
 
+  const seatsTodo = (plan?.days ?? [])
+    .filter((d) => d.choice === 'pass')
+    .flatMap((d) => d.items)
+    .filter(
+      (i) =>
+        i.coverable &&
+        (i.rule.reservation === 'mandatory' || i.rule.reservation === 'recommended') &&
+        i.seg.reservation?.status !== 'booked',
+    ).length;
+
   return (
     <>
       <PassBar
@@ -310,12 +323,27 @@ export function RoutePage() {
         </section>
       )}
 
+      {(seatsTodo > 0 || emptyLegs > 0) && (
+        <div className={r.todo}>
+          {seatsTodo > 0 && (
+            <Link to={`/trip/${trip.id}/reservations`} className={ui.chipMust}>
+              <ArmchairIcon size={15} weight="fill" aria-hidden="true" />
+              {t('route.seatsTodo', { count: seatsTodo })}
+              <CaretRightIcon size={12} weight="bold" aria-hidden="true" />
+            </Link>
+          )}
+          {emptyLegs > 0 && (
+            <span className={ui.chip}>{t('route.legsTodo', { count: emptyLegs })}</span>
+          )}
+        </div>
+      )}
+
       <MapCard trip={trip} lang={lang} />
 
       {emptyLegs > 0 && (
         <button
           type="button"
-          className={`${ui.btn} ${ui.block}`}
+          className={`${ui.btnInk} ${ui.block}`}
           onClick={() => setSheet({ type: 'bulk' })}
         >
           <MagicWandIcon size={18} weight="bold" />

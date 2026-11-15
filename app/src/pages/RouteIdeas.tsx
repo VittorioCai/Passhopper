@@ -43,7 +43,7 @@ export function RouteIdeas() {
           return (
             <li key={r.id}>
               <Link to={`/ideas/${r.id}`} className={s.card}>
-                <IdeaEmblem id={r.id} country={st.countries[0] ?? ''} />
+                <IdeaEmblem id={r.id} />
                 <span className={s.body}>
                   <span className={s.title}>{zh ? r.title.zh : r.title.en}</span>
                   <span className={s.summary}>{zh ? r.summary.zh : r.summary.en}</span>

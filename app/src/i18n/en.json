@@ -21,7 +21,7 @@
     "route": "Route",
     "days": "Days",
     "seats": "Seats",
-    "savings": "Savings",
+    "savings": "Costs",
     "daysLong": "Travel days",
     "seatsLong": "Seat reservations"
   },
@@ -50,7 +50,18 @@
     "delete": "Delete trip",
     "deleteConfirm": "Delete “{{name}}”? This can't be undone.",
     "past": "Past trips",
-    "underWay": "Have a good trip!"
+    "underWay": "Have a good trip!",
+    "trainCost": "trains, about",
+    "trainCostAtLeast": "trains, at least",
+    "open": "Open",
+    "ideasTitle": "Ready-made routes",
+    "ideasAll": "All {{count}}",
+    "daysShort_one": "{{count}} day",
+    "daysShort_other": "{{count}} days",
+    "citiesShort_one": "{{count}} city",
+    "citiesShort_other": "{{count}} cities",
+    "trainsShort_one": "{{count}} train",
+    "trainsShort_other": "{{count}} trains"
   },
   "trip": {
     "notFound": "Trip not found",
@@ -122,7 +133,11 @@
     "citiesCount_other": "{{count}} cities",
     "trainsCount_one": "{{count}} train",
     "trainsCount_other": "{{count}} trains",
-    "drag": "Drag to move {{name}} (or use the arrow keys)"
+    "drag": "Drag to move {{name}} (or use the arrow keys)",
+    "seatsTodo_one": "{{count}} seat to reserve",
+    "seatsTodo_other": "{{count}} seats to reserve",
+    "legsTodo_one": "{{count}} leg without a train",
+    "legsTodo_other": "{{count}} legs without a train"
   },
   "source": {
     "user": "Yours",
@@ -277,7 +292,8 @@
     "seatAdvised": "Seat advised",
     "checkRules": "Check pass rules",
     "outbound": "Outbound",
-    "inbound": "Inbound"
+    "inbound": "Inbound",
+    "noSeat": "No reservation"
   },
   "pass": {
     "flexi": "{{days}}-day Flexi",
@@ -287,14 +303,24 @@
     "within_other": "within {{count}} months",
     "save": "Save",
     "costsMore": "Costs",
-    "seeSavings": "See savings",
+    "seeSavings": "See the cost breakdown",
     "daysUsed": "{{used}}/{{total}} travel days",
     "missingPrices_one": "Add the price for {{count}} train to make this more accurate",
     "missingPrices_other": "Add prices for {{count}} trains to make this more accurate",
     "noPrices": "We don't have pass prices for {{age}}, {{cls}} yet, so we can't plan travel days. Check interrail.eu for the price.",
     "validRange": "valid {{from}}–{{to}}",
     "title": "Interrail pass",
-    "addTrains": "Add trains to see which pass fits and which days to use it."
+    "addTrains": "Add trains to see which pass fits and which days to use it.",
+    "total": "Trains in total, about",
+    "totalEach": "Trains per person, about",
+    "totalAtLeast": "Trains so far, at least",
+    "perDay": "{{amount}} a day on average",
+    "partPass": "Pass",
+    "partSeats": "Reservations",
+    "partTickets": "Other tickets",
+    "savesVsTickets": "{{amount}} less than buying every ticket",
+    "unpricedTickets_one": "{{count}} train to buy a ticket for has no price yet",
+    "unpricedTickets_other": "{{count}} trains to buy tickets for have no price yet"
   },
   "rules": {
     "unverified": "Reservation fees were checked against interrail.com on 4 Nov 2026. Pass prices are estimates. Confirm both before you book."
@@ -498,7 +524,8 @@
     "useNote": "You'll set your own dates and details next, and can change anything afterwards.",
     "more": "See other routes",
     "browse": "Route ideas",
-    "browseHint": "Not sure where to go? Start from a route idea."
+    "browseHint": "Not sure where to go? Start from a route idea.",
+    "short": "{{days}} days · {{cities}} cities"
   },
   "bulk": {
     "open_one": "Find a train for the {{count}} leg without one",

@@ -42,6 +42,17 @@ describe('home', () => {
     expect(screen.getByText('Example')).toBeInTheDocument();
   });
 
+  it('shows a trip as a ticket with its ends, length and train costs', async () => {
+    await saveTrip(makeSampleTrip('en'));
+    at('/');
+    const ticket = (await screen.findByText('BER')).closest('article')!;
+    // The sample trip is a round trip from Berlin; the far end is the last other city.
+    expect(within(ticket).getByText('PRA')).toBeInTheDocument();
+    expect(within(ticket).getByText('20 days')).toBeInTheDocument();
+    expect(within(ticket).getByText(/^€\d+$/)).toBeInTheDocument();
+    expect(within(ticket).getByText('trains, about')).toBeInTheDocument();
+  });
+
   it('renders in Chinese', async () => {
     await i18n.changeLanguage('zh-CN');
     at('/');
@@ -56,10 +67,13 @@ describe('trip pages', () => {
     at(`/trip/${trip.id}/route`);
     expect(await screen.findByRole('heading', { name: 'Zurich' })).toBeInTheDocument();
     expect(screen.getByText('Jul 14 – Aug 2')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /Flexi\. See savings/ })).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: /Trains in total, about €\d+\. See the cost breakdown/ }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /4 seats to reserve/ })).toBeInTheDocument();
     expect(screen.getByText('NJ 294')).toBeInTheDocument();
     const tabs = screen.getByRole('navigation', { name: 'Trip pages' });
-    for (const name of ['Route', 'Days', 'Seats', 'Savings']) expect(tabs).toHaveTextContent(name);
+    for (const name of ['Route', 'Days', 'Seats', 'Costs']) expect(tabs).toHaveTextContent(name);
   });
 
   it('says so when a trip does not exist', async () => {
@@ -431,7 +445,9 @@ describe('travel mode', () => {
 describe('route ideas', () => {
   it('starts a trip from a route idea, with notes for each city', async () => {
     at('/');
-    fireEvent.click(await screen.findByRole('link', { name: /Route ideas/ }));
+    // Home shows the routes as posters; "All 11" opens the full list.
+    expect(await screen.findByRole('link', { name: /Italy highlights/ })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('link', { name: /^All \d+/ }));
     fireEvent.click(await screen.findByRole('button', { name: 'Scenic' }));
     fireEvent.click(screen.getByRole('link', { name: /Across the Alps/ }));
     expect(await screen.findByText(/Nordkette cable car/)).toBeInTheDocument();

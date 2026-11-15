@@ -1,78 +1,154 @@
 import {
-  CompassIcon,
+  ArrowRightIcon,
+  CaretRightIcon,
   CopyIcon,
   DotsThreeIcon,
   PlusIcon,
   ShareNetworkIcon,
+  TrainIcon,
   TrashIcon,
   TrainSimpleIcon,
 } from '@phosphor-icons/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router';
+import { ideaLook } from '../components/IdeaEmblem';
 import { NextTrainCard } from '../components/NextTrainCard';
+import { passName } from '../components/passText';
 import { Sheet } from '../components/Sheet';
 import ui from '../components/ui.module.css';
+import { ideaStats, ROUTE_IDEAS } from '../data/routeIdeas';
 import { copyTrip, deleteTrip, useTrips } from '../db/trips';
+import { analyze, currentPlan } from '../engine/optimizer';
 import { daysBetween, formatDate, todayLocal } from '../model/dates';
 import type { Trip } from '../model/schema';
 import { encodeTrip, shareUrl } from '../model/share';
 import { destinationCount, segmentCount, sortTrips, tripRange } from '../model/trip';
-import { lineStyle, placeName, useLang } from '../lib';
+import { eur, placeName, useLang } from '../lib';
 import h from './Home.module.css';
 
-function MiniLine({ trip }: { trip: Trip }) {
-  return (
-    <div className={h.mini} aria-hidden="true">
-      <span className={h.st} />
-      {trip.stops.slice(1).map((s, i) => (
-        <span key={s.id} className={h.seg}>
-          <span className={h.ln} data-line style={lineStyle(trip.stops[i]!.place.country)} />
-          <span className={h.st} />
-        </span>
-      ))}
-    </div>
-  );
-}
+/** Three-letter code for a city, like on a luggage tag. */
+const cityCode = (en: string) =>
+  en
+    .normalize('NFD')
+    .replace(/[^A-Za-z]/g, '')
+    .slice(0, 3)
+    .toUpperCase();
 
-function TripCard({ trip, onMore }: { trip: Trip; onMore: () => void }) {
+function TripCard({ trip, past, onMore }: { trip: Trip; past?: boolean; onMore: () => void }) {
   const { t } = useTranslation();
   const lang = useLang();
   const r = tripRange(trip);
-  const cities = trip.stops.filter((s, i) => i === 0 || s.place.id !== trip.stops[0]!.place.id);
+  const plan = useMemo(() => {
+    const a = analyze(trip);
+    return a.days.length ? currentPlan(trip, a) : null;
+  }, [trip]);
+  const from = trip.stops[0]!.place;
+  // A round trip ends where it started; show the last other city instead.
+  const to = (trip.stops.findLast((x) => x.place.id !== from.id) ?? trip.stops[0]!).place;
+  const unpriced = plan?.days.some((d) =>
+    d.items.some((i) => (d.choice !== 'pass' || !i.coverable) && !i.price),
+  );
   return (
-    <article className={`${ui.card} ${h.card}`}>
-      <div className={ui.spread}>
+    <article className={`${h.ticket} ${past ? h.past : ''}`}>
+      <div className={h.up}>
+        <div className={ui.spread}>
+          <span className={h.tag}>
+            <TrainIcon size={14} weight="fill" aria-hidden="true" />
+            {trip.sample
+              ? t('common.example')
+              : plan
+                ? `${passName(plan.result.product, t)} · ${t(`wizard.${trip.traveller.ageGroup}`)}`
+                : t('home.trainsShort', { count: segmentCount(trip) })}
+          </span>
+          <button
+            type="button"
+            className={h.more}
+            onClick={onMore}
+            aria-label={t('home.moreFor', { name: trip.name })}
+          >
+            <DotsThreeIcon size={20} weight="bold" />
+          </button>
+        </div>
         <Link to={`/trip/${trip.id}/route`} className={h.name}>
           {trip.name}
         </Link>
-        <button
-          type="button"
-          className={ui.iconBtn}
-          onClick={onMore}
-          aria-label={t('home.moreFor', { name: trip.name })}
-        >
-          <DotsThreeIcon size={20} weight="bold" />
-        </button>
-      </div>
-      <MiniLine trip={trip} />
-      <div className={h.cities}>{cities.map((s) => placeName(s.place, lang)).join(' · ')}</div>
-      <div className={h.stats}>
-        <div>
-          <b>{formatDate(r.start, lang)}</b>
-          <span>{t('home.days', { count: r.days })}</span>
-        </div>
-        <div>
-          <b>{destinationCount(trip)}</b>
-          <span>{t('home.cities', { count: destinationCount(trip) })}</span>
-        </div>
-        <div>
-          <b>{segmentCount(trip)}</b>
-          <span>{t('home.trains', { count: segmentCount(trip) })}</span>
+        <div className={h.od}>
+          <div>
+            <b>{cityCode(from.en)}</b>
+            <small>
+              {placeName(from, lang)} · {formatDate(r.start, lang)}
+            </small>
+          </div>
+          <span className={h.dash} aria-hidden="true">
+            <TrainIcon size={20} weight="fill" />
+          </span>
+          <div className={h.end}>
+            <b>{cityCode(to.en)}</b>
+            <small>
+              {placeName(to, lang)} · {formatDate(r.end, lang)}
+            </small>
+          </div>
         </div>
       </div>
-      {trip.sample && <span className={ui.badge}>{t('common.example')}</span>}
+      <div className={h.cut} aria-hidden="true" />
+      <div className={h.down}>
+        <div className={h.fact}>
+          <b>{t('home.daysShort', { count: r.days })}</b>
+          <span>{t('home.citiesShort', { count: destinationCount(trip) })}</span>
+        </div>
+        {plan && (
+          <div className={h.fact}>
+            <b>{eur(plan.total)}</b>
+            <span>{t(unpriced ? 'home.trainCostAtLeast' : 'home.trainCost')}</span>
+          </div>
+        )}
+        <span className={h.go} aria-hidden="true">
+          {t('home.open')}
+          <ArrowRightIcon size={16} weight="bold" />
+        </span>
+      </div>
     </article>
+  );
+}
+
+function IdeaPosters() {
+  const { t } = useTranslation();
+  const lang = useLang();
+  const zh = lang.startsWith('zh');
+  return (
+    <>
+      <h2 className={`${ui.sectionTitle} ${ui.spread}`}>
+        {t('home.ideasTitle')}
+        <Link to="/ideas" className={h.all}>
+          {t('home.ideasAll', { count: ROUTE_IDEAS.length })}
+          <CaretRightIcon size={12} weight="bold" aria-hidden="true" />
+        </Link>
+      </h2>
+      <ul className={h.posters}>
+        {ROUTE_IDEAS.map((idea) => {
+          const st = ideaStats(idea);
+          const look = ideaLook(idea.id);
+          const I = look.icon;
+          return (
+            <li key={idea.id}>
+              <Link
+                to={`/ideas/${idea.id}`}
+                className={h.poster}
+                style={{ background: look.bg, color: look.ink }}
+              >
+                <I size={44} weight="duotone" aria-hidden="true" />
+                {idea.tags[0] && (
+                  <span className={h.sticker}>{t(`ideas.tag.${idea.tags[0]}`)}</span>
+                )}
+                <b>{zh ? idea.title.zh : idea.title.en}</b>
+                <small>{t('ideas.short', { days: st.days, cities: st.cities })}</small>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </>
   );
 }
 
@@ -135,18 +211,17 @@ export function Home() {
         <>
           <h2 className={ui.sectionTitle}>{t('home.past')}</h2>
           {sorted.past.map((trip) => (
-            <TripCard key={trip.id} trip={trip} onMore={() => setMenu(trip)} />
+            <TripCard key={trip.id} trip={trip} past onMore={() => setMenu(trip)} />
           ))}
         </>
       )}
-      <Link to="/new" className={`${ui.btnPrimary} ${ui.block}`}>
-        <PlusIcon size={20} weight="bold" />
+      <Link to="/new" className={h.cta}>
+        <span className={h.plus}>
+          <PlusIcon size={16} weight="bold" />
+        </span>
         {t('home.newTrip')}
       </Link>
-      <Link to="/ideas" className={`${ui.btn} ${ui.block}`}>
-        <CompassIcon size={20} weight="bold" />
-        {t('ideas.browse')}
-      </Link>
+      <IdeaPosters />
       {menu && (
         <Sheet
           title={menu.name}

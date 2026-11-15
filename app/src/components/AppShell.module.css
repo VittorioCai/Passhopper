@@ -2,6 +2,7 @@
   min-height: 100%;
 }
 .blobs {
+  display: none;
   position: fixed;
   inset: 0;
   z-index: -1;
@@ -140,11 +141,8 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 4px;
-  padding: 5px;
-  background: var(--glass);
-  -webkit-backdrop-filter: saturate(1.6) blur(20px);
-  backdrop-filter: saturate(1.6) blur(20px);
-  border: 1px solid var(--glass-line);
+  padding: 6px;
+  background: var(--tab-bg);
   border-radius: 999px;
   box-shadow: var(--shadow-lg);
 }
@@ -157,8 +155,8 @@
   height: 50px;
   border-radius: 999px;
   font-size: 11px;
-  font-weight: 500;
-  color: var(--ink-2);
+  font-weight: 600;
+  color: color-mix(in srgb, var(--tab-ink) 72%, transparent);
   text-decoration: none;
   white-space: nowrap;
   transition:

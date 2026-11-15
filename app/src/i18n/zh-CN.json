@@ -21,7 +21,7 @@
     "route": "路线",
     "days": "旅行日",
     "seats": "订座",
-    "savings": "回本",
+    "savings": "花费",
     "daysLong": "旅行日",
     "seatsLong": "订座"
   },
@@ -46,7 +46,15 @@
     "delete": "删除行程",
     "deleteConfirm": "删除“{{name}}”？删除后不能恢复。",
     "past": "已结束的行程",
-    "underWay": "旅途愉快！"
+    "underWay": "旅途愉快！",
+    "trainCost": "火车花费约",
+    "trainCostAtLeast": "火车花费至少",
+    "open": "继续",
+    "ideasTitle": "照着走就行",
+    "ideasAll": "全部 {{count}} 条",
+    "daysShort_other": "{{count}} 天",
+    "citiesShort_other": "{{count}} 座城市",
+    "trainsShort_other": "{{count}} 段火车"
   },
   "trip": {
     "notFound": "找不到这个行程",
@@ -113,7 +121,9 @@
     "daysCount_other": "{{count}}天",
     "citiesCount_other": "{{count}}城",
     "trainsCount_other": "{{count}}段火车",
-    "drag": "拖动调整{{name}}的顺序（也可用方向键）"
+    "drag": "拖动调整{{name}}的顺序（也可用方向键）",
+    "seatsTodo_other": "{{count}} 个座位待订",
+    "legsTodo_other": "{{count}} 段还没车次"
   },
   "source": {
     "user": "你填写",
@@ -261,7 +271,8 @@
     "seatAdvised": "建议订座",
     "checkRules": "需核实规则",
     "outbound": "出境",
-    "inbound": "入境"
+    "inbound": "入境",
+    "noSeat": "免订座"
   },
   "pass": {
     "flexi": "{{days}}天 Flexi",
@@ -270,13 +281,22 @@
     "within_other": "{{count}}个月内",
     "save": "省",
     "costsMore": "多花",
-    "seeSavings": "查看回本详情",
+    "seeSavings": "查看花费明细",
     "daysUsed": "{{used}}/{{total}} 旅行日",
     "missingPrices_other": "再填 {{count}} 段票价，结果会更准",
     "noPrices": "我们还没有{{age}}、{{cls}}的通票价格，暂时无法规划旅行日。请到 interrail.eu 查看价格。",
     "validRange": "有效期 {{from}}–{{to}}",
     "title": "Interrail 通票",
-    "addTrains": "添加火车后，这里会推荐合适的通票和用旅行日的日子。"
+    "addTrains": "添加火车后，这里会推荐合适的通票和用旅行日的日子。",
+    "total": "火车共约",
+    "totalEach": "火车每人约",
+    "totalAtLeast": "火车目前至少",
+    "perDay": "平均每天 {{amount}}",
+    "partPass": "通票",
+    "partSeats": "订座费",
+    "partTickets": "另买车票",
+    "savesVsTickets": "比全部买票省 {{amount}}",
+    "unpricedTickets_other": "还有 {{count}} 段要另买票的车没填票价"
   },
   "rules": {
     "unverified": "订座费已于 2026-11-04 对照 interrail.com 核实；通票价格为估计值。订票前请再确认。"
@@ -474,7 +494,8 @@
     "useNote": "下一步填写你自己的日期和信息，之后也可以随意修改。",
     "more": "看看其他路线",
     "browse": "路线推荐",
-    "browseHint": "不知道去哪？从推荐路线开始。"
+    "browseHint": "不知道去哪？从推荐路线开始。",
+    "short": "{{days}} 天 · {{cities}} 城"
   },
   "bulk": {
     "open_other": "一键给 {{count}} 段没车次的路段找车",

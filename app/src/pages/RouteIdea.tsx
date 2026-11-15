@@ -27,7 +27,7 @@ export function RouteIdea() {
     <>
       <div className={ui.stack} style={{ gap: 6 }}>
         <div className={s.head}>
-          <IdeaEmblem id={idea.id} country={st.countries[0] ?? ''} size={52} />
+          <IdeaEmblem id={idea.id} size={52} />
           <h1 className={ui.pageTitle}>{tx(idea.title)}</h1>
         </div>
         <p className={ui.muted} style={{ margin: 0 }}>
