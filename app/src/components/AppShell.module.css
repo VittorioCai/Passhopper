@@ -245,8 +245,8 @@
   margin-left: 4px;
   border: 0;
   border-radius: 999px;
-  background: var(--primary);
-  color: var(--primary-ink);
+  background: var(--ai-grad);
+  color: var(--ai-ink);
   font-weight: 800;
   font-size: 14px;
   flex: none;

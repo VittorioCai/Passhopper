@@ -4,7 +4,7 @@
   gap: 8px;
   padding: 14px;
   border-radius: var(--r-md);
-  background: var(--primary-soft);
+  background: var(--ai-grad);
 }
 .label {
   display: inline-flex;
@@ -14,7 +14,7 @@
 }
 .label svg,
 .hint svg {
-  color: var(--primary);
+  color: var(--primary-text);
   flex: none;
 }
 .box textarea {
@@ -29,7 +29,7 @@
   resize: vertical;
 }
 .box textarea:focus {
-  outline: 2px solid var(--primary);
+  outline: 2px solid var(--primary-text);
   outline-offset: -1px;
 }
 .row {
@@ -73,6 +73,6 @@
   color: var(--ink-2);
 }
 .hint a {
-  color: var(--primary);
+  color: var(--primary-text);
   font-weight: 600;
 }

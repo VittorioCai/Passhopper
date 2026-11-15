@@ -345,7 +345,7 @@ export function NewTrip() {
         {step < 3 ? (
           <button
             type="button"
-            className={ui.btnInk}
+            className={ui.btnPrimary}
             disabled={!canNext}
             onClick={() => setStep(step + 1)}
           >

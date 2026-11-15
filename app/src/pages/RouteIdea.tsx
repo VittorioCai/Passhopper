@@ -2,6 +2,7 @@ import { CalendarBlankIcon, LightbulbIcon, PathIcon } from '@phosphor-icons/reac
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, Navigate, useNavigate, useParams } from 'react-router';
+import { IdeaEmblem } from '../components/IdeaEmblem';
 import { MapCard } from '../components/MapCard';
 import ui from '../components/ui.module.css';
 import { cityPlace, ideaById, ideaStats, previewTrip } from '../data/routeIdeas';
@@ -25,7 +26,10 @@ export function RouteIdea() {
   return (
     <>
       <div className={ui.stack} style={{ gap: 6 }}>
-        <h1 className={ui.pageTitle}>{tx(idea.title)}</h1>
+        <div className={s.head}>
+          <IdeaEmblem id={idea.id} country={st.countries[0] ?? ''} size={52} />
+          <h1 className={ui.pageTitle}>{tx(idea.title)}</h1>
+        </div>
         <p className={ui.muted} style={{ margin: 0 }}>
           {tx(idea.summary)}
         </p>

@@ -48,7 +48,7 @@
 }
 .option:hover,
 .option:focus-visible {
-  border-color: var(--primary);
+  border-color: var(--primary-text);
 }
 .times {
   display: inline-flex;

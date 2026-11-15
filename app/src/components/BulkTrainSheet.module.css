@@ -49,7 +49,7 @@
 .head input {
   width: 18px;
   height: 18px;
-  accent-color: var(--primary);
+  accent-color: var(--primary-text);
 }
 .date {
   margin-left: auto;

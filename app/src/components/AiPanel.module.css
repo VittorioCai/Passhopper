@@ -132,7 +132,7 @@
   font-weight: 600;
 }
 .abilities svg {
-  color: var(--primary);
+  color: var(--primary-text);
   flex: none;
 }
 .privacy {
@@ -263,7 +263,7 @@
   padding: 14px;
   border-radius: var(--r-md);
   background: var(--surface);
-  border: 1.5px solid var(--primary);
+  border: 1.5px solid var(--primary-text);
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -303,11 +303,11 @@
 }
 .add i {
   background: var(--mint);
-  color: #fff;
+  color: var(--surface);
 }
 .remove i {
   background: var(--danger);
-  color: #fff;
+  color: var(--surface);
 }
 .remove span {
   text-decoration: line-through;
@@ -410,7 +410,7 @@
   box-shadow: var(--shadow);
 }
 .composer:focus-within {
-  border-color: var(--primary);
+  border-color: var(--primary-text);
 }
 .composer textarea {
   flex: 1;

@@ -2,6 +2,7 @@ import { CaretRightIcon } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
+import { IdeaEmblem } from '../components/IdeaEmblem';
 import ui from '../components/ui.module.css';
 import { ideaStats, ROUTE_IDEAS, type Tag } from '../data/routeIdeas';
 import { countryName, lineStyle, useLang } from '../lib';
@@ -42,17 +43,20 @@ export function RouteIdeas() {
           return (
             <li key={r.id}>
               <Link to={`/ideas/${r.id}`} className={s.card}>
-                <span className={s.lines} aria-hidden="true">
-                  {st.countries.map((cc) => (
-                    <i key={cc} data-line style={lineStyle(cc)} />
-                  ))}
-                </span>
-                <span className={s.title}>{zh ? r.title.zh : r.title.en}</span>
-                <span className={s.summary}>{zh ? r.summary.zh : r.summary.en}</span>
-                <span className={s.meta}>
-                  {t('ideas.stats', { days: st.days, cities: st.cities, trains: st.trainDays })}
-                  {' · '}
-                  {st.countries.map((cc) => countryName(cc, lang)).join(zh ? '、' : ', ')}
+                <IdeaEmblem id={r.id} country={st.countries[0] ?? ''} />
+                <span className={s.body}>
+                  <span className={s.title}>{zh ? r.title.zh : r.title.en}</span>
+                  <span className={s.summary}>{zh ? r.summary.zh : r.summary.en}</span>
+                  <span className={s.lines} aria-hidden="true">
+                    {st.countries.map((cc) => (
+                      <i key={cc} data-line style={lineStyle(cc)} />
+                    ))}
+                  </span>
+                  <span className={s.meta}>
+                    {t('ideas.stats', { days: st.days, cities: st.cities, trains: st.trainDays })}
+                    {' · '}
+                    {st.countries.map((cc) => countryName(cc, lang)).join(zh ? '、' : ', ')}
+                  </span>
                 </span>
                 <CaretRightIcon size={18} weight="bold" className={s.go} />
               </Link>

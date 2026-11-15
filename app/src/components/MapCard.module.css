@@ -21,7 +21,7 @@
   flex: 1;
 }
 .head svg:first-child {
-  color: var(--primary);
+  color: var(--primary-text);
 }
 .head svg:last-child {
   transition: transform 0.2s;

@@ -32,9 +32,9 @@
 .card {
   position: relative;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 14px 40px 14px 16px;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 36px 14px 14px;
   border-radius: var(--r-lg);
   background: var(--surface);
   box-shadow: var(--shadow);
@@ -42,12 +42,23 @@
   text-decoration: none;
 }
 .card:hover {
-  outline: 1.5px solid var(--primary);
+  outline: 1.5px solid var(--primary-text);
+}
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
 }
 .lines {
   display: flex;
   gap: 4px;
-  margin-bottom: 4px;
+  margin-top: 4px;
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 .lines i {
   width: 22px;
@@ -122,5 +133,5 @@
 .fact svg {
   flex: none;
   margin-top: 2px;
-  color: var(--primary);
+  color: var(--primary-text);
 }

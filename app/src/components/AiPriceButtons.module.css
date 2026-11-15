@@ -23,7 +23,7 @@
   font-weight: 600;
 }
 .btn svg {
-  color: var(--primary);
+  color: var(--primary-text);
 }
 .web svg {
   color: var(--blue);

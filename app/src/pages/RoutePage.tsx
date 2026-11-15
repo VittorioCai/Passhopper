@@ -1,6 +1,10 @@
 import {
+  ArmchairIcon,
   ArrowDownIcon,
+  ArrowDownLeftIcon,
   ArrowUpIcon,
+  ArrowUpRightIcon,
+  CalendarCheckIcon,
   CalendarPlusIcon,
   CheckIcon,
   MagicWandIcon,
@@ -10,8 +14,12 @@ import {
   NotePencilIcon,
   PlusIcon,
   PrinterIcon,
+  ProhibitIcon,
+  QuestionIcon,
+  TicketIcon,
   TrashIcon,
   WarningIcon,
+  type Icon,
 } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -66,20 +74,23 @@ function TicketChips({ info }: { info: TicketInfo }) {
   const { item, choice } = info;
   if (!item) return null;
   const onPass = choice === 'pass' && item.coverable;
-  const chips: { cls: string | undefined; text: string }[] = [];
+  const chips: { cls: string | undefined; text: string; icon: Icon; fill?: boolean }[] = [];
+  const ticket = { cls: ui.chip, text: t('chip.ticket'), icon: TicketIcon };
   if (!item.coverable) {
-    chips.push({ cls: ui.chip, text: t('chip.ticket') });
+    chips.push(ticket);
     if (item.notCoveredReason === 'operator')
-      chips.push({ cls: ui.chipMust, text: t('chip.notCovered') });
+      chips.push({ cls: ui.chipErr, text: t('chip.notCovered'), icon: ProhibitIcon });
   } else
     chips.push(
       onPass
-        ? { cls: ui.chipSun, text: t('chip.travelDay') }
-        : { cls: ui.chip, text: t('chip.ticket') },
+        ? { cls: ui.chipSun, text: t('chip.travelDay'), icon: CalendarCheckIcon, fill: true }
+        : ticket,
     );
   if (onPass && item.rule.reservation === 'mandatory')
     chips.push({
       cls: ui.chipMust,
+      icon: ArmchairIcon,
+      fill: true,
       text: !item.rule.feeKnown
         ? t('chip.seatRequired')
         : item.rule.fee
@@ -87,15 +98,21 @@ function TicketChips({ info }: { info: TicketInfo }) {
           : t('chip.seatRequiredFree'),
     });
   if (onPass && item.rule.reservation === 'recommended')
-    chips.push({ cls: ui.chipRec, text: t('chip.seatAdvised') });
-  if (item.rule.coverage === 'unknown') chips.push({ cls: ui.chipRec, text: t('chip.checkRules') });
+    chips.push({ cls: ui.chipRec, text: t('chip.seatAdvised'), icon: ArmchairIcon });
+  if (item.rule.coverage === 'unknown')
+    chips.push({ cls: ui.chipRec, text: t('chip.checkRules'), icon: QuestionIcon });
   if (item.kind === 'outbound' || item.kind === 'inbound')
-    chips.push({ cls: ui.chipInfo, text: t(`chip.${item.kind}`) });
+    chips.push({
+      cls: ui.chipInfo,
+      text: t(`chip.${item.kind}`),
+      icon: item.kind === 'outbound' ? ArrowUpRightIcon : ArrowDownLeftIcon,
+    });
   return (
     <span className={r.chips}>
-      {chips.map((c) => (
-        <span key={c.text} className={c.cls}>
-          {c.text}
+      {chips.map(({ cls, text, icon: I, fill }) => (
+        <span key={text} className={cls}>
+          <I size={13} weight={fill ? 'fill' : 'bold'} aria-hidden="true" />
+          {text}
         </span>
       ))}
     </span>
@@ -383,7 +400,7 @@ export function RoutePage() {
                     onClick={() => setSheet({ type: 'note', stopId: stop.id })}
                     aria-label={t('note.editFor', { name })}
                   >
-                    <NotePencilIcon size={15} weight="duotone" />
+                    <NotePencilIcon size={15} weight="bold" />
                     <span>{stop.note}</span>
                   </button>
                 ) : (

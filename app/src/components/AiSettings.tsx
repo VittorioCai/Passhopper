@@ -118,7 +118,11 @@ export function AiSettingsCard() {
               aria-label={t(show ? 'ai.hideKey' : 'ai.showKey')}
               onClick={() => setShow(!show)}
             >
-              {show ? <EyeSlashIcon size={20} /> : <EyeIcon size={20} />}
+              {show ? (
+                <EyeSlashIcon size={20} weight="bold" />
+              ) : (
+                <EyeIcon size={20} weight="bold" />
+              )}
             </button>
           </span>
         </label>

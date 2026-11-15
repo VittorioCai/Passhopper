@@ -148,7 +148,7 @@ button.row {
   border-radius: 10px;
 }
 button.row:hover .nm {
-  color: var(--primary);
+  color: var(--primary-text);
 }
 .nm {
   font-size: 14px;

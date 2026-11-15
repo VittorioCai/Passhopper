@@ -170,8 +170,8 @@
   letter-spacing: 0.02em;
   padding: 4px 9px;
   border-radius: 999px;
-  color: var(--on-line);
-  background: var(--lc);
+  color: color-mix(in srgb, var(--lc) var(--pill-ink), var(--ink));
+  background: color-mix(in srgb, var(--lc) var(--pill-bg), var(--surface));
   white-space: nowrap;
   flex: none;
 }
@@ -188,7 +188,7 @@
 }
 .times sup {
   font-size: 11px;
-  color: var(--primary);
+  color: var(--primary-text);
   font-weight: 800;
 }
 .arr {
@@ -238,8 +238,8 @@
   text-align: left;
 }
 .addTrain:hover {
-  border-color: var(--primary);
-  color: var(--primary);
+  border-color: var(--primary-text);
+  color: var(--primary-text);
 }
 
 .wrap {
@@ -303,5 +303,5 @@
 .cityNote svg {
   flex: none;
   margin-top: 2px;
-  color: var(--primary);
+  color: var(--primary-text);
 }

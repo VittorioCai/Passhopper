@@ -1,4 +1,10 @@
-import { ArrowSquareOutIcon, CheckIcon, FireIcon, MoonIcon } from '@phosphor-icons/react';
+import {
+  ArmchairIcon,
+  ArrowSquareOutIcon,
+  CheckIcon,
+  FireIcon,
+  MoonIcon,
+} from '@phosphor-icons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FxHint } from '../components/FxHint';
@@ -206,6 +212,11 @@ export function SeatsPage() {
                   <span
                     className={item.rule.reservation === 'mandatory' ? ui.chipMust : ui.chipRec}
                   >
+                    <ArmchairIcon
+                      size={13}
+                      weight={item.rule.reservation === 'mandatory' ? 'fill' : 'bold'}
+                      aria-hidden="true"
+                    />
                     {need(item)}
                   </span>
                   {link && (
