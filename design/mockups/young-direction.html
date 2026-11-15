@@ -1,0 +1,173 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../app/node_modules/@fontsource-variable/bricolage-grotesque/index.css">
+<link rel="stylesheet" href="../../app/node_modules/@fontsource-variable/dm-sans/index.css">
+<link rel="stylesheet" href="../../app/node_modules/@fontsource/noto-sans-sc/500.css">
+<link rel="stylesheet" href="../../app/node_modules/@fontsource/noto-sans-sc/700.css">
+<link rel="stylesheet" href="../../app/node_modules/@fontsource/noto-sans-sc/900.css">
+<style>
+:root{--ink:#0f1524;--mint:#2bd4a4;--mint-d:#04261c;--sun:#ffd43b;--coral:#ff6b4a;--sky:#5b8cff;--violet:#8b6cff;--paper:#f6f3ec;--card:#fff;--ink2:#566074;--amber:#ffe2bd;--amber-t:#8a3a00;--green:#c9f7e3;--green-t:#00664b}
+*,*::before,*::after{box-sizing:border-box}*{margin:0}
+body{background:#e9e6df;font-family:'DM Sans Variable','Noto Sans SC',sans-serif;color:var(--ink);padding:40px;display:flex;gap:44px;align-items:flex-start;width:max-content}
+.col{display:flex;flex-direction:column;gap:14px}
+.cap{font-family:'Noto Sans SC';font-weight:900;font-size:26px}
+.sub{font-size:16px;color:var(--ink2);margin-top:-8px}
+.phone{width:390px;height:844px;border-radius:44px;background:var(--paper);overflow:hidden;position:relative;box-shadow:0 30px 70px rgba(15,21,36,.22);border:8px solid #0f1524}
+.disp{font-family:'Bricolage Grotesque Variable','Noto Sans SC',sans-serif;font-weight:800;letter-spacing:-.02em}
+.zh9{font-family:'Bricolage Grotesque Variable','Noto Sans SC';font-weight:900}
+.pad{padding:18px 18px 0}
+.top{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 6px}
+.logo{display:flex;align-items:center;gap:8px;font-size:20px}
+.logo i{width:28px;height:28px;border-radius:9px;background:var(--mint);display:grid;place-items:center;font-style:normal;font-weight:900;color:var(--mint-d);position:relative}
+.logo i::after{content:'';position:absolute;right:-3px;top:-3px;width:10px;height:10px;border-radius:50%;background:var(--sun);border:2px solid var(--paper)}
+.round{width:38px;height:38px;border-radius:50%;background:#fff;display:grid;place-items:center;font-weight:700;font-size:13px}
+h1.hero{font-size:40px;line-height:1.08;padding:6px 18px 0}
+h1.hero em{font-style:normal;background:var(--sun);padding:0 8px;border-radius:12px;display:inline-block;transform:rotate(-2deg)}
+/* ticket */
+.ticket{margin:16px 18px 0;background:var(--mint);border-radius:28px;color:var(--mint-d);position:relative}
+.ticket .up{padding:18px 20px 16px}
+.ticket .tag{display:inline-flex;gap:6px;align-items:center;background:var(--ink);color:#fff;font-weight:700;font-size:12px;padding:5px 10px;border-radius:99px}
+.ticket .name{font-size:27px;line-height:1.15;margin-top:10px}
+.od{display:flex;align-items:center;gap:10px;margin-top:14px}
+.od b{font-size:30px;line-height:1}
+.od small{display:block;font-size:12px;font-weight:700;opacity:.75;margin-top:3px}
+.od .ln{flex:1;height:0;border-top:3px dotted rgba(4,38,28,.55);position:relative}
+.od .ln span{position:absolute;left:50%;top:-14px;transform:translateX(-50%);background:var(--mint);padding:0 6px;font-size:20px}
+.cut{position:relative;height:0;border-top:2.5px dashed rgba(4,38,28,.35);margin:0 22px}
+.cut::before,.cut::after{content:'';position:absolute;top:-13px;width:26px;height:26px;border-radius:50%;background:var(--paper)}
+.cut::before{left:-35px}.cut::after{right:-35px}
+.ticket .down{display:flex;align-items:center;padding:14px 20px 16px;gap:14px}
+.st b{display:block;font-size:20px;line-height:1.1}
+.st span{font-size:12px;font-weight:700;opacity:.75}
+.go{margin-left:auto;background:var(--ink);color:#fff;font-weight:700;font-size:15px;padding:12px 18px;border-radius:99px}
+.sec{display:flex;align-items:baseline;justify-content:space-between;padding:22px 18px 10px}
+.sec b{font-size:21px}
+.sec span{font-size:13px;font-weight:700;color:var(--ink2)}
+.posters{display:flex;gap:12px;padding:0 18px;overflow:hidden}
+.poster{flex:none;width:158px;height:206px;border-radius:24px;padding:14px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.poster .emo{font-size:46px;line-height:1;font-family:'Noto Color Emoji'}
+.poster b{font-size:20px;line-height:1.15;margin-top:auto}
+.poster small{font-size:12px;font-weight:700;opacity:.8;margin-top:4px}
+.poster .price{position:absolute;right:10px;top:12px;background:#fff;color:var(--ink);font-weight:800;font-size:12px;padding:5px 9px;border-radius:99px;transform:rotate(4deg)}
+.cta{margin:18px 18px 0;background:var(--ink);color:#fff;border-radius:99px;height:56px;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:17px}
+.cta i{font-style:normal;width:26px;height:26px;border-radius:50%;background:var(--sun);color:var(--ink);display:grid;place-items:center;font-weight:900}
+/* route */
+.head2{background:var(--ink);color:#fff;padding:14px 18px 22px;border-radius:0 0 30px 30px}
+.head2 .r1{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;opacity:.8}
+.head2 h2{font-size:26px;margin-top:10px;line-height:1.15}
+.money{display:flex;align-items:flex-end;gap:10px;margin-top:14px}
+.money .n{font-size:46px;line-height:.95;color:var(--sun)}
+.money .l{font-size:13px;font-weight:700;opacity:.8;padding-bottom:4px;line-height:1.35}
+.split{display:flex;gap:6px;margin-top:12px}
+.split span{flex:1;background:rgba(255,255,255,.1);border-radius:14px;padding:8px 10px;font-size:11px;font-weight:700;opacity:.95}
+.split b{display:block;font-size:16px;font-family:'Bricolage Grotesque Variable'}
+.days{display:flex;align-items:center;gap:5px;margin-top:14px;font-size:12px;font-weight:700}
+.days i{width:14px;height:14px;border-radius:50%;background:var(--sun)}
+.days i.off{background:transparent;border:2px solid rgba(255,255,255,.4)}
+.todo{display:flex;gap:8px;padding:14px 18px 2px}
+.todo span{font-weight:700;font-size:13px;padding:9px 13px;border-radius:99px;display:inline-flex;gap:6px;align-items:center}
+.tl{position:relative;padding:8px 18px 0 46px}
+.tl::before{content:'';position:absolute;left:21px;top:22px;bottom:-40px;width:8px;border-radius:8px;background:linear-gradient(#2f6bff 0 57%,#e23b3e 57% 86%,#0c9f72 86%)}
+.city{position:relative;display:flex;align-items:baseline;gap:8px;margin-top:12px}
+.city::before{content:'';position:absolute;left:-32px;top:6px;width:22px;height:22px;border-radius:50%;background:#fff;border:6px solid var(--ink)}
+.city b{font-size:24px}
+.city small{font-size:13px;font-weight:700;color:var(--ink2)}
+.city em{margin-left:auto;font-style:normal;font-size:12px;font-weight:800;background:var(--ink);color:#fff;padding:3px 9px;border-radius:99px}
+.tk{background:#fff;border-radius:22px;padding:13px 14px;margin-top:9px;box-shadow:0 2px 0 rgba(15,21,36,.06)}
+.tk .a{display:flex;align-items:center;gap:9px}
+.pill{font-family:'Bricolage Grotesque Variable';font-weight:800;font-size:13px;color:#fff;padding:5px 10px;border-radius:99px}
+.tm{font-size:23px}
+.tk .a small{margin-left:auto;font-size:12px;font-weight:700;color:var(--ink2)}
+.tk .b{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;align-items:center}
+.stk{font-size:12px;font-weight:800;padding:5px 10px;border-radius:10px;display:inline-flex;gap:4px;align-items:center}
+.stk.y{background:var(--sun)}.stk.g{background:var(--green);color:var(--green-t)}.stk.a{background:var(--amber);color:var(--amber-t)}.stk.k{background:var(--ink);color:#fff}
+.tk .b b{margin-left:auto;font-size:15px;font-family:'Bricolage Grotesque Variable'}
+.tabs{position:absolute;left:18px;right:18px;bottom:18px;height:64px;background:var(--ink);border-radius:99px;display:grid;grid-template-columns:repeat(4,1fr);padding:6px;gap:4px;color:#fff;box-shadow:0 14px 30px rgba(15,21,36,.35)}
+.tabs span{display:grid;place-items:center;font-size:13px;font-weight:700;border-radius:99px;opacity:.7}
+.tabs span.on{background:var(--mint);color:var(--mint-d);opacity:1}
+/* long image */
+.long{background:var(--mint);height:100%;padding:26px 24px;color:var(--mint-d);position:relative}
+.long .k{font-weight:800;font-size:13px;letter-spacing:.08em}
+.long h3{font-size:50px;line-height:1.02;margin-top:8px}
+.long h3 em{font-style:normal;background:var(--sun);border-radius:12px;padding:0 8px;display:inline-block;transform:rotate(-2deg);color:var(--ink)}
+.facts{display:flex;gap:8px;margin-top:16px}
+.facts span{background:var(--ink);color:#fff;border-radius:99px;padding:7px 13px;font-size:13px;font-weight:700}
+.sheet{background:#fff;border-radius:26px;margin-top:18px;padding:16px 16px 14px 44px;position:relative;color:var(--ink)}
+.sheet::before{content:'';position:absolute;left:21px;top:26px;bottom:30px;width:6px;border-radius:6px;background:linear-gradient(#2f6bff 0 22%,#e23b3e 22% 36%,#0c9f72 36% 72%,#e8641c 72% 86%,#7c5cfa 86%)}
+.row{position:relative;display:flex;align-items:baseline;gap:8px;padding:8px 0}
+.row::before{content:'';position:absolute;left:-27px;top:13px;width:14px;height:14px;border-radius:50%;background:#fff;border:4px solid var(--ink)}
+.row b{font-size:17px}
+.row small{font-size:12px;font-weight:700;color:var(--ink2)}
+.row em{margin-left:auto;font-style:normal;font-size:12px;font-weight:700;color:var(--ink2)}
+.bill{display:flex;align-items:flex-end;justify-content:space-between;margin-top:20px}
+.bill .n{font-size:40px;line-height:1}
+.bill small{font-size:13px;font-weight:700}
+.foot{position:absolute;left:24px;right:24px;bottom:22px;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:700}
+.emo{font-family:'Noto Color Emoji'}
+</style></head><body>
+
+<div class="col"><div class="cap">① 首页</div><div class="sub">行程像一张车票；现成路线像海报一样可以直接挑</div>
+<div class="phone">
+  <div class="top"><div class="logo disp"><i>P</i>Passhopper</div><div class="round">EN</div></div>
+  <h1 class="hero zh9">还有 <em>23 天</em><br>出发！</h1>
+  <div class="ticket">
+    <div class="up">
+      <span class="tag">🚆 7 天 Flexi · 青年票</span>
+      <div class="name zh9">意大利 + 中欧</div>
+      <div class="od"><div><b class="disp">BER</b><small>柏林 · 7月14日</small></div><div class="ln"><span class="emo">🚆</span></div><div style="text-align:right"><b class="disp">PRG</b><small>布拉格 · 8月2日</small></div></div>
+    </div>
+    <div class="cut"></div>
+    <div class="down"><div class="st"><b class="disp">20 天</b><span>8 座城市</span></div><div class="st"><b class="disp">约 €455</b><span>火车总花费</span></div><div class="go">继续 →</div></div>
+  </div>
+  <div class="sec"><b class="zh9">照着走就行</b><span>全部 11 条 ›</span></div>
+  <div class="posters">
+    <div class="poster" style="background:var(--sun)"><span class="price">约 €310 起</span><span class="emo">🍕</span><b class="zh9">意大利精华</b><small>12 天 · 5 城 · 第一次去</small></div>
+    <div class="poster" style="background:var(--sky);color:#fff"><span class="price">约 €420 起</span><span class="emo">🏔️</span><b class="zh9">穿越阿尔卑斯</b><small>13 天 · 7 城 · 看风景</small></div>
+    <div class="poster" style="background:var(--coral);color:#fff"><span class="price">约 €260 起</span><span class="emo">🌉</span><b class="zh9">巴尔干</b><small>14 天 · 省钱</small></div>
+  </div>
+  <div class="cta"><i>+</i>新建行程</div>
+</div></div>
+
+<div class="col"><div class="cap">② 路线页</div><div class="sub">第一眼看到一共花多少；哪班车免订座、哪班省住宿一目了然</div>
+<div class="phone">
+  <div class="head2">
+    <div class="r1">‹ &nbsp;7月14日 – 8月2日 · 青年 · 二等座<span style="margin-left:auto">⋯</span></div>
+    <h2 class="zh9">意大利 + 中欧</h2>
+    <div class="money"><div class="n disp">€455</div><div class="l">火车共约<br>平均每天 €23</div></div>
+    <div class="split"><span>通票<b>€286</b></span><span>订座费<b>€59</b></span><span>另买车票<b>€110</b></span></div>
+    <div class="days"><i></i><i></i><i></i><i></i><i></i><i></i><i></i>&nbsp;旅行日 7 / 7 已排好</div>
+  </div>
+  <div class="todo"><span style="background:var(--amber);color:var(--amber-t)">💺 4 个座位待订 ›</span><span style="background:var(--green);color:var(--green-t)">换 2 班车可省 €26 ›</span></div>
+  <div class="tl">
+    <div class="city"><b class="zh9">柏林</b><small>7月14日 周三</small></div>
+    <div class="tk"><div class="a"><span class="pill" style="background:#2456d6">ICE 1005</span><span class="tm disp">08:34 → 12:35</span><small>4 小时</small></div><div class="b"><span class="stk g">免订座</span><span class="stk" style="background:#eef1f5">另买票</span><b>约 €30</b></div></div>
+    <div class="city"><b class="zh9">慕尼黑</b><small>7月14日</small><em>2 晚</em></div>
+    <div class="tk"><div class="a"><span class="pill" style="background:#2456d6">ECE 196</span><span class="tm disp">09:33 → 13:01</span><small>3.5 小时</small></div><div class="b"><span class="stk y">旅行日 1</span><span class="stk g">免订座</span></div></div>
+    <div class="city"><b class="zh9">苏黎世</b><small>7月16日</small><em>2 晚</em></div>
+    <div class="tk"><div class="a"><span class="pill" style="background:#c62a2d">EC 317</span><span class="tm disp">09:33 → 12:50</span><small>3 小时</small></div><div class="b"><span class="stk y">旅行日 2</span><span class="stk a">订座 €13</span></div></div>
+    <div class="city"><b class="zh9">米兰</b><small>7月18日</small><em>2 晚</em></div>
+  </div>
+  <div class="tabs"><span class="on">路线</span><span>旅行日</span><span>订座</span><span>花费</span></div>
+</div></div>
+
+<div class="col"><div class="cap">③ 行程长图（新功能）</div><div class="sub">一键保存，发给同伴或发小红书，每张图都带着产品名</div>
+<div class="phone">
+  <div class="long">
+    <div class="k">MY INTERRAIL · 2027 夏</div>
+    <h3 class="zh9">20 天<br><em>8 座城</em> 5 国</h3>
+    <div class="facts"><span>🚆 9 段火车</span><span>🌙 1 趟夜车</span><span>7 天 Flexi</span></div>
+    <div class="sheet">
+      <div class="row"><b class="zh9">柏林</b><small>出发</small><em>7/14</em></div>
+      <div class="row"><b class="zh9">慕尼黑</b><small>2 晚</small><em>7/14</em></div>
+      <div class="row"><b class="zh9">苏黎世</b><small>2 晚</small><em>7/16</em></div>
+      <div class="row"><b class="zh9">米兰</b><small>2 晚</small><em>7/18</em></div>
+      <div class="row"><b class="zh9">威尼斯</b><small>2 晚</small><em>7/20</em></div>
+      <div class="row"><b class="zh9">佛罗伦萨</b><small>3 晚</small><em>7/22</em></div>
+      <div class="row"><b class="zh9">罗马</b><small>3 晚 · 夜车去维也纳</small><em>7/25</em></div>
+      <div class="row"><b class="zh9">维也纳</b><small>2 晚</small><em>7/29</em></div>
+      <div class="row"><b class="zh9">布拉格</b><small>2 晚</small><em>7/31</em></div>
+    </div>
+    <div class="bill"><div><small>火车总花费</small><div class="n disp">约 €455</div></div><small style="text-align:right">平均每天 €23<br>通票 + 订座 + 车票</small></div>
+    <div class="foot"><div class="logo disp" style="font-size:17px"><i style="background:var(--ink);color:#fff">P</i>Passhopper</div><span>免费规划你的通票行程</span></div>
+  </div>
+</div></div>
+</body></html>
