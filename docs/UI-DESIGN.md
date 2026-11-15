@@ -4,6 +4,8 @@
 配套文档：[DEVELOPMENT.md](./DEVELOPMENT.md)（功能编号 F0 至 F6 对应开发文档 §2）
 可点击原型：[`prototype/index.html`](../prototype/index.html)。本文档与原型不一致时，以本文档为准，并同步修改原型。
 
+> **2026-11-15 说明**：视觉样式已按 [UI-OPTIMIZATION.md](./UI-OPTIMIZATION.md) 第 4 节和第 10 节改版（暖米色底、车票式行程卡片、墨色花费块、实心车次胶囊、贴纸标签）。本文档 §3 的令牌表和组件说明还是旧样式，色值以 `app/src/styles/tokens.css` 为准。
+
 ### 修订记录
 | 版本 | 内容 |
 |---|---|

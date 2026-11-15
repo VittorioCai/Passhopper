@@ -33,7 +33,7 @@
   line-height: 0.95;
   color: var(--sun);
 }
-.money span {
+.money > span {
   display: flex;
   flex-direction: column;
   font-size: 13px;

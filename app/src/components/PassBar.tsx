@@ -2,13 +2,14 @@ import { CaretRightIcon, WarningCircleIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { eur } from '../lib';
+import { FxHint } from './FxHint';
 import { tripRange } from '../model/trip';
 import { passName } from './passText';
 import p from './PassBar.module.css';
 import { useTripContext } from './TripContext';
 
 /** What the trains of this trip cost: the pass, seat reservations and other tickets. */
-export function PassBar({ extra }: { extra?: string }) {
+export function PassBar({ extra, plain }: { extra?: string | false; plain?: boolean }) {
   const { t } = useTranslation();
   const { trip, plan, analysis } = useTripContext();
   if (!plan) {
@@ -43,20 +44,19 @@ export function PassBar({ extra }: { extra?: string }) {
   const label = unpriced
     ? t('pass.totalAtLeast')
     : t(trip.traveller.count > 1 ? 'pass.totalEach' : 'pass.total');
-  return (
-    <Link
-      to={`/trip/${trip.id}/savings`}
-      className={p.bar}
-      aria-label={`${label} ${eur(plan.total)}. ${t('pass.seeSavings')}`}
-    >
+  const body = (
+    <>
       <span className={p.name}>
         {passName(product, t)} · {t(`wizard.${trip.traveller.ageGroup}`)}
-        <CaretRightIcon size={16} weight="bold" />
+        {!plain && <CaretRightIcon size={16} weight="bold" />}
       </span>
       <span className={p.money}>
         <b>{eur(plan.total)}</b>
         <span>
-          {label}
+          <span>
+            {label}
+            <FxHint eur={plan.total} />
+          </span>
           {!unpriced && (
             <small>
               {t('pass.perDay', { amount: eur(plan.total / Math.max(1, tripRange(trip).days)) })}
@@ -101,6 +101,16 @@ export function PassBar({ extra }: { extra?: string }) {
       {compared && (
         <span className={p.hint}>{t('pass.savesVsTickets', { amount: eur(saving) })}</span>
       )}
+    </>
+  );
+  if (plain) return <section className={p.bar}>{body}</section>;
+  return (
+    <Link
+      to={`/trip/${trip.id}/savings`}
+      className={p.bar}
+      aria-label={`${label} ${eur(plan.total)}. ${t('pass.seeSavings')}`}
+    >
+      {body}
     </Link>
   );
 }

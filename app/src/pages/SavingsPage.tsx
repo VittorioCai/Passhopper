@@ -1,15 +1,15 @@
-import { CaretRightIcon, InfoIcon, LightbulbIcon } from '@phosphor-icons/react';
+import { CaretRightIcon, CheckCircleIcon, InfoIcon, LightbulbIcon } from '@phosphor-icons/react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { FxHint } from '../components/FxHint';
+import { PassBar } from '../components/PassBar';
 import { passName, passValidity } from '../components/passText';
 import { useTripContext } from '../components/TripContext';
 import ui from '../components/ui.module.css';
 import { UnverifiedNote } from '../components/UnverifiedNote';
 import { passById } from '../data/passes';
 import { findFlip } from '../engine/sensitivity';
-import { useCountUp } from '../hooks/useCountUp';
 import { addDays, formatDate } from '../model/dates';
 import type { Trip } from '../model/schema';
 import { eur, eurRange, placeName, useLang } from '../lib';
@@ -20,8 +20,6 @@ export function SavingsPage() {
   const lang = useLang();
   const { trip, analysis: a, plan, update } = useTripContext();
   const flip = useMemo(() => findFlip(trip, a), [trip, a]);
-  const saving = plan ? a.tickets.mid - plan.total : 0;
-  const shown = useCountUp(Math.round(Math.abs(saving)));
   const stop = (id: string) => placeName(trip.stops.find((s) => s.id === id)!.place, lang);
 
   if (!a.days.length) {
@@ -63,7 +61,6 @@ export function SavingsPage() {
 
   const rec = a.recommended!;
   const product = plan.result.product;
-  const used = plan.passDays.length;
   const first = plan.passDays[0];
   const worst = a.tickets.min - rec.cost.min;
   const ticketsWin = a.tickets.mid < rec.cost.mid;
@@ -101,22 +98,19 @@ export function SavingsPage() {
 
   return (
     <>
-      <section className={v.card} aria-label={t('savings.title')}>
-        <div className={v.top}>
-          <div>
-            <div className={v.kicker}>GLOBAL PASS</div>
-            <div className={v.name}>{passName(product, t)}</div>
-          </div>
-          <span className={v.who}>
-            {t(`wizard.${trip.traveller.ageGroup}`)} ·{' '}
-            {t(trip.traveller.travelClass === 1 ? 'wizard.first' : 'wizard.second')}
-          </span>
-        </div>
-        <div className={v.big} aria-live="polite">
-          <small>{saving >= 0 ? t('pass.save') : t('pass.costsMore')}</small>€{shown}
-          <FxHint eur={Math.abs(saving)} />
-        </div>
-        <div className={v.subline}>
+      <PassBar
+        plain
+        extra={
+          first &&
+          t('pass.validRange', {
+            from: formatDate(first, lang),
+            to: formatDate(addDays(first, product.validityDays - 1), lang),
+          })
+        }
+      />
+      <p className={v.note}>
+        <CheckCircleIcon size={18} weight="duotone" aria-hidden="true" />
+        <span>
           {ticketsWin
             ? t('savings.ticketsWin', { amount: eur(rec.cost.mid - a.tickets.mid) })
             : plan.result === rec
@@ -125,27 +119,8 @@ export function SavingsPage() {
                   name: passName(rec.product, t),
                   amount: eur(plan.total - rec.cost.mid),
                 })}
-        </div>
-        <div className={v.foot}>
-          {product.kind === 'flexi' && (
-            <span className={v.dots} aria-label={t('pass.daysUsed', { used, total: product.days })}>
-              {Array.from({ length: Math.max(product.days, used) }, (_, i) => (
-                <i key={i} className={i < used ? (i >= product.days ? v.over : v.on) : ''} />
-              ))}
-            </span>
-          )}
-          <span>
-            {product.kind === 'flexi'
-              ? `${t('pass.daysUsed', { used, total: product.days })} · `
-              : ''}
-            {first &&
-              t('pass.validRange', {
-                from: formatDate(first, lang),
-                to: formatDate(addDays(first, product.validityDays - 1), lang),
-              })}
-          </span>
-        </div>
-      </section>
+        </span>
+      </p>
 
       <p className={`${v.note} ${worst < 0 ? v.warn : ''}`}>
         <LightbulbIcon size={18} weight="duotone" aria-hidden="true" />

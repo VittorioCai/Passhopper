@@ -50,7 +50,7 @@ describe('home', () => {
     expect(within(ticket).getByText('PRA')).toBeInTheDocument();
     expect(within(ticket).getByText('20 days')).toBeInTheDocument();
     expect(within(ticket).getByText(/^€\d+$/)).toBeInTheDocument();
-    expect(within(ticket).getByText('trains, about')).toBeInTheDocument();
+    expect(within(ticket).getByText('for trains')).toBeInTheDocument();
   });
 
   it('renders in Chinese', async () => {
@@ -103,9 +103,13 @@ describe('trip pages', () => {
     const trip = makeSampleTrip('en');
     await saveTrip(trip);
     at(`/trip/${trip.id}/days`);
-    expect(await screen.findByText(/^≈ \$\d+/)).toBeInTheDocument();
-    expect(fetchMock.mock.calls[0]![0]).toContain('api.frankfurter.dev/v1/latest?base=EUR');
-    setCurrency(null);
+    try {
+      // Next to the total in the cost block and in the plan total below.
+      expect((await screen.findAllByText(/^≈ \$\d+/)).length).toBeGreaterThan(0);
+      expect(fetchMock.mock.calls[0]![0]).toContain('api.frankfurter.dev/v1/latest?base=EUR');
+    } finally {
+      setCurrency(null);
+    }
   });
 
   it('changes the traveller after the trip is made', async () => {

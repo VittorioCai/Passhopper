@@ -16,7 +16,7 @@
 
 It runs entirely in your browser. No sign-up, no tracking, and your trips never leave your device.
 
-<p align="center"><img src="docs/screenshots/hero.jpg" alt="Route with map, travel days, savings and the AI assistant on phone screens" width="100%"></p>
+<p align="center"><img src="docs/screenshots/hero.jpg" alt="Home, route with map, travel days and the AI assistant on phone screens" width="100%"></p>
 
 ## Why Passhopper
 
@@ -25,18 +25,18 @@ Most trip planners treat a rail pass like any other ticket. The questions that d
 - **Which days should use the pass?** A Flexi pass has a fixed number of travel days. Passhopper picks the days that save the most, and you can flip any day between "pass" and "ticket" and watch the total update.
 - **Does the pass even cover this train?** If you live in Europe, your pass covers only one journey out of your home country and one back in. A night train uses one travel day, but not on the pass's last valid day. Some operators aren't covered at all. These rules are built in.
 - **What will the reservations cost?** High-speed and night trains often need a seat reservation on top of the pass. Fees come from the official Interrail fee pages, and the app tells you where to book and which trains sell out.
-- **Is the pass actually cheaper?** The savings page compares every pass with buying all tickets, at cheap, typical and flexible fares. It tells you when cheap advance tickets would beat the pass, and which train's price decides the answer.
+- **Is the pass actually cheaper?** The costs page compares every pass with buying all tickets, at cheap, typical and flexible fares. It tells you when cheap advance tickets would beat the pass, and which train's price decides the answer.
 
 ## Features
 
 |                                |                                                                                                                                                                                                                                         |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 🧭 **Route ideas**             | Ten ready-made routes (classic Amsterdam–Budapest, Italy, the Alps, Scandinavia, the Balkans and more) with what to see in each city and what to know about the trains. Use one as it is or as a starting point.                        |
+| 🧭 **Route ideas**             | Eleven ready-made routes (classic Amsterdam–Budapest, Italy, the Alps, Scandinavia, the Balkans and more) with what to see in each city and what to know about the trains. Use one as it is or as a starting point.                     |
 | 🗺️ **Route**                   | Metro-map timeline and a map of your trip. Nights per city, drag to reorder, night trains, notes for each city.                                                                                                                         |
 | 🚆 **Real timetables**         | Search actual trains between your cities with [Transitous](https://transitous.org), an open-data journey planner, or find trains for every leg of the trip in one tap. Covers high-speed, international and night trains.               |
 | 📅 **Travel days**             | A calendar of your trip and the best days for your pass, worked out by the rules engine, with a switch on every day. Works before you enter any prices: long journeys get the travel days.                                              |
 | 💺 **Seat reservations**       | What needs a reservation and what it costs, a to-do list, and a place to note your booking and seat.                                                                                                                                    |
-| 💶 **Savings**                 | Every pass compared with buying tickets, including the worst case and the most price-sensitive train. Totals can also show in your own currency.                                                                                        |
+| 💶 **Costs**                   | What the trains cost in total (pass, reservations, other tickets) and every pass compared with buying tickets, including the worst case and the most price-sensitive train. Totals can also show in your own currency.                  |
 | ⚠️ **Checks**                  | Warnings for overlapping trains, tight changes, missed connections and very long days.                                                                                                                                                  |
 | 🧳 **On the road**             | Home shows the next train (time, train number, your seat) and where you sleep tonight. Add every train and stay to your phone's calendar, or print the itinerary / save it as a PDF.                                                    |
 | ✨ **AI assistant (optional)** | Describe a trip in one sentence and get a first route, or ask for changes ("slow down in Italy"). Every change is previewed with its cost before you apply it, and you can undo it. Searches the web for strikes and engineering works. |
