@@ -1,12 +1,13 @@
 import { CheckIcon, MoonIcon } from '@phosphor-icons/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { daysBetween, formatDate, formatDuration } from '../model/dates';
 import type { Segment, Trip } from '../model/schema';
 import { schedule } from '../model/trip';
 import { searchTrains, TRANSITOUS_SOURCES_URL, type TrainOption } from '../timetable/transitous';
-import { placeName, useLang } from '../lib';
+import { optionSeats, SKIP_SEAT_MINUTES } from '../timetable/seats';
+import { feeText, placeName, useLang } from '../lib';
 import { optionToSegments } from './TrainSearch';
 import { Sheet } from './Sheet';
 import s from './BulkTrainSheet.module.css';
@@ -18,11 +19,14 @@ const TIMES = ['07:00', '11:00', '15:00', '19:00'] as const;
  * The option most people would pick for a day of travel: few changes, short, not too early.
  * Exported for tests.
  */
-export function pickBest(options: TrainOption[]): number {
+export function pickBest(
+  options: TrainOption[],
+  extra: (o: TrainOption) => number = () => 0,
+): number {
   if (!options.length) return -1;
   const score = (o: TrainOption) => {
     const dep = Number(o.legs[0]!.depTime.slice(0, 2));
-    return (o.legs.length - 1) * 45 + o.minutes + (dep < 7 ? 90 : 0);
+    return (o.legs.length - 1) * 45 + o.minutes + (dep < 7 ? 90 : 0) + extra(o);
   };
   let best = 0;
   options.forEach((o, i) => {
@@ -66,6 +70,21 @@ export function BulkTrainSheet({
   const lang = useLang();
   const [time, setTime] = useState<string>('07:00');
   const [legs, setLegs] = useState<Leg[]>(() => initialLegs(trip, lang));
+  const [preferFree, setPreferFree] = useState(false);
+  // Read by searches still running when the switch changes.
+  const preferRef = useRef(false);
+  const seatsOf = (fromStopId: string, o: TrainOption) => {
+    const i = trip.stops.findIndex((x) => x.id === fromStopId);
+    return optionSeats(
+      o,
+      trip.stops[i]!.place.country,
+      trip.stops[i + 1]!.place.country,
+      trip.traveller.travelClass,
+    );
+  };
+  // Minutes added to an option's score: skipping a reservation is worth a slower train.
+  const penalty = (fromStopId: string, free: boolean) => (o: TrainOption) =>
+    free && seatsOf(fromStopId, o).needed ? SKIP_SEAT_MINUTES : 0;
 
   useEffect(() => {
     const ctrl = new AbortController();
@@ -99,7 +118,7 @@ export function BulkTrainSheet({
             // Keep a next-day train if the later window has nothing better.
             if (r.laterDay || !r.options.length) r = first.options.length ? first : r;
           }
-          const best = pickBest(r.options);
+          const best = pickBest(r.options, penalty(leg.fromStopId, preferRef.current));
           setLegs((ls) =>
             ls.map((l, j) =>
               j === i
@@ -176,6 +195,28 @@ export function BulkTrainSheet({
           ))}
         </div>
       </div>
+      <label className={ui.check}>
+        <input
+          type="checkbox"
+          checked={preferFree}
+          onChange={(e) => {
+            const free = e.target.checked;
+            preferRef.current = free;
+            setPreferFree(free);
+            setLegs((ls) =>
+              ls.map((l) => {
+                if (l.state.status !== 'done') return l;
+                const choice = pickBest(l.state.options, penalty(l.fromStopId, free));
+                return { ...l, choice, use: l.use || choice >= 0 };
+              }),
+            );
+          }}
+        />
+        <span>
+          {t('bulk.preferFree')}
+          <small className={s.hint}>{t('bulk.preferFreeHint')}</small>
+        </span>
+      </label>
       {sample?.state.status === 'done' && sample.state.sample && (
         <p className={s.sample}>{t('bulk.sample')}</p>
       )}
@@ -213,11 +254,22 @@ export function BulkTrainSheet({
                   setLegs((ls) => ls.map((x, j) => (j === i ? { ...x, choice, use: true } : x)));
                 }}
               >
-                {l.state.options.map((o, k) => (
-                  <option key={k} value={k}>
-                    {summary(o, lang, t)}
-                  </option>
-                ))}
+                {l.state.options.map((o, k) => {
+                  const seats = seatsOf(l.fromStopId, o);
+                  const tag = seats.needed
+                    ? seats.fee
+                      ? t('search.seatFee', { fee: feeText(seats.fee, seats.feeMax) })
+                      : t('search.seatNeeded')
+                    : seats.known
+                      ? t('chip.noSeat')
+                      : '';
+                  return (
+                    <option key={k} value={k}>
+                      {summary(o, lang, t)}
+                      {tag && ` · ${tag}`}
+                    </option>
+                  );
+                })}
               </select>
             )}
             {l.state.status === 'done' &&

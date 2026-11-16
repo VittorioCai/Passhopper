@@ -115,3 +115,7 @@
   padding-right: 6px;
   font-variant-numeric: tabular-nums;
 }
+.seat {
+  grid-column: 1 / -1;
+  justify-self: start;
+}

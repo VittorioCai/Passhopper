@@ -414,7 +414,10 @@
     "useOption": "Use {{trains}}, leaving {{dep}}",
     "replaces": "Picking an option replaces the trains already on this leg.",
     "credit": "Timetables from",
-    "laterDay": "No train leaves on this day. These are the next ones; picking one moves the rest of the trip."
+    "laterDay": "No train leaves on this day. These are the next ones; picking one moves the rest of the trip.",
+    "seatFee": "Seat {{fee}}",
+    "seatNeeded": "Seat required",
+    "onlyFree": "Only trains known to need no reservation"
   },
   "conflict": {
     "overlap": "{{next}} leaves before {{prev}} arrives. Check the times.",
@@ -538,7 +541,9 @@
     "pickFor": "Train for {{route}}",
     "overnight": "Overnight: the next city moves to the day after.",
     "add_one": "Add trains for {{count}} leg",
-    "add_other": "Add trains for {{count}} legs"
+    "add_other": "Add trains for {{count}} legs",
+    "preferFree": "Prefer trains without a reservation",
+    "preferFreeHint": "Skips the reservation fee when the trip is at most about 1½ hours longer."
   },
   "travel": {
     "onBoard": "On board now",

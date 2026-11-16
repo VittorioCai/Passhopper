@@ -1,4 +1,4 @@
-import { ArrowRightIcon, MoonIcon } from '@phosphor-icons/react';
+import { ArmchairIcon, ArrowRightIcon, CheckIcon, MoonIcon } from '@phosphor-icons/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { daysBetween, formatDate, formatDuration } from '../model/dates';
@@ -11,9 +11,13 @@ import {
   type SearchResult,
   type TrainOption,
 } from '../timetable/transitous';
-import { useLang } from '../lib';
+import { optionSeats, type OptionSeats } from '../timetable/seats';
+import { feeText, useLang } from '../lib';
 import s from './TrainSearch.module.css';
 import ui from './ui.module.css';
+
+/** Known to need no reservation on a pass; trains we have no rules for don't count. */
+const isFree = (x: OptionSeats) => x.known && !x.needed;
 
 const TIMES = [
   ['07:00', 'search.morning'],
@@ -56,6 +60,9 @@ export function TrainSearch({
   const to = trip.stops[idx + 1]!.place;
   const date = schedule(trip)[idx]?.depart ?? trip.startDate;
   const [time, setTime] = useState<string>('07:00');
+  const [onlyFree, setOnlyFree] = useState(false);
+  const seatsOf = (o: TrainOption) =>
+    optionSeats(o, from.country, to.country, trip.traveller.travelClass);
   const key = `${from.id}|${to.id}|${date}|${time}`;
   const [done, setDone] = useState<
     | { key: string; status: 'done'; result: SearchResult }
@@ -119,11 +126,24 @@ export function TrainSearch({
             </p>
           )}
           {state.result.laterDay && <p className={s.sample}>{t('search.laterDay')}</p>}
+          {state.result.options.some((o) => seatsOf(o).needed) &&
+            state.result.options.some((o) => isFree(seatsOf(o))) && (
+              <label className={ui.check}>
+                <input
+                  type="checkbox"
+                  checked={onlyFree}
+                  onChange={(e) => setOnlyFree(e.target.checked)}
+                />
+                {t('search.onlyFree')}
+              </label>
+            )}
           {state.result.options.length === 0 ? (
             <p className={ui.muted}>{t('search.none')}</p>
           ) : (
             <ul className={s.list}>
               {state.result.options.map((o, i) => {
+                const seats = seatsOf(o);
+                if (onlyFree && !isFree(seats)) return null;
                 const first = o.legs[0]!;
                 const last = o.legs[o.legs.length - 1]!;
                 const base = state.result.sampleDate ?? date;
@@ -154,6 +174,21 @@ export function TrainSearch({
                           ? t('search.direct')
                           : t('search.changes', { count: o.legs.length - 1 })}
                       </span>
+                      {seats.needed ? (
+                        <span className={`${ui.chipMust} ${s.seat}`}>
+                          <ArmchairIcon size={13} weight="fill" aria-hidden="true" />
+                          {seats.fee
+                            ? t('search.seatFee', { fee: feeText(seats.fee, seats.feeMax) })
+                            : t('search.seatNeeded')}
+                        </span>
+                      ) : (
+                        seats.known && (
+                          <span className={`${ui.chipOk} ${s.seat}`}>
+                            <CheckIcon size={13} weight="bold" aria-hidden="true" />
+                            {t('chip.noSeat')}
+                          </span>
+                        )
+                      )}
                       <span className={s.trains}>
                         {o.legs.map((l, j) => (
                           <span key={j} className={s.train}>
