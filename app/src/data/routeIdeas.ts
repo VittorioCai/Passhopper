@@ -1,3 +1,4 @@
+import { PASSES, priceFor, type PassProduct } from './passes';
 import { CITIES } from './cities';
 import type { Place } from '../model/schema';
 import { createTrip } from '../model/trip';
@@ -748,4 +749,26 @@ export function previewTrip(r: RouteIdea, lang: string) {
     nights: r.stops.map((s) => s.nights),
     returnToStart: false,
   });
+}
+
+/**
+ * The pass that fits an idea: the cheapest one that covers one travel day per move between
+ * cities within the trip's length. Prices only rank the options; they aren't shown, because the
+ * traveller's age, class and home country change them. Day trips aren't counted.
+ */
+export function ideaPass(r: RouteIdea) {
+  const st = ideaStats(r);
+  const fits = PASSES.filter((p) =>
+    p.kind === 'flexi'
+      ? p.days >= st.trainDays && p.validityDays >= st.days
+      : p.validityDays >= st.days,
+  );
+  const price = (p: PassProduct) => priceFor(p, 'youth', 2) ?? Infinity;
+  const best = fits.sort((a, b) => price(a) - price(b))[0];
+  if (!best) return null;
+  return {
+    product: best,
+    trainDays: st.trainDays,
+    spare: best.kind === 'flexi' ? best.days - st.trainDays : 0,
+  };
 }

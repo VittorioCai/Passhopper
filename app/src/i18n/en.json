@@ -530,7 +530,13 @@
     "more": "See other routes",
     "browse": "Route ideas",
     "browseHint": "Not sure where to go? Start from a route idea.",
-    "short": "{{days}} days · {{cities}} cities"
+    "short": "{{days}} days · {{cities}} cities",
+    "passTitle": "Pass that fits:",
+    "passSpare_one": "{{trains}} days on the train, one per move between cities, with {{count}} day to spare for a day trip.",
+    "passSpare_other": "{{trains}} days on the train, one per move between cities, with {{count}} days to spare for day trips.",
+    "passExact": "{{trains}} days on the train, one per move between cities.",
+    "passContinuous": "You're on a train most days, so a pass for every day costs less here.",
+    "passNote": "Your age, class and home country can change this. Once you use the route, the costs page works it out for your trip."
   },
   "bulk": {
     "open_one": "Find a train for the {{count}} leg without one",

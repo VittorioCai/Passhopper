@@ -1,11 +1,13 @@
-import { CalendarBlankIcon, LightbulbIcon, PathIcon } from '@phosphor-icons/react';
+import { CalendarBlankIcon, LightbulbIcon, PathIcon, TicketIcon } from '@phosphor-icons/react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, Navigate, useNavigate, useParams } from 'react-router';
 import { IdeaEmblem } from '../components/IdeaEmblem';
 import { MapCard } from '../components/MapCard';
 import ui from '../components/ui.module.css';
-import { cityPlace, ideaById, ideaStats, previewTrip } from '../data/routeIdeas';
+import { passName } from '../components/passText';
+import { Term } from '../components/Terms';
+import { cityPlace, ideaById, ideaPass, ideaStats, previewTrip } from '../data/routeIdeas';
 import { lineStyle, placeName, useLang } from '../lib';
 import s from './RouteIdeas.module.css';
 
@@ -20,6 +22,7 @@ export function RouteIdea() {
   const trip = useMemo(() => (idea ? previewTrip(idea, lang) : null), [idea, lang]);
   if (!idea || !trip) return <Navigate to="/ideas" replace />;
   const st = ideaStats(idea);
+  const pass = ideaPass(idea);
   const tx = (x: { en: string; zh: string }) => (zh ? x.zh : x.en);
   const origin = cityPlace(idea.origin);
 
@@ -63,6 +66,22 @@ export function RouteIdea() {
         </ol>
       </section>
       <section className={`${ui.card} ${ui.stack}`}>
+        {pass && (
+          <div className={s.fact}>
+            <TicketIcon size={18} weight="duotone" />
+            <span>
+              <b>{t('ideas.passTitle')}</b> {passName(pass.product, t)}
+              <br />
+              {pass.product.kind === 'continuous'
+                ? t('ideas.passContinuous')
+                : pass.spare > 0
+                  ? t('ideas.passSpare', { trains: pass.trainDays, count: pass.spare })
+                  : t('ideas.passExact', { trains: pass.trainDays })}{' '}
+              <Term term={pass.product.kind === 'continuous' ? 'continuous' : 'flexi'} />
+              <small className={s.small}>{t('ideas.passNote')}</small>
+            </span>
+          </div>
+        )}
         <p className={s.fact}>
           <CalendarBlankIcon size={18} weight="duotone" />
           <span>

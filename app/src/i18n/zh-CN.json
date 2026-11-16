@@ -503,7 +503,12 @@
     "more": "看看其他路线",
     "browse": "路线推荐",
     "browseHint": "不知道去哪？从推荐路线开始。",
-    "short": "{{days}} 天 · {{cities}} 城"
+    "short": "{{days}} 天 · {{cities}} 城",
+    "passTitle": "适合的通票：",
+    "passSpare_other": "按每换一次城市坐一天车算，要坐 {{trains}} 天，还剩 {{count}} 天可以安排一日游。",
+    "passExact": "按每换一次城市坐一天车算，正好 {{trains}} 天。",
+    "passContinuous": "这条路线几乎天天坐车，买连续通票更省。",
+    "passNote": "年龄、舱等和居住国家都可能影响结果。用这条路线后，花费页会按你的行程算出最合适的通票。"
   },
   "bulk": {
     "open_other": "一键给 {{count}} 段没车次的路段找车",
