@@ -142,12 +142,15 @@
     "price": "你查到的票价（欧元，可不填）",
     "badPrice": "票价要大于等于 0，或者留空。",
     "needTimes": "请填写出发和到达时间。",
-    "arriveAfter": "到达时间必须晚于出发时间。夜车请勾选“第二天到达”。",
+    "arriveAfter": "到达时间必须晚于出发时间。夜车请打开“第二天到”。",
     "delete": "删除这趟车",
     "deleteConfirm": "从这段行程里删除这趟车？",
     "how": "添加方式",
     "searchTab": "查时刻表",
-    "manualTab": "手动填写"
+    "manualTab": "手动填写",
+    "arrivesNextDayShort": "第二天到",
+    "departsNextDayShort": "午夜后出发",
+    "badTime": "时间用 24 小时制，例如 08:05 或 20:30。"
   },
   "days": {
     "title": "旅行日",

@@ -1,4 +1,4 @@
-import { TrashIcon } from '@phosphor-icons/react';
+import { CheckIcon, PlusIcon, TrashIcon } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SegmentSchema, type Price, type Segment, type Trip } from '../model/schema';
@@ -8,6 +8,7 @@ import { placeName, useLang } from '../lib';
 import { AiPriceButtons } from './AiPriceButtons';
 import { CheckLinks } from './CheckLinks';
 import { Sheet } from './Sheet';
+import { parseTime, TimeInput } from './TimeInput';
 import { TrainSearch } from './TrainSearch';
 import ui from './ui.module.css';
 
@@ -77,6 +78,8 @@ export function SegmentSheet({
                 : { min: p, max: p, currency: 'EUR' as const, source: 'user' as const },
           }),
     };
+    if (!depTime || !arrTime) return setError(t('segment.needTimes'));
+    if (!parseTime(depTime) || !parseTime(arrTime)) return setError(t('segment.badTime'));
     const res = SegmentSchema.safeParse(candidate);
     if (!res.success) {
       return setError(!depTime || !arrTime ? t('segment.needTimes') : t('segment.arriveAfter'));
@@ -146,43 +149,49 @@ export function SegmentSheet({
                 {t('segment.to')}
                 <input value={toSt} onChange={(e) => setToSt(e.target.value)} maxLength={80} />
               </label>
-              <label className={ui.field}>
-                {t('segment.departs')}
-                <input
-                  type="time"
-                  value={depTime}
-                  onChange={(e) => setDepTime(e.target.value)}
-                  required
-                />
-              </label>
-              <label className={ui.field}>
-                {t('segment.arrives')}
-                <input
-                  type="time"
-                  value={arrTime}
-                  onChange={(e) => setArrTime(e.target.value)}
-                  required
-                />
-              </label>
+              <div className={ui.stack} style={{ gap: 6 }}>
+                <label className={ui.field}>
+                  {t('segment.departs')}
+                  <TimeInput value={depTime} onChange={setDepTime} required />
+                </label>
+                {(prev || depNext) && (
+                  <button
+                    type="button"
+                    className={ui.dayToggle}
+                    aria-pressed={depNext}
+                    title={t('segment.departsNextDay')}
+                    onClick={() => setDepNext(!depNext)}
+                  >
+                    {depNext ? (
+                      <CheckIcon size={13} weight="bold" />
+                    ) : (
+                      <PlusIcon size={13} weight="bold" />
+                    )}
+                    {t('segment.departsNextDayShort')}
+                  </button>
+                )}
+              </div>
+              <div className={ui.stack} style={{ gap: 6 }}>
+                <label className={ui.field}>
+                  {t('segment.arrives')}
+                  <TimeInput value={arrTime} onChange={setArrTime} required />
+                </label>
+                <button
+                  type="button"
+                  className={ui.dayToggle}
+                  aria-pressed={arrNext}
+                  title={t('segment.arrivesNextDay')}
+                  onClick={() => setArrNext(!arrNext)}
+                >
+                  {arrNext ? (
+                    <CheckIcon size={13} weight="bold" />
+                  ) : (
+                    <PlusIcon size={13} weight="bold" />
+                  )}
+                  {t('segment.arrivesNextDayShort')}
+                </button>
+              </div>
             </div>
-            <label className={ui.check}>
-              <input
-                type="checkbox"
-                checked={arrNext}
-                onChange={(e) => setArrNext(e.target.checked)}
-              />
-              {t('segment.arrivesNextDay')}
-            </label>
-            {(prev || depNext) && (
-              <label className={ui.check}>
-                <input
-                  type="checkbox"
-                  checked={depNext}
-                  onChange={(e) => setDepNext(e.target.checked)}
-                />
-                {t('segment.departsNextDay')}
-              </label>
-            )}
             <label className={ui.field}>
               {t('segment.price')}
               <input

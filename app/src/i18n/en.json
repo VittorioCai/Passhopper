@@ -153,12 +153,15 @@
     "price": "Ticket price you found (€, optional)",
     "badPrice": "Enter a price of 0 or more, or leave it empty.",
     "needTimes": "Enter both the departure and arrival time.",
-    "arriveAfter": "The arrival must be after the departure. For a night train, tick “Arrives the next day”.",
+    "arriveAfter": "The arrival must be after the departure. For a night train, switch on “Next day”.",
     "delete": "Delete this train",
     "deleteConfirm": "Delete this train from the journey?",
     "how": "How to add trains",
     "searchTab": "Search timetable",
-    "manualTab": "Enter by hand"
+    "manualTab": "Enter by hand",
+    "arrivesNextDayShort": "Next day",
+    "departsNextDayShort": "After midnight",
+    "badTime": "Times are 24-hour, like 08:05 or 20:30."
   },
   "days": {
     "title": "Travel days",

@@ -340,7 +340,8 @@ describe('trip pages', () => {
     expect(within(dialog).getByRole('alert')).toHaveTextContent(
       'The arrival must be after the departure',
     );
-    fireEvent.change(within(dialog).getByLabelText('Arrives'), { target: { value: '13:00' } });
+    // Typed the quick way: "1300" becomes 13:00.
+    fireEvent.change(within(dialog).getByLabelText('Arrives'), { target: { value: '1300' } });
     fireEvent.click(within(dialog).getByRole('button', { name: 'Save' }));
     expect(await screen.findByText('ICE 501')).toBeInTheDocument();
     const saved = await db.trips.get(trip.id);

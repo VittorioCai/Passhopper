@@ -32,8 +32,11 @@
   position: relative;
   display: grid;
   place-items: center;
+  /* Square, and centred under its weekday when the column is wider than the cell. */
+  justify-self: center;
+  width: 100%;
+  max-width: 48px;
   aspect-ratio: 1;
-  max-height: 44px;
   border: 0;
   border-radius: 10px;
   background: transparent;
