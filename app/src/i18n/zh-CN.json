@@ -300,10 +300,11 @@
     "partSeats": "订座费",
     "partTickets": "另买车票",
     "savesVsTickets": "比全部买票省 {{amount}}",
-    "unpricedTickets_other": "还有 {{count}} 段要另买票的车没填票价"
+    "unpricedTickets_other": "还有 {{count}} 段要另买票的车没填票价",
+    "continuousMonths_other": "连续 {{count}} 个月"
   },
   "rules": {
-    "unverified": "订座费已于 2026-11-04 对照 interrail.com 核实；通票价格为估计值。订票前请再确认。"
+    "unverified": "通票价格和订座费已于 2026 年 11 月对照 interrail.com 核实。价格可能调整，订票前请再确认。"
   },
   "ai": {
     "open": "打开 AI 助手",

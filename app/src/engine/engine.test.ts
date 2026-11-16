@@ -6,7 +6,7 @@ import { ruleFor, trainType } from './coverage';
 import { buildDays } from './days';
 import { analyze, bestDays, currentPlan } from './optimizer';
 import { classifyJourneys } from './residency';
-import { PASSES } from '../data/passes';
+import { PASSES, priceFor } from '../data/passes';
 
 const P = (id: string, country: string): Place => ({ id, en: id, local: id, country });
 const T = (o: Partial<Segment>): Segment => ({
@@ -282,15 +282,32 @@ describe('optimizer', () => {
     expect(f4.cost.min).toBeGreaterThan(a.tickets.min);
   });
 
+  it('prices 1st class and every age group from the official table', () => {
+    for (const age of ['youth', 'adult', 'senior'] as const)
+      for (const cls of [1, 2] as const)
+        for (const p of PASSES)
+          expect(priceFor(p, age, cls), `${p.id} ${age}-${cls}`).toBeGreaterThan(0);
+    // 1st class costs more than 2nd, and youth less than adult.
+    const flexi7 = PASSES.find((p) => p.id === 'flexi-7-1m')!;
+    expect(priceFor(flexi7, 'adult', 1)!).toBeGreaterThan(priceFor(flexi7, 'adult', 2)!);
+    expect(priceFor(flexi7, 'youth', 2)!).toBeLessThan(priceFor(flexi7, 'adult', 2)!);
+  });
+
   it('leaves out passes with no price for the traveller', () => {
-    const t = trip([P('a', 'FR'), P('b', 'FR')], [{ trainNumber: 'TER 1', price: price(10) }], {
-      ...nonEu,
-      travelClass: 1,
-    });
-    const a = analyze(t);
-    expect(a.options).toHaveLength(0);
-    expect(a.unpriced).toHaveLength(PASSES.length);
-    expect(currentPlan(t, a)).toBeNull();
+    const saved = PASSES.map((p) => p.prices['adult-1']);
+    for (const p of PASSES) delete p.prices['adult-1'];
+    try {
+      const t = trip([P('a', 'FR'), P('b', 'FR')], [{ trainNumber: 'TER 1', price: price(10) }], {
+        ...nonEu,
+        travelClass: 1,
+      });
+      const a = analyze(t);
+      expect(a.options).toHaveLength(0);
+      expect(a.unpriced).toHaveLength(PASSES.length);
+      expect(currentPlan(t, a)).toBeNull();
+    } finally {
+      PASSES.forEach((p, i) => (p.prices['adult-1'] = saved[i]));
+    }
   });
 });
 

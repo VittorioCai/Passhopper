@@ -68,7 +68,7 @@ Most trip planners treat a rail pass like any other ticket. The questions that d
 | --------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------ |
 | Seat reservation fees and pass coverage | interrail.com fee pages (domestic, international, night trains) | Checked 4 Nov 2026                                           |
 | Home-country rule, night train rules    | interrail.com                                                   | Checked 4 Nov 2026                                           |
-| Pass prices                             | Secondary sources                                               | **Estimates.** Check interrail.com before buying.            |
+| Pass prices                             | interrail.com Global Pass page, every age group and class       | Checked 16 Nov 2026. Prices can change for a new year.       |
 | Timetables                              | Transitous (open data from the operators)                       | Live. Dates more than a few months ahead show a sample week. |
 | Ticket prices for comparison            | You, or an AI estimate                                          | Marked by source on every train                              |
 
@@ -106,7 +106,7 @@ docs/         product, rules and UI design docs (Chinese)
 - [x] Real timetables, route map, conflict checks
 - [x] City notes, train check links, one-tap AI prices, trip calendar, drag to reorder
 - [x] Currency hints, password-protected AI keys, share links
-- [ ] Verified pass prices
+- [x] Pass prices from the official site
 - [ ] Reservation reminders
 - [ ] More languages
 

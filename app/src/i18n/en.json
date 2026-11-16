@@ -320,10 +320,12 @@
     "partTickets": "Other tickets",
     "savesVsTickets": "{{amount}} less than buying every ticket",
     "unpricedTickets_one": "{{count}} train to buy a ticket for has no price yet",
-    "unpricedTickets_other": "{{count}} trains to buy tickets for have no price yet"
+    "unpricedTickets_other": "{{count}} trains to buy tickets for have no price yet",
+    "continuousMonths_one": "{{count}} month in a row",
+    "continuousMonths_other": "{{count}} months in a row"
   },
   "rules": {
-    "unverified": "Reservation fees were checked against interrail.com on 4 Nov 2026. Pass prices are estimates. Confirm both before you book."
+    "unverified": "Pass prices and reservation fees were checked against interrail.com in November 2026. Prices can change, so confirm both before you book."
   },
   "ai": {
     "open": "Open the AI assistant",

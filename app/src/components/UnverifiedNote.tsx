@@ -2,7 +2,7 @@ import { SealWarningIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import ui from './ui.module.css';
 
-/** Shown until pass prices and reservation rules are checked against the official sites. */
+/** When pass prices and reservation fees were last checked, and a reminder to confirm before booking. */
 export function UnverifiedNote() {
   const { t } = useTranslation();
   return (
