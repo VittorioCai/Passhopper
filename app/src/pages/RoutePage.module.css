@@ -316,3 +316,37 @@
   border-radius: 999px;
   text-decoration: none;
 }
+.cityBtn {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: underline transparent 2px;
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.15s;
+}
+.cityBtn:hover {
+  text-decoration-color: var(--line);
+}
+.handle {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  margin: -4px -8px -4px 2px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink-3);
+  cursor: grab;
+  touch-action: none;
+}
+.handle:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}

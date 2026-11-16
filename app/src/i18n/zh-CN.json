@@ -92,7 +92,13 @@
     "results": "匹配的城市",
     "notListed": "列表里没有？把“{{name}}”添加到：",
     "country": "国家",
-    "addCustom": "添加"
+    "addCustom": "添加",
+    "title": "调整这一站",
+    "open": "调整{{name}}",
+    "nights": "住几晚",
+    "move": "顺序",
+    "removed": "已删除{{name}}",
+    "cantRemove": "行程至少要有两个地方。"
   },
   "route": {
     "title": "路线",
@@ -544,5 +550,14 @@
     "making": "正在生成图片…",
     "failed": "这个浏览器没能生成图片。",
     "alt": "行程“{{name}}”的长图"
+  },
+  "menu": {
+    "open": "行程操作",
+    "settings": "行程信息",
+    "settingsHint": "名称、出发日期、居住地、年龄段、舱等",
+    "deleted": "已删除行程"
+  },
+  "undo": {
+    "done": "已完成"
   }
 }

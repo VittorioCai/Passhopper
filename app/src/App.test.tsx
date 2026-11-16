@@ -116,7 +116,8 @@ describe('trip pages', () => {
     const trip = makeSampleTrip('en');
     await saveTrip(trip);
     at(`/trip/${trip.id}/route`);
-    fireEvent.click(await screen.findByRole('button', { name: 'Edit' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Trip options' }));
+    fireEvent.click(screen.getByRole('button', { name: /Trip details/ }));
     fireEvent.change(screen.getByLabelText('Age'), { target: { value: 'adult' } });
     fireEvent.change(screen.getByLabelText('Where do you live?'), {
       target: { value: 'non_europe' },
@@ -129,12 +130,62 @@ describe('trip pages', () => {
     );
   });
 
+  it('removes a city and brings it back with undo', async () => {
+    const trip = makeSampleTrip('en');
+    await saveTrip(trip);
+    at(`/trip/${trip.id}/route`);
+    fireEvent.click(await screen.findByRole('button', { name: 'Change Venice' }));
+    const dialog = screen.getByRole('dialog');
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Nights in Venice +1' }));
+    await waitFor(async () =>
+      expect(
+        (await db.trips.get(trip.id))!.stops.find((x) => x.place.en === 'Venice')!.nights,
+      ).toBe(3),
+    );
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Remove Venice' }));
+    expect(await screen.findByText('Venice removed')).toBeInTheDocument();
+    await waitFor(async () =>
+      expect((await db.trips.get(trip.id))!.stops.some((x) => x.place.en === 'Venice')).toBe(false),
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Undo' }));
+    expect(await screen.findByRole('heading', { name: 'Venice' })).toBeInTheDocument();
+    const back = await db.trips.get(trip.id);
+    expect(back!.stops.map((x) => x.place.en)).toEqual(trip.stops.map((x) => x.place.en));
+    // Its trains come back too.
+    expect(back!.journeys.map((j) => j.segments.length)).toEqual(
+      trip.journeys.map((j) => j.segments.length),
+    );
+  });
+
+  it('groups trip actions in the top bar menu', async () => {
+    const trip = makeSampleTrip('en');
+    await saveTrip(trip);
+    at(`/trip/${trip.id}/route`);
+    fireEvent.click(await screen.findByRole('button', { name: 'Trip options' }));
+    const dialog = screen.getByRole('dialog');
+    for (const name of [
+      /Trip details/,
+      'Share link',
+      'Save as a picture',
+      'Add to calendar',
+      'Duplicate',
+      'Delete trip',
+    ])
+      expect(within(dialog).getByRole('button', { name })).toBeInTheDocument();
+    expect(within(dialog).getByRole('link', { name: 'Print or save as PDF' })).toHaveAttribute(
+      'href',
+      `/trip/${trip.id}/print`,
+    );
+    // The language switch stays on Home and Settings, leaving room for the trip's name.
+    expect(screen.queryByRole('button', { name: 'Switch to Chinese' })).not.toBeInTheDocument();
+  });
+
   it('adds a note to a city', async () => {
     const trip = makeSampleTrip('en');
     await saveTrip(trip);
     at(`/trip/${trip.id}/route`);
-    fireEvent.click(await screen.findByRole('button', { name: 'Edit' }));
-    fireEvent.click(screen.getAllByRole('button', { name: 'Add a note' })[1]!);
+    fireEvent.click(await screen.findByRole('button', { name: 'Change Munich' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add a note' }));
     const dialog = screen.getByRole('dialog');
     fireEvent.change(within(dialog).getByLabelText('Where you stay, what to do'), {
       target: { value: 'Hostel near the station' },

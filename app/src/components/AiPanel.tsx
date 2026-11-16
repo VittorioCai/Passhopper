@@ -515,7 +515,15 @@ function describe(
 }
 
 /** The bar shown after applying, with a way back. */
-export function UndoToast({ onUndo, onDone }: { onUndo: () => void; onDone: () => void }) {
+export function UndoToast({
+  message,
+  onUndo,
+  onDone,
+}: {
+  message: string;
+  onUndo: () => void;
+  onDone: () => void;
+}) {
   const { t } = useTranslation();
   useEffect(() => {
     const timer = window.setTimeout(onDone, 10000);
@@ -524,7 +532,7 @@ export function UndoToast({ onUndo, onDone }: { onUndo: () => void; onDone: () =
   return (
     <div className={s.toast} role="status">
       <CheckIcon size={16} weight="bold" />
-      <span>{t('ai.applied')}</span>
+      <span>{message}</span>
       <button
         type="button"
         onClick={() => {

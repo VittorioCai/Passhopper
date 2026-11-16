@@ -5,17 +5,14 @@ import {
   ArrowUpIcon,
   ArrowUpRightIcon,
   CalendarCheckIcon,
-  CalendarPlusIcon,
   CaretRightIcon,
   CheckIcon,
   MagicWandIcon,
   DotsSixVerticalIcon,
   ImageIcon,
   MoonIcon,
-  PencilSimpleIcon,
   NotePencilIcon,
   PlusIcon,
-  PrinterIcon,
   ProhibitIcon,
   QuestionIcon,
   TicketIcon,
@@ -26,7 +23,6 @@ import {
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
-import { downloadIcs, tripToIcs } from '../model/ics';
 import { BulkTrainSheet } from '../components/BulkTrainSheet';
 import { CityPicker } from '../components/CityPicker';
 import { MapCard } from '../components/MapCard';
@@ -53,18 +49,14 @@ import {
   moveStop,
   moveStopTo,
   removeStop,
-  renameTrip,
   schedule,
   segmentCount,
   segmentMinutes,
   setNights,
   setNote,
-  setTraveller,
-  setStartDate,
   tripRange,
 } from '../model/trip';
-import { countryName, eurRange, feeText, lineStyle, placeName, useLang } from '../lib';
-import { COUNTRY_CODES, type CountryCode } from '../data/countries';
+import { eurRange, feeText, lineStyle, placeName, useLang } from '../lib';
 import r from './RoutePage.module.css';
 
 export interface TicketInfo {
@@ -183,13 +175,108 @@ type SheetState =
   | { type: 'addCity' }
   | { type: 'note'; stopId: string }
   | { type: 'poster' }
+  | { type: 'city'; stopId: string }
   | null;
+
+/** One stop: nights, note, order, a connecting train, or take it out of the trip. */
+function CitySheet({
+  stopId,
+  onClose,
+  onNote,
+  onTrain,
+}: {
+  stopId: string;
+  onClose: () => void;
+  onNote: () => void;
+  onTrain: () => void;
+}) {
+  const { t } = useTranslation();
+  const lang = useLang();
+  const { trip, update, undoable } = useTripContext();
+  const i = trip.stops.findIndex((x) => x.id === stopId);
+  const stop = trip.stops[i];
+  if (!stop) return null;
+  const name = placeName(stop.place, lang);
+  const isFirst = i === 0;
+  const isLast = i === trip.stops.length - 1;
+  const next = trip.stops[i + 1];
+  const hasTrain = (journeyFrom(trip, stopId)?.segments.length ?? 0) > 0;
+  return (
+    <Sheet title={name} subtitle={t('city.title')} onClose={onClose}>
+      <div className={ui.stack} style={{ gap: 14 }}>
+        {!isFirst && (
+          <div className={ui.spread}>
+            <span className={ui.label}>{t('city.nights')}</span>
+            <Stepper
+              value={stop.nights}
+              onChange={(n) => update((x) => setNights(x, stopId, n))}
+              min={isLast ? 0 : 1}
+              label={t('route.nightsIn', { name })}
+              format={(n) => t('route.nights', { count: n })}
+            />
+          </div>
+        )}
+        {!isFirst && trip.stops.length > 2 && (
+          <div className={ui.spread}>
+            <span className={ui.label}>{t('city.move')}</span>
+            <span className={ui.row} style={{ gap: 6 }}>
+              <button
+                type="button"
+                className={ui.iconBtn}
+                disabled={!canMove(trip, stopId, -1)}
+                onClick={() => update((x) => moveStop(x, stopId, -1))}
+                aria-label={t('route.moveUp', { name })}
+              >
+                <ArrowUpIcon size={16} weight="bold" />
+              </button>
+              <button
+                type="button"
+                className={ui.iconBtn}
+                disabled={!canMove(trip, stopId, 1)}
+                onClick={() => update((x) => moveStop(x, stopId, 1))}
+                aria-label={t('route.moveDown', { name })}
+              >
+                <ArrowDownIcon size={16} weight="bold" />
+              </button>
+            </span>
+          </div>
+        )}
+        <button type="button" className={ui.btn} onClick={onNote}>
+          <NotePencilIcon size={18} weight="bold" />
+          {stop.note ? t('note.editFor', { name }) : t('note.add')}
+        </button>
+        {next && hasTrain && (
+          <button type="button" className={ui.btn} onClick={onTrain}>
+            <PlusIcon size={18} weight="bold" />
+            {t('route.addConnection')}
+          </button>
+        )}
+        {!isFirst &&
+          (trip.stops.length > 2 ? (
+            <button
+              type="button"
+              className={ui.btnGhost}
+              style={{ color: 'var(--danger)', alignSelf: 'flex-start' }}
+              onClick={() => {
+                undoable((x) => removeStop(x, stopId), t('city.removed', { name }));
+                onClose();
+              }}
+            >
+              <TrashIcon size={16} weight="bold" />
+              {t('route.remove', { name })}
+            </button>
+          ) : (
+            <p className={ui.note}>{t('city.cantRemove')}</p>
+          ))}
+      </div>
+    </Sheet>
+  );
+}
 
 export function RoutePage() {
   const { t } = useTranslation();
   const lang = useLang();
   const { trip, update, plan, analysis } = useTripContext();
-  const [edit, setEdit] = useState(false);
   const [sheet, setSheet] = useState<SheetState>(null);
   const sched = schedule(trip);
   const range = tripRange(trip);
@@ -244,87 +331,6 @@ export function RoutePage() {
       <PassBar
         extra={`${t('route.daysCount', { count: range.days })} · ${t('route.citiesCount', { count: destinationCount(trip) })} · ${t('route.trainsCount', { count: segmentCount(trip) })}`}
       />
-      {edit && (
-        <section className={`${ui.card} ${ui.grid2}`} aria-label={t('route.summary')}>
-          <label className={ui.field}>
-            {t('wizard.tripName')}
-            <input
-              defaultValue={trip.name}
-              maxLength={120}
-              onBlur={(e) => {
-                const name = e.target.value;
-                if (name.trim() !== trip.name) update((x) => renameTrip(x, name));
-              }}
-            />
-          </label>
-          <label className={ui.field}>
-            {t('wizard.startDate')}
-            <input
-              type="date"
-              value={trip.startDate}
-              onChange={(e) => {
-                const date = e.target.value;
-                if (date) update((x) => setStartDate(x, date));
-              }}
-            />
-          </label>
-          <label className={ui.field}>
-            {t('wizard.residence')}
-            <select
-              value={
-                trip.traveller.residence.type === 'europe'
-                  ? trip.traveller.residence.country
-                  : 'non_europe'
-              }
-              onChange={(e) => {
-                const v = e.target.value;
-                update((x) =>
-                  setTraveller(x, {
-                    residence:
-                      v === 'non_europe'
-                        ? { type: 'non_europe' }
-                        : { type: 'europe', country: v as CountryCode },
-                  }),
-                );
-              }}
-            >
-              <option value="non_europe">{t('wizard.outsideEurope')}</option>
-              {COUNTRY_CODES.map((cc) => (
-                <option key={cc} value={cc}>
-                  {countryName(cc, lang)}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className={ui.field}>
-            {t('wizard.age')}
-            <select
-              value={trip.traveller.ageGroup}
-              onChange={(e) => {
-                const ageGroup = e.target.value as Trip['traveller']['ageGroup'];
-                update((x) => setTraveller(x, { ageGroup }));
-              }}
-            >
-              <option value="youth">{t('wizard.youth')}</option>
-              <option value="adult">{t('wizard.adult')}</option>
-              <option value="senior">{t('wizard.senior')}</option>
-            </select>
-          </label>
-          <label className={ui.field}>
-            {t('wizard.class')}
-            <select
-              value={trip.traveller.travelClass}
-              onChange={(e) => {
-                const travelClass = Number(e.target.value) as 1 | 2;
-                update((x) => setTraveller(x, { travelClass }));
-              }}
-            >
-              <option value={2}>{t('wizard.second')}</option>
-              <option value={1}>{t('wizard.first')}</option>
-            </select>
-          </label>
-        </section>
-      )}
 
       {(seatsTodo > 0 || emptyLegs > 0) && (
         <div className={r.todo}>
@@ -361,19 +367,6 @@ export function RoutePage() {
             {formatDate(range.start, lang)} – {formatDate(range.end, lang)}
           </span>
         </span>
-        <button
-          type="button"
-          className={ui.btnGhost}
-          onClick={() => setEdit(!edit)}
-          aria-pressed={edit}
-        >
-          {edit ? (
-            <CheckIcon size={16} weight="bold" />
-          ) : (
-            <PencilSimpleIcon size={16} weight="bold" />
-          )}
-          {edit ? t('route.done') : t('route.edit')}
-        </button>
       </h2>
 
       <ol className={r.timeline} ref={bindList}>
@@ -389,7 +382,7 @@ export function RoutePage() {
               key={stop.id}
               className={`${r.stop} ${isFirst ? r.first : ''} ${isLast ? r.last : ''}`}
               data-drag-item
-              style={edit ? itemStyle(i) : undefined}
+              style={itemStyle(i)}
             >
               <span
                 className={r.rail}
@@ -411,16 +404,36 @@ export function RoutePage() {
               />
               <div className={r.body}>
                 <div className={r.head}>
-                  <h3 className={r.city}>{name}</h3>
+                  <h3 className={r.city}>
+                    <button
+                      type="button"
+                      className={r.cityBtn}
+                      onClick={() => setSheet({ type: 'city', stopId: stop.id })}
+                      aria-label={t('city.open', { name })}
+                    >
+                      {name}
+                    </button>
+                  </h3>
                   {stop.place.local !== name && <span className={r.local}>{stop.place.local}</span>}
                   <span className={r.when}>
                     {formatDate((isFirst ? sc.depart : sc.arrive) ?? trip.startDate, lang, {
                       weekday: true,
                     })}
-                    {!isFirst && !edit && stop.nights > 0 && (
+                    {!isFirst && stop.nights > 0 && (
                       <span className={r.nights}>{t('route.nights', { count: stop.nights })}</span>
                     )}
                   </span>
+                  {!isFirst && trip.stops.length > 2 && (
+                    <button
+                      type="button"
+                      className={r.handle}
+                      aria-label={t('route.drag', { name })}
+                      title={t('route.drag', { name })}
+                      {...dragHandle(i, trip.stops.length)}
+                    >
+                      <DotsSixVerticalIcon size={18} weight="bold" />
+                    </button>
+                  )}
                 </div>
                 {isFirst && <div className={r.note}>{t('route.start')}</div>}
                 {isLast && stop.nights === 0 && <div className={r.note}>{t('route.end')}</div>}
@@ -434,68 +447,7 @@ export function RoutePage() {
                     <NotePencilIcon size={15} weight="bold" />
                     <span>{stop.note}</span>
                   </button>
-                ) : (
-                  edit && (
-                    <button
-                      type="button"
-                      className={ui.btnGhost}
-                      style={{ alignSelf: 'flex-start', padding: 0 }}
-                      onClick={() => setSheet({ type: 'note', stopId: stop.id })}
-                    >
-                      <NotePencilIcon size={15} weight="bold" />
-                      {t('note.add')}
-                    </button>
-                  )
-                )}
-                {edit && !isFirst && (
-                  <div className={r.tools}>
-                    <Stepper
-                      value={stop.nights}
-                      onChange={(n) => update((x) => setNights(x, stop.id, n))}
-                      min={isLast ? 0 : 1}
-                      label={t('route.nightsIn', { name })}
-                      format={(n) => t('route.nights', { count: n })}
-                    />
-                    <span className={ui.row} style={{ gap: 6 }}>
-                      <button
-                        type="button"
-                        className={ui.iconBtn}
-                        aria-label={t('route.drag', { name })}
-                        title={t('route.drag', { name })}
-                        {...dragHandle(i, trip.stops.length)}
-                      >
-                        <DotsSixVerticalIcon size={18} weight="bold" />
-                      </button>
-                      <button
-                        type="button"
-                        className={ui.iconBtn}
-                        disabled={!canMove(trip, stop.id, -1)}
-                        onClick={() => update((x) => moveStop(x, stop.id, -1))}
-                        aria-label={t('route.moveUp', { name })}
-                      >
-                        <ArrowUpIcon size={16} weight="bold" />
-                      </button>
-                      <button
-                        type="button"
-                        className={ui.iconBtn}
-                        disabled={!canMove(trip, stop.id, 1)}
-                        onClick={() => update((x) => moveStop(x, stop.id, 1))}
-                        aria-label={t('route.moveDown', { name })}
-                      >
-                        <ArrowDownIcon size={16} weight="bold" />
-                      </button>
-                      <button
-                        type="button"
-                        className={ui.iconBtn}
-                        disabled={trip.stops.length <= 2}
-                        onClick={() => update((x) => removeStop(x, stop.id))}
-                        aria-label={t('route.remove', { name })}
-                      >
-                        <TrashIcon size={16} weight="bold" />
-                      </button>
-                    </span>
-                  </div>
-                )}
+                ) : null}
                 {j && (
                   <div className={r.journey}>
                     {j.segments.map((seg) => (
@@ -527,19 +479,7 @@ export function RoutePage() {
                           to: placeName(trip.stops[i + 1]!.place, lang),
                         })}
                       </button>
-                    ) : (
-                      edit && (
-                        <button
-                          type="button"
-                          className={ui.btnGhost}
-                          style={{ alignSelf: 'flex-start' }}
-                          onClick={() => setSheet({ type: 'segment', fromStopId: stop.id })}
-                        >
-                          <PlusIcon size={14} weight="bold" />
-                          {t('route.addConnection')}
-                        </button>
-                      )
-                    )}
+                    ) : null}
                   </div>
                 )}
               </div>
@@ -548,32 +488,15 @@ export function RoutePage() {
         })}
       </ol>
 
-      {segmentCount(trip) > 0 && !edit && (
-        <div className={ui.row} style={{ justifyContent: 'center' }}>
-          <button
-            type="button"
-            className={ui.btnSm}
-            onClick={() =>
-              downloadIcs(
-                trip.name,
-                tripToIcs(trip, (p) => placeName(p, lang), {
-                  stay: (city, n) => t('travel.icsStay', { city, count: n }),
-                  reservation: (ref, seat) =>
-                    t('travel.icsSeat', { value: [seat, ref].filter(Boolean).join(' · ') }),
-                }),
-              )
-            }
-          >
-            <CalendarPlusIcon size={16} weight="bold" />
-            {t('travel.calendar')}
-          </button>
-          <Link to={`/trip/${trip.id}/print`} className={ui.btnSm}>
-            <PrinterIcon size={16} weight="bold" />
-            {t('travel.print')}
-          </Link>
-        </div>
-      )}
-      {!edit && (
+      <button
+        type="button"
+        className={`${ui.btn} ${ui.block}`}
+        onClick={() => setSheet({ type: 'addCity' })}
+      >
+        <PlusIcon size={18} weight="bold" />
+        {t('route.addCity')}
+      </button>
+      {segmentCount(trip) > 0 && (
         <button
           type="button"
           className={`${ui.btnPrimary} ${ui.block}`}
@@ -583,19 +506,17 @@ export function RoutePage() {
           {t('poster.action')}
         </button>
       )}
-      {edit && (
-        <button
-          type="button"
-          className={`${ui.btn} ${ui.block}`}
-          onClick={() => setSheet({ type: 'addCity' })}
-        >
-          <PlusIcon size={18} weight="bold" />
-          {t('route.addCity')}
-        </button>
-      )}
 
       {sheet?.type === 'poster' && (
         <PosterSheet trip={trip} plan={plan} onClose={() => setSheet(null)} />
+      )}
+      {sheet?.type === 'city' && (
+        <CitySheet
+          stopId={sheet.stopId}
+          onClose={() => setSheet(null)}
+          onNote={() => setSheet({ type: 'note', stopId: sheet.stopId })}
+          onTrain={() => setSheet({ type: 'segment', fromStopId: sheet.stopId })}
+        />
       )}
       {sheet?.type === 'bulk' && (
         <BulkTrainSheet

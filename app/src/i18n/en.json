@@ -96,7 +96,13 @@
     "results": "Matching cities",
     "notListed": "Not listed? Add “{{name}}” in:",
     "country": "Country",
-    "addCustom": "Add"
+    "addCustom": "Add",
+    "title": "Change this stop",
+    "open": "Change {{name}}",
+    "nights": "Nights",
+    "move": "Order",
+    "removed": "{{name}} removed",
+    "cantRemove": "A trip needs at least two places."
   },
   "route": {
     "title": "Route",
@@ -581,5 +587,14 @@
     "making": "Drawing the picture…",
     "failed": "This browser couldn't draw the picture.",
     "alt": "Picture of the trip {{name}}"
+  },
+  "menu": {
+    "open": "Trip options",
+    "settings": "Trip details",
+    "settingsHint": "Name, start date, where you live, age and class",
+    "deleted": "Trip deleted"
+  },
+  "undo": {
+    "done": "Done"
   }
 }

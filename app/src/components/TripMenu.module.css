@@ -1,0 +1,42 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 52px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 600;
+  text-align: left;
+  text-decoration: none;
+}
+.item:hover {
+  background: var(--surface-2);
+  text-decoration: none;
+}
+.item svg {
+  flex: none;
+  color: var(--ink-2);
+}
+.item span {
+  display: flex;
+  flex-direction: column;
+}
+.item small {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-3);
+}
+.danger,
+.danger svg {
+  color: var(--danger);
+}

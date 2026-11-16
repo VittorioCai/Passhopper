@@ -1,28 +1,24 @@
 import {
   ArrowRightIcon,
   CaretRightIcon,
-  CopyIcon,
   DotsThreeIcon,
   PlusIcon,
-  ShareNetworkIcon,
   TrainIcon,
-  TrashIcon,
   TrainSimpleIcon,
 } from '@phosphor-icons/react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router';
+import { Link } from 'react-router';
 import { ideaLook } from '../components/IdeaEmblem';
 import { NextTrainCard } from '../components/NextTrainCard';
 import { passName } from '../components/passText';
-import { Sheet } from '../components/Sheet';
+import { TripMenu } from '../components/TripMenu';
 import ui from '../components/ui.module.css';
 import { ideaStats, ROUTE_IDEAS } from '../data/routeIdeas';
-import { copyTrip, deleteTrip, useTrips } from '../db/trips';
+import { useTrips } from '../db/trips';
 import { analyze, currentPlan } from '../engine/optimizer';
 import { daysBetween, formatDate, todayLocal } from '../model/dates';
 import type { Trip } from '../model/schema';
-import { encodeTrip, shareUrl } from '../model/share';
 import { destinationCount, segmentCount, sortTrips, tripRange } from '../model/trip';
 import { eur, placeName, useLang } from '../lib';
 import h from './Home.module.css';
@@ -154,12 +150,8 @@ function IdeaPosters() {
 
 export function Home() {
   const { t } = useTranslation();
-  const lang = useLang();
   const trips = useTrips();
-  const navigate = useNavigate();
   const [menu, setMenu] = useState<Trip | null>(null);
-  const [confirm, setConfirm] = useState(false);
-  const [shared, setShared] = useState('');
   const sorted = trips && sortTrips(trips, todayLocal());
   const today = todayLocal();
   const underWay = trips?.some(
@@ -170,11 +162,6 @@ export function Home() {
     .map((x) => x.startDate)
     .filter((d) => d >= today)
     .sort()[0];
-  const close = () => {
-    setMenu(null);
-    setConfirm(false);
-    setShared('');
-  };
   return (
     <>
       <div className={ui.hello}>
@@ -222,93 +209,7 @@ export function Home() {
         {t('home.newTrip')}
       </Link>
       <IdeaPosters />
-      {menu && (
-        <Sheet
-          title={menu.name}
-          subtitle={formatDate(menu.startDate, lang, { weekday: true })}
-          onClose={close}
-        >
-          <div className={ui.stack}>
-            <button
-              type="button"
-              className={ui.btn}
-              onClick={async () => {
-                const copy = await copyTrip(
-                  menu,
-                  t('home.copyName', {
-                    name: menu.name.replace(/（示例）|\(example\)/i, '').trim(),
-                  }),
-                );
-                close();
-                navigate(`/trip/${copy.id}/route`);
-              }}
-            >
-              <CopyIcon size={18} weight="bold" />
-              {t('home.duplicate')}
-            </button>
-            <button
-              type="button"
-              className={ui.btn}
-              onClick={async () => {
-                const url = shareUrl(await encodeTrip(menu));
-                try {
-                  if (navigator.share) {
-                    await navigator.share({ title: menu.name, text: t('share.shareText'), url });
-                    return;
-                  }
-                  await navigator.clipboard.writeText(url);
-                  setShared(t('share.copied'));
-                } catch {
-                  // Cancelled, or no clipboard: show the link to copy by hand.
-                  setShared(url);
-                }
-              }}
-            >
-              <ShareNetworkIcon size={18} weight="bold" />
-              {t('share.action')}
-            </button>
-            {shared && (
-              <p
-                className={`${ui.status} ${ui.ok}`}
-                role="status"
-                style={{ overflowWrap: 'anywhere' }}
-              >
-                {shared}
-              </p>
-            )}
-            {confirm ? (
-              <div className={ui.danger}>
-                <span>{t('home.deleteConfirm', { name: menu.name })}</span>
-                <div className={ui.row}>
-                  <button
-                    type="button"
-                    className={ui.btnDanger}
-                    onClick={async () => {
-                      await deleteTrip(menu.id);
-                      close();
-                    }}
-                  >
-                    {t('common.delete')}
-                  </button>
-                  <button type="button" className={ui.btn} onClick={() => setConfirm(false)}>
-                    {t('common.cancel')}
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <button
-                type="button"
-                className={ui.btn}
-                style={{ color: 'var(--danger)' }}
-                onClick={() => setConfirm(true)}
-              >
-                <TrashIcon size={18} weight="bold" />
-                {t('home.delete')}
-              </button>
-            )}
-          </div>
-        </Sheet>
-      )}
+      {menu && <TripMenu trip={menu} onClose={() => setMenu(null)} />}
     </>
   );
 }

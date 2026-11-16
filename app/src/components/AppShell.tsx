@@ -2,6 +2,7 @@ import {
   ArmchairIcon,
   CalendarDotsIcon,
   CaretLeftIcon,
+  DotsThreeOutlineIcon,
   HouseIcon,
   PathIcon,
   PiggyBankIcon,
@@ -20,6 +21,7 @@ import type { TripContext } from './TripContext';
 import ui from './ui.module.css';
 import s from './AppShell.module.css';
 import { Logo } from './Logo';
+import { TripMenu } from './TripMenu';
 import { AiPanel, emptyChat, UndoToast, type AiChat, type ChatSession } from './AiPanel';
 import type { History } from '../ai/agent';
 
@@ -44,7 +46,18 @@ function LanguageButton() {
   );
 }
 
-function TopBar({ title, back, right }: { title?: ReactNode; back?: string; right?: ReactNode }) {
+function TopBar({
+  title,
+  back,
+  right,
+  lang = true,
+}: {
+  title?: ReactNode;
+  back?: string;
+  right?: ReactNode;
+  /** The language switch; trip pages leave it out to make room for the trip's name. */
+  lang?: boolean;
+}) {
   const { t } = useTranslation();
   return (
     <header className={`${s.topbar} ${back ? s.withBack : ''}`}>
@@ -54,7 +67,7 @@ function TopBar({ title, back, right }: { title?: ReactNode; back?: string; righ
         </Link>
       )}
       <div className={s.title}>{title}</div>
-      <LanguageButton />
+      {lang && <LanguageButton />}
       {right}
     </header>
   );
@@ -208,7 +221,9 @@ export function TripLayout() {
     }),
     [],
   );
-  const [undo, setUndo] = useState<Trip | null>(null);
+  const [undo, setUndo] = useState<{ before: Trip; message: string } | null>(null);
+  const [menu, setMenu] = useState(false);
+  const closeMenu = useCallback(() => setMenu(false), []);
   const closeAi = useCallback(() => setAiOpen(false), []);
   const clearUndo = useCallback(() => setUndo(null), []);
   const computed = useMemo(() => {
@@ -235,6 +250,10 @@ export function TripLayout() {
   const ctx: TripContext = {
     trip,
     update: (fn: (x: Trip) => Trip) => void updateTrip(trip.id, fn),
+    undoable: (fn: (x: Trip) => Trip, message: string) => {
+      setUndo({ before: trip, message });
+      void updateTrip(trip.id, fn);
+    },
     analysis: computed!.analysis,
     plan: computed!.plan,
   };
@@ -243,17 +262,29 @@ export function TripLayout() {
       <TopBar
         back="/"
         title={trip.name}
+        lang={false}
         right={
-          <button
-            type="button"
-            className={s.aiBtn}
-            aria-label={t('ai.open')}
-            aria-expanded={aiOpen}
-            onClick={() => setAiOpen(true)}
-          >
-            <SparkleIcon size={18} weight="fill" />
-            <span>AI</span>
-          </button>
+          <>
+            <button
+              type="button"
+              className={s.iconBtn}
+              aria-label={t('menu.open')}
+              aria-expanded={menu}
+              onClick={() => setMenu(true)}
+            >
+              <DotsThreeOutlineIcon size={20} weight="fill" />
+            </button>
+            <button
+              type="button"
+              className={s.aiBtn}
+              aria-label={t('ai.open')}
+              aria-expanded={aiOpen}
+              onClick={() => setAiOpen(true)}
+            >
+              <SparkleIcon size={18} weight="fill" />
+              <span>AI</span>
+            </button>
+          </>
         }
       />
       <main className={`${s.view} ${s.withTabs}`}>
@@ -267,14 +298,17 @@ export function TripLayout() {
           session={session}
           onClose={closeAi}
           onApply={(next) => {
-            setUndo(trip);
+            setUndo({ before: trip, message: t('ai.applied') });
             void saveTrip(next);
           }}
         />
       )}
+      {menu && <TripMenu trip={trip} onClose={closeMenu} />}
       {undo && (
         <UndoToast
-          onUndo={() => void saveTrip({ ...undo, updatedAt: new Date().toISOString() })}
+          key={undo.message + undo.before.updatedAt}
+          message={undo.message}
+          onUndo={() => void saveTrip({ ...undo.before, updatedAt: new Date().toISOString() })}
           onDone={clearUndo}
         />
       )}
