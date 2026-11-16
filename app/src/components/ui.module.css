@@ -505,3 +505,13 @@
   background: var(--ink);
   color: var(--on-ink);
 }
+/* Save / Cancel row that stays at the bottom of a long sheet while it scrolls. */
+.sheetActions {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  margin: 0 -18px calc(-22px - env(safe-area-inset-bottom, 0px));
+  padding: 12px 18px calc(16px + env(safe-area-inset-bottom, 0px));
+  background: var(--surface);
+  box-shadow: 0 -1px 0 var(--line);
+}

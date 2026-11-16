@@ -19,6 +19,7 @@ const at = (path: string) =>
   );
 
 beforeEach(async () => {
+  localStorage.removeItem('passhopper.termsSeen');
   await db.trips.clear();
   await db.meta.clear();
   await i18n.changeLanguage('en');
@@ -178,6 +179,34 @@ describe('trip pages', () => {
     );
     // The language switch stays on Home and Settings, leaving room for the trip's name.
     expect(screen.queryByRole('button', { name: 'Switch to Chinese' })).not.toBeInTheDocument();
+  });
+
+  it('explains pass words to first-timers until dismissed', async () => {
+    const trip = makeSampleTrip('en');
+    await saveTrip(trip);
+    at(`/trip/${trip.id}/route`);
+    const card = await screen.findByRole('region', { name: 'First time with Interrail?' });
+    fireEvent.click(within(card).getByRole('button', { name: 'Seat reservation' }));
+    expect(within(screen.getByRole('dialog')).getByText(/you can't board/)).toBeInTheDocument();
+    fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Close' }));
+    fireEvent.click(within(card).getByRole('button', { name: 'Got it' }));
+    expect(
+      screen.queryByRole('region', { name: 'First time with Interrail?' }),
+    ).not.toBeInTheDocument();
+    expect(localStorage.getItem('passhopper.termsSeen')).toBe('1');
+  });
+
+  it('marks overlapping trains as an error', async () => {
+    const trip = makeSampleTrip('en');
+    const j = trip.journeys[0]!;
+    j.segments = [
+      { ...j.segments[0]!, arrTime: '12:35' },
+      { ...j.segments[0]!, id: 'second', trainNumber: 'RE 1', depTime: '12:00', arrTime: '13:00' },
+    ];
+    await saveTrip(trip);
+    at(`/trip/${trip.id}/route`);
+    const note = await screen.findByText(/RE 1 leaves before/);
+    expect(note.closest('p')!.className).toMatch(/conflictErr/);
   });
 
   it('adds a note to a city', async () => {

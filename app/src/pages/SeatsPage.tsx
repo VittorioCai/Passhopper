@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FxHint } from '../components/FxHint';
 import { useTripContext } from '../components/TripContext';
+import { Term } from '../components/Terms';
 import ui from '../components/ui.module.css';
 import { UnverifiedNote } from '../components/UnverifiedNote';
 import { CHANNEL_LINKS } from '../data/reservationRules';
@@ -182,7 +183,8 @@ export function SeatsPage() {
             <FxHint eur={feeTotal} />
           </span>
           <span className={ui.muted} style={{ fontSize: 14 }}>
-            {unknownFees ? t('seats.notIncludedVaries') : t('seats.notIncluded')}
+            {unknownFees ? t('seats.notIncludedVaries') : t('seats.notIncluded')}{' '}
+            <Term term="seat">{t('terms.more')}</Term>
           </span>
         </span>
       </section>

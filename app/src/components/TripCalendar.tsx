@@ -2,6 +2,7 @@ import { MoonIcon } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { addDays, daysBetween } from '../model/dates';
 import type { DayChoice } from '../engine/optimizer';
+import { Term } from './Terms';
 import s from './TripCalendar.module.css';
 
 export interface CalendarDay {
@@ -122,11 +123,11 @@ export function TripCalendar({
       <div className={s.legend}>
         <span>
           <i className={s.lgPass} />
-          {t('calendar.pass')}
+          <Term term="travelDay">{t('calendar.pass')}</Term>
         </span>
         <span>
           <i className={s.lgTicket} />
-          {t('calendar.ticket')}
+          <Term term="ticket">{t('calendar.ticket')}</Term>
         </span>
         <span>
           <i className={s.lgStay} />

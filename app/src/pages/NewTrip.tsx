@@ -14,7 +14,8 @@ import { Stepper } from '../components/Stepper';
 import ui from '../components/ui.module.css';
 import { COUNTRY_CODES, type CountryCode } from '../data/countries';
 import { saveTrip } from '../db/trips';
-import { cityPlace, ideaById } from '../data/routeIdeas';
+import { ideaLook } from '../components/IdeaEmblem';
+import { cityPlace, ideaById, ROUTE_IDEAS } from '../data/routeIdeas';
 import { useDragSort } from '../hooks/useDragSort';
 import { addDays, todayLocal } from '../model/dates';
 import type { Place, Traveller } from '../model/schema';
@@ -193,9 +194,32 @@ export function NewTrip() {
 
       {step === 2 && (
         <div className={`${ui.card} ${ui.stack}`} style={{ gap: 16 }}>
-          <p className={ui.muted} style={{ margin: 0, fontSize: 14 }}>
-            {t('ideas.browseHint')} <Link to="/ideas">{t('ideas.browse')}</Link>
-          </p>
+          {!origin && (
+            <div className={ui.stack} style={{ gap: 8 }}>
+              <span className={`${ui.label} ${ui.spread}`}>
+                {t('ideas.browseHint')}
+                <Link to="/ideas">{t('home.ideasAll', { count: ROUTE_IDEAS.length })}</Link>
+              </span>
+              <ul className={w.ideas}>
+                {ROUTE_IDEAS.slice(0, 6).map((x) => {
+                  const look = ideaLook(x.id);
+                  const I = look.icon;
+                  return (
+                    <li key={x.id}>
+                      <Link
+                        to={`/ideas/${x.id}`}
+                        className={w.idea}
+                        style={{ background: look.bg, color: look.ink }}
+                      >
+                        <I size={22} weight="duotone" aria-hidden="true" />
+                        <span>{zh ? x.title.zh : x.title.en}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
           <AiDraftBox
             onDraft={(d) => {
               setOrigin(d.origin);
@@ -334,7 +358,7 @@ export function NewTrip() {
         </div>
       )}
 
-      <div className={ui.spread}>
+      <div className={`${ui.spread} ${w.actions}`}>
         {step > 1 ? (
           <button type="button" className={ui.btn} onClick={() => setStep(step - 1)}>
             {t('common.back')}

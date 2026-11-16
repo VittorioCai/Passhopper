@@ -296,7 +296,8 @@
     "checkRules": "Check pass rules",
     "outbound": "Outbound",
     "inbound": "Inbound",
-    "noSeat": "No reservation"
+    "noSeat": "No reservation",
+    "savesNight": "Saves a night's stay"
   },
   "pass": {
     "flexi": "{{days}}-day Flexi",
@@ -601,5 +602,35 @@
   },
   "undo": {
     "done": "Done"
+  },
+  "terms": {
+    "cardTitle": "First time with Interrail?",
+    "cardBody": "Five words explain most of this app. Tap one to read more.",
+    "gotIt": "Got it",
+    "more": "What does this mean?",
+    "travelDay": {
+      "name": "Travel day",
+      "body": "A day you use a Flexi pass. From midnight to midnight you can take as many covered trains as you like. A night train counts only for the day it leaves, as long as you stay on the same train past midnight."
+    },
+    "flexi": {
+      "name": "Flexi pass",
+      "body": "You pick a number of travel days, such as 4, 5, 7 or 10, within one or two months. Days you don't take a train don't count, so it suits trips with a few nights in each city."
+    },
+    "continuous": {
+      "name": "Continuous pass",
+      "body": "Every day for 15 days to 3 months is a travel day. Worth it only if you're on a train almost every day."
+    },
+    "seat": {
+      "name": "Seat reservation",
+      "body": "High-speed and night trains often need a reservation as well as the pass, for a fee of a few euros to a few dozen. Without one you can't board. Regional and many intercity trains need none: just get on."
+    },
+    "home": {
+      "name": "Outbound and inbound",
+      "body": "If you live in Europe, the pass works in your own country only twice: one journey out of it and one back. Trains within your country otherwise need a normal ticket."
+    },
+    "ticket": {
+      "name": "Ticket day",
+      "body": "A day you don't use the pass and buy a normal ticket instead. Worth it for short, cheap trips, so the pass's travel days go to the long ones."
+    }
   }
 }

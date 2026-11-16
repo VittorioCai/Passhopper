@@ -285,21 +285,23 @@ export function BulkTrainSheet({
           </li>
         ))}
       </ul>
-      <button
-        type="button"
-        className={`${ui.btnPrimary} ${ui.block}`}
-        disabled={!chosen.length}
-        onClick={save}
-      >
-        <CheckIcon size={18} weight="bold" />
-        {t('bulk.add', { count: chosen.length })}
-      </button>
       <p className={s.credit}>
         {t('search.credit')}{' '}
         <a href={TRANSITOUS_SOURCES_URL} target="_blank" rel="noopener noreferrer">
           Transitous
         </a>
       </p>
+      <div className={ui.sheetActions}>
+        <button
+          type="button"
+          className={`${ui.btnPrimary} ${ui.block}`}
+          disabled={!chosen.length}
+          onClick={save}
+        >
+          <CheckIcon size={18} weight="bold" />
+          {t('bulk.add', { count: chosen.length })}
+        </button>
+      </div>
     </Sheet>
   );
 }

@@ -10,7 +10,7 @@ import { todayLocal } from '../model/dates';
 import { useLang } from '../lib';
 import s from './AiDraftBox.module.css';
 
-/** "Describe your trip" in the new-trip wizard. Without an AI key it only points to Settings. */
+/** "Describe your trip" in the new-trip wizard. Hidden without an AI key; locked keys point to Settings. */
 export function AiDraftBox({ onDraft }: { onDraft: (d: Draft) => void }) {
   const { t } = useTranslation();
   const lang = useLang();
@@ -22,6 +22,8 @@ export function AiDraftBox({ onDraft }: { onDraft: (d: Draft) => void }) {
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const abort = useRef<AbortController | null>(null);
 
+  // Without a key there's nothing to try here; Settings explains the assistant.
+  if (!provider && !locked) return null;
   if (!provider)
     return (
       <p className={s.hint}>

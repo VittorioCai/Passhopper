@@ -6,6 +6,7 @@ import { FxHint } from '../components/FxHint';
 import { PassBar } from '../components/PassBar';
 import { passName, passValidity } from '../components/passText';
 import { useTripContext } from '../components/TripContext';
+import { Term } from '../components/Terms';
 import ui from '../components/ui.module.css';
 import { UnverifiedNote } from '../components/UnverifiedNote';
 import { passById } from '../data/passes';
@@ -154,6 +155,11 @@ export function SavingsPage() {
       <h2 className={ui.sectionTitle}>
         {t('savings.compare')} <span className={v.count}>{t('savings.tapToSwitch')}</span>
       </h2>
+      <p className={ui.note} style={{ marginTop: -4 }}>
+        <Term term="flexi" />
+        <span aria-hidden="true">·</span>
+        <Term term="continuous" />
+      </p>
       <div className={ui.card}>
         <div className={v.chart}>
           {a.options.map((o) => {

@@ -43,3 +43,42 @@
   width: 16px;
   text-align: center;
 }
+
+.ideas {
+  list-style: none;
+  display: flex;
+  gap: 8px;
+  margin: 0 -16px;
+  padding: 0 16px 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.ideas::-webkit-scrollbar {
+  display: none;
+}
+.idea {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  width: 128px;
+  height: 92px;
+  padding: 10px 12px;
+  border-radius: 18px;
+  font-family: var(--f-display);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.idea:hover {
+  text-decoration: none;
+}
+/* Back and Next stay in reach while the list of cities grows. */
+.actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  margin: 0 -16px;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(to bottom, transparent, var(--bg) 30%);
+}

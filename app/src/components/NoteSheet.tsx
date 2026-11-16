@@ -40,7 +40,7 @@ export function NoteSheet({
             onChange={(e) => setText(e.target.value)}
           />
         </label>
-        <div className={ui.row}>
+        <div className={`${ui.row} ${ui.sheetActions}`}>
           <button type="submit" className={ui.btnPrimary}>
             {t('common.save')}
           </button>

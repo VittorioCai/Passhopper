@@ -4,6 +4,7 @@ import {
   ArrowDownLeftIcon,
   ArrowUpIcon,
   ArrowUpRightIcon,
+  BedIcon,
   CalendarCheckIcon,
   CaretRightIcon,
   CheckIcon,
@@ -28,6 +29,7 @@ import { CityPicker } from '../components/CityPicker';
 import { MapCard } from '../components/MapCard';
 import { PassBar } from '../components/PassBar';
 import { PosterSheet } from '../components/PosterSheet';
+import { TermsCard } from '../components/Terms';
 import { SegmentSheet } from '../components/SegmentSheet';
 import { Sheet } from '../components/Sheet';
 import { NoteSheet } from '../components/NoteSheet';
@@ -98,6 +100,8 @@ function TicketChips({ info }: { info: TicketInfo }) {
     chips.push({ cls: ui.chipRec, text: t('chip.seatAdvised'), icon: ArmchairIcon });
   if (item.rule.coverage === 'unknown')
     chips.push({ cls: ui.chipRec, text: t('chip.checkRules'), icon: QuestionIcon });
+  if (isNightTrain(item.seg))
+    chips.push({ cls: ui.chipInfo, text: t('chip.savesNight'), icon: BedIcon });
   if (item.kind === 'outbound' || item.kind === 'inbound')
     chips.push({
       cls: ui.chipInfo,
@@ -331,6 +335,7 @@ export function RoutePage() {
       <PassBar
         extra={`${t('route.daysCount', { count: range.days })} · ${t('route.citiesCount', { count: destinationCount(trip) })} · ${t('route.trainsCount', { count: segmentCount(trip) })}`}
       />
+      <TermsCard />
 
       {(seatsTodo > 0 || emptyLegs > 0) && (
         <div className={r.todo}>
@@ -462,7 +467,11 @@ export function RoutePage() {
                     {conflicts
                       .filter((c) => c.fromStopId === stop.id)
                       .map((c, k) => (
-                        <p key={k} className={r.conflict} role="note">
+                        <p
+                          key={k}
+                          className={`${r.conflict} ${c.type === 'overlap' || c.type === 'missed_connection' ? r.conflictErr : ''}`}
+                          role="note"
+                        >
                           <WarningIcon size={15} weight="fill" />
                           <span>{conflictText(c)}</span>
                         </p>
